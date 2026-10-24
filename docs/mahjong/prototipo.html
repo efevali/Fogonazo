@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Prototipo del mahjong zen (trabajo en curso). Ver docs/mahjong/README.md. -->
+<style>[hidden]{display:none!important} body{margin:0} :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Mahjong zen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Concepto: la pantalla de Kasa (banda arriba, tarjetas con borde grueso y sombra sólida, banda abajo) con el tablero de fichas en el centro. */
+:root {
+  --paper:#E4EFE8; --card:#FBFDFC; --panel:#D9E8DF; --ink:#1F2A44; --ink-2:#4F5F6A;
+  --ai:#2B4C7E; --on-ai:#FFFFFF; --ai-soft:#DCE5F1; --shu:#B8392B; --midori:#2F6A52;
+  --guide:#9BBBAE; --line:#C7D2CE; --edge:#1F2A44; --tint:#EAF3ED; --ok-soft:#D8ECDF;
+  --shu-soft:#F7E0DC; --oro:#C9A46B; --scrim:rgba(12,20,26,.46);
+  --tile:#FBFDFC; --tile-dim:#D3DCD8; --tile-sel:#DCE5F1; --tile-side:#9BBBAE;
+  --bw:2.5px; --lift:4px; color-scheme:light;
+  --f-ui:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  --f-jp:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+}
+*, *::before, *::after { box-sizing:border-box; }
+html, body { height:100%; }
+body { background:var(--paper); color:var(--ink); font-family:var(--f-ui); font-size:16px; display:flex; flex-direction:column; overflow:hidden; -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none; }
+button { font:inherit; color:inherit; cursor:pointer; }
+:focus-visible { outline:3px solid var(--ai); outline-offset:2px; }
+.gutter { padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+.pantalla { flex:1; display:flex; flex-direction:column; min-height:0; }
+
+/* Bandas de Kasa */
+.banda { background:var(--panel); border:0 solid var(--edge); }
+.banda.arriba { border-bottom-width:var(--bw); border-radius:0 0 24px 24px; }
+.banda.abajo { border-top-width:var(--bw); border-radius:24px 24px 0 0; }
+.banda-in { display:flex; align-items:center; gap:12px; padding-block:12px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+.banda.abajo .banda-in { padding-block:16px 18px; }
+
+/* Botones y tarjetas */
+.kb { background:var(--card); border:var(--bw) solid var(--edge); border-radius:16px; box-shadow:0 var(--lift) 0 var(--edge); transition:transform .08s, box-shadow .08s; }
+.kb:active { transform:translateY(var(--lift)); box-shadow:0 0 0 var(--edge); }
+.kb.ai { background:var(--ai); color:var(--on-ai); }
+.kb.ico { width:46px; height:46px; display:grid; place-items:center; border-radius:13px; flex:none; }
+.kb.ico svg { width:26px; height:26px; }
+.tarjeta { background:var(--card); border:var(--bw) solid var(--edge); border-radius:22px; box-shadow:0 var(--lift) 0 var(--edge); }
+.lbl { font-size:13px; color:var(--ink-2); font-weight:500; }
+.eyebrow { font-size:13px; font-weight:700; letter-spacing:.06em; color:var(--midori); }
+
+/* Inicio */
+.marca { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+.marca svg { width:52px; height:52px; flex:none; }
+.marca-jp { font-family:var(--f-jp); font-weight:700; font-size:22px; line-height:1.05; }
+.marca-txt { font-weight:700; font-size:20px; margin-left:4px; }
+.inicio-centro { flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:22px; padding-block:20px; max-width:520px; width:100%; margin:0 auto; overflow-y:auto; }
+.zen { padding:20px 22px 22px; display:grid; gap:14px; }
+.zen h1 { margin:0; font-size:24px; font-weight:700; text-wrap:balance; }
+.records { display:grid; grid-template-columns:1fr 1fr; border-top:1.5px solid var(--line); padding-top:14px; gap:12px; }
+.records b, .stats b { display:block; font-size:26px; font-weight:700; font-variant-numeric:tabular-nums; }
+.muestra-fila { display:flex; gap:8px; justify-content:flex-start; padding-top:2px; }
+.jugar { text-align:left; padding:16px 22px 18px; display:grid; gap:2px; }
+.jugar .lbl { color:inherit; opacity:.85; font-size:15px; }
+.jugar .grande { font-size:26px; font-weight:700; }
+.fila2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.btn-ico { display:flex; flex-direction:column; align-items:center; gap:8px; padding:14px 8px 12px; font-weight:700; font-size:15px; }
+.btn-ico .duo { display:flex; gap:3px; }
+
+/* Juego */
+.hud-centro { flex:1; min-width:0; }
+.hud-sub { font-size:12.5px; color:var(--ink-2); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hud-pts { font-size:19px; font-weight:700; font-variant-numeric:tabular-nums; display:flex; align-items:center; gap:8px; }
+.cadena { font-size:13px; background:var(--ai-soft); color:var(--ai); border:2px solid var(--edge); border-radius:10px; padding:0 7px; line-height:20px; }
+.hud-tiempo { text-align:right; flex:none; }
+.hud-tiempo b { display:block; font-size:19px; font-variant-numeric:tabular-nums; }
+#tablero { flex:1; min-height:0; position:relative; margin:12px max(10px, env(safe-area-inset-right, 0px)) 4px max(10px, env(safe-area-inset-left, 0px)); }
+#capa { position:absolute; left:0; top:0; transform-origin:0 0; }
+.acciones { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding-block:8px 16px; }
+.accion { height:62px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; font-size:13.5px; font-weight:700; }
+.accion svg { width:22px; height:22px; }
+
+/* Fichas */
+.ficha { box-sizing:border-box; width:36px; height:48px; padding:0; margin:0; border:1.6px solid var(--edge); border-radius:6px; background:var(--tile); color:var(--tile); box-shadow:3px 4px 0 var(--tile-side), 3px 4px 0 1.6px var(--edge); display:block; }
+.ficha svg { width:100%; height:100%; display:block; pointer-events:none; }
+#capa .ficha { position:absolute; transition:transform .1s, background-color .15s; }
+.ficha.bloq { background:var(--tile-dim); color:var(--tile-dim); }
+.ficha.bloq svg { opacity:.8; }
+.ficha.sel { background:var(--tile-sel); color:var(--tile-sel); transform:translateY(-3px); box-shadow:3px 7px 0 var(--tile-side), 3px 7px 0 1.6px var(--edge); outline:2.6px solid var(--ai); outline-offset:1px; z-index:2; }
+.ficha.entra { animation:entra .28s ease-out backwards; animation-delay:var(--d, 0ms); }
+.ficha.sale { animation:sale .24s ease-in forwards; pointer-events:none; }
+.ficha.vuelve { animation:vuelve .22s ease-out; }
+.ficha.gira { animation:gira .34s ease-in-out; }
+.ficha.nop { animation:nop .22s; }
+.ficha.pista { animation:pista .55s 3; outline:3px solid transparent; outline-offset:1px; z-index:2; }
+@keyframes entra { from { opacity:0; translate:0 -20px; } }
+@keyframes sale { to { opacity:0; scale:1.18; } }
+@keyframes vuelve { from { opacity:0; scale:.8; } }
+@keyframes gira { 50% { scale:0 1; } }
+@keyframes nop { 25% { translate:-3px 0; } 75% { translate:3px 0; } }
+@keyframes pista { 50% { outline-color:var(--midori); translate:0 -2px; } }
+.flota { position:absolute; pointer-events:none; font-weight:700; font-size:17px; color:var(--ai); white-space:nowrap; translate:-50% 0; animation:flota .9s ease-out forwards; text-shadow:0 0 3px var(--paper), 0 0 6px var(--paper); z-index:5; }
+.flota.grande { font-size:24px; color:var(--midori); }
+@keyframes flota { from { opacity:0; translate:-50% 6px; } 15% { opacity:1; } to { opacity:0; translate:-50% -34px; } }
+.aviso { position:absolute; left:50%; top:4px; translate:-50% 0; background:var(--card); border:2px solid var(--edge); border-radius:12px; padding:7px 14px; font-size:14px; font-weight:500; box-shadow:0 3px 0 var(--edge); z-index:10; white-space:nowrap; max-width:calc(100% - 16px); overflow:hidden; text-overflow:ellipsis; }
+
+/* Hojas */
+.velo { position:fixed; inset:0; background:var(--scrim); display:flex; align-items:flex-end; justify-content:center; z-index:20; }
+.hoja { background:var(--paper); border:var(--bw) solid var(--edge); border-bottom:0; border-radius:26px 26px 0 0; width:100%; max-width:560px; max-height:88%; overflow-y:auto; padding-block:20px calc(22px + env(safe-area-inset-bottom, 0px)); padding-left:max(18px, env(safe-area-inset-left, 0px)); padding-right:max(18px, env(safe-area-inset-right, 0px)); display:grid; gap:16px; animation:sube .22s ease-out; }
+@keyframes sube { from { translate:0 40px; opacity:.4; } }
+.hoja h2 { margin:0; font-size:22px; font-weight:700; }
+.ancho { width:100%; padding:14px; font-weight:700; font-size:17px; }
+.stats { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; }
+.stats > div { background:var(--card); border:2px solid var(--line); border-radius:14px; padding:10px 12px; min-width:0; }
+.stats b { font-size:21px; }
+.badge { display:inline-block; margin-top:4px; font-size:12px; font-weight:700; background:var(--ok-soft); color:var(--midori); border-radius:8px; padding:1px 7px; }
+.campo { display:grid; gap:8px; }
+.campo label, .campo .tit { font-weight:700; font-size:15px; }
+.campo input[type=range] { width:100%; accent-color:var(--ai); }
+.seg { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.seg button { padding:10px 4px 9px; border-radius:12px; font-weight:700; font-size:14.5px; line-height:1.2; }
+.seg button small { display:block; font-weight:500; font-size:12px; color:var(--ink-2); }
+.seg button[aria-pressed="true"] { background:var(--ai); color:var(--on-ai); }
+.seg button[aria-pressed="true"] small { color:var(--on-ai); opacity:.85; }
+.sonando { font-size:13.5px; color:var(--ink-2); }
+.interruptor { display:flex; align-items:center; justify-content:space-between; gap:12px; font-weight:700; font-size:15px; }
+.interruptor input { width:46px; height:26px; accent-color:var(--ai); }
+.muestra-grupo { display:grid; gap:8px; }
+.muestra-grupo .tit { font-weight:700; font-size:14px; color:var(--ink-2); }
+.muestra-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(46px, 1fr)); gap:12px 8px; }
+.muestra-grid .ficha { width:42px; height:56px; }
+.reglas { margin:0; padding-left:20px; display:grid; gap:8px; line-height:1.55; font-size:15.5px; max-width:60ch; }
+.mini { width:30px; height:40px; border-width:1.4px; border-radius:5px; box-shadow:2px 3px 0 var(--tile-side), 2px 3px 0 1.4px var(--edge); }
+@media (prefers-reduced-motion: reduce) {
+  .ficha.entra, .ficha.sale, .ficha.vuelve, .ficha.gira, .ficha.nop, .ficha.pista, .hoja, .flota { animation-duration:1ms !important; animation-iteration-count:1 !important; }
+  .ficha.sale { opacity:0; }
+}
+</style>
+</head>
+<body>
+<div id="inicio" class="pantalla">
+  <header class="banda arriba"><div class="banda-in">
+    <div class="marca">
+      <svg viewBox="0 0 52 52" aria-hidden="true">
+        <rect x="16" y="6" width="26" height="34" rx="5" transform="rotate(10 29 23)" style="fill:var(--tile);stroke:var(--edge)" stroke-width="2"/>
+        <g transform="rotate(10 29 23)"><text x="29" y="31" text-anchor="middle" font-size="19" font-weight="700" fill="#B8392B" font-family="'Shippori Mincho','Hiragino Mincho ProN',serif">中</text></g>
+        <rect x="6" y="13" width="26" height="34" rx="5" transform="rotate(-8 19 30)" style="fill:var(--tile);stroke:var(--edge)" stroke-width="2"/>
+        <g transform="rotate(-8 19 30)"><circle cx="19" cy="30" r="8" fill="#2F6A52" stroke="#1F2A44" stroke-width="1.6"/><circle cx="19" cy="30" r="4" style="fill:var(--tile)" stroke="#1F2A44" stroke-width="1.2"/><circle cx="19" cy="30" r="1.5" fill="#B8392B"/></g>
+      </svg>
+      <span class="marca-jp" aria-hidden="true">麻<br>雀</span>
+      <span class="marca-txt">Mahjong</span>
+    </div>
+    <button class="kb ico" id="b-ajustes" type="button" aria-label="Ajustes">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><g style="fill:var(--oro);stroke:var(--edge)" stroke-width="1.6" stroke-linejoin="round"><g id="dientes"><rect x="9.8" y="1.4" width="4.4" height="5" rx="1"/><rect x="9.8" y="1.4" width="4.4" height="5" rx="1" transform="rotate(45 12 12)"/><rect x="9.8" y="1.4" width="4.4" height="5" rx="1" transform="rotate(90 12 12)"/><rect x="9.8" y="1.4" width="4.4" height="5" rx="1" transform="rotate(135 12 12)"/><rect x="9.8" y="1.4" width="4.4" height="5" rx="1" transform="rotate(180 12 12)"/><rect x="9.8" y="1.4" width="4.4" height="5" rx="1" transform="rotate(225 12 12)"/><rect x="9.8" y="1.4" width="4.4" height="5" rx="1" transform="rotate(270 12 12)"/><rect x="9.8" y="1.4" width="4.4" height="5" rx="1" transform="rotate(315 12 12)"/></g><circle cx="12" cy="12" r="7.2"/></g><circle cx="12" cy="12" r="2.8" style="fill:var(--card);stroke:var(--edge)" stroke-width="1.6"/></svg>
+    </button>
+  </div></header>
+
+  <main class="inicio-centro gutter">
+    <section class="tarjeta zen" aria-labelledby="zen-tit">
+      <div class="eyebrow">Modo zen</div>
+      <h1 id="zen-tit">Sin límite de jugadas</h1>
+      <div class="muestra-fila" aria-hidden="true" id="muestra-fila"></div>
+      <div class="records">
+        <div><span class="lbl">Mejor puntaje</span><b id="r-pts">0</b></div>
+        <div><span class="lbl">Mayor tiempo</span><b id="r-tie">0:00</b></div>
+      </div>
+    </section>
+    <button class="kb ai jugar" id="b-jugar" type="button"><span class="lbl">Modo zen</span><span class="grande">Jugar</span></button>
+  </main>
+
+  <footer class="banda abajo"><div class="banda-in fila2" style="display:grid">
+    <button class="kb btn-ico" id="b-fichas" type="button"><span class="duo" aria-hidden="true" id="ico-fichas"></span>Las fichas</button>
+    <button class="kb btn-ico" id="b-reglas" type="button"><span class="duo" aria-hidden="true" id="ico-reglas"></span>Cómo se juega</button>
+  </div></footer>
+</div>
+
+<div id="juego" class="pantalla" hidden>
+  <header class="banda arriba"><div class="banda-in">
+    <button class="kb ico" id="b-pausa" type="button" aria-label="Pausa">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" style="stroke:var(--ink)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 8 12l7 7"/></svg>
+    </button>
+    <div class="hud-centro">
+      <div class="hud-sub" id="h-sub">Tablero 1</div>
+      <div class="hud-pts"><span><span id="h-pts">0</span> puntos</span><span class="cadena" id="h-cad" hidden>×2</span></div>
+    </div>
+    <div class="hud-tiempo"><span class="hud-sub">Tiempo</span><b id="h-tie">0:00</b></div>
+  </div></header>
+  <div id="tablero"><div id="capa"></div></div>
+  <div class="acciones gutter">
+    <button class="kb accion" id="b-deshacer" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" style="stroke:var(--ink)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>Deshacer</button>
+    <button class="kb accion" id="b-pista" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" style="stroke:var(--midori)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>Pista</button>
+    <button class="kb accion" id="b-barajar" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" style="stroke:var(--ink)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3c4 0 6 10 10 10h4"/><path d="M17 14l3 3-3 3"/><path d="M3 17h3c1.6 0 2.8-1.6 3.9-3.6"/><path d="M14 9.6C15 8 16 7 17.5 7H20"/><path d="M17 4l3 3-3 3"/></svg>Barajar</button>
+  </div>
+</div>
+
+<div class="velo" id="s-pausa" hidden><div class="hoja" role="dialog" aria-modal="true" aria-labelledby="pausa-tit">
+  <h2 id="pausa-tit">Pausa</h2>
+  <div class="stats">
+    <div><span class="lbl">Puntos</span><b id="p-pts">0</b></div>
+    <div><span class="lbl">Tiempo</span><b id="p-tie">0:00</b></div>
+    <div><span class="lbl">Tableros</span><b id="p-tab">0</b></div>
+  </div>
+  <button class="kb ai ancho" id="b-seguir" type="button">Seguir jugando</button>
+  <div class="fila2">
+    <button class="kb ancho" id="b-p-ajustes" type="button">Ajustes</button>
+    <button class="kb ancho" id="b-terminar" type="button">Terminar</button>
+  </div>
+</div></div>
+
+<div class="velo" id="s-resumen" hidden><div class="hoja" role="dialog" aria-modal="true" aria-labelledby="res-tit">
+  <h2 id="res-tit">Partida terminada</h2>
+  <div class="stats">
+    <div><span class="lbl">Puntos</span><b id="z-pts">0</b><span class="badge" id="z-rp" hidden>Récord</span></div>
+    <div><span class="lbl">Tiempo</span><b id="z-tie">0:00</b><span class="badge" id="z-rt" hidden>Récord</span></div>
+    <div><span class="lbl">Tableros</span><b id="z-tab">0</b></div>
+  </div>
+  <button class="kb ai ancho" id="b-otra" type="button">Jugar otra vez</button>
+  <button class="kb ancho" id="b-inicio" type="button">Volver al inicio</button>
+</div></div>
+
+<div class="velo" id="s-ajustes" hidden><div class="hoja" role="dialog" aria-modal="true" aria-labelledby="aj-tit">
+  <h2 id="aj-tit">Ajustes</h2>
+  <div class="campo"><label for="aj-sfx">Efectos de sonido</label><input type="range" id="aj-sfx" min="0" max="1" step="0.05"></div>
+  <div class="campo"><label for="aj-mus">Música</label><input type="range" id="aj-mus" min="0" max="1" step="0.05"></div>
+  <div class="campo">
+    <span class="tit" id="aj-can-tit">Canción del juego</span>
+    <div class="seg" role="group" aria-labelledby="aj-can-tit">
+      <button class="kb" type="button" data-song="zen">Siesta<small>del zen</small></button>
+      <button class="kb" type="button" data-song="map">Taller<small>del mapa</small></button>
+      <button class="kb" type="button" data-song="game">Placa<small>de los niveles</small></button>
+    </div>
+    <div class="sonando" id="aj-sonando">Tocá una canción para escucharla.</div>
+    <button class="kb ancho" id="aj-orig" type="button" style="font-size:15px">Escuchar la original de Fogonazo</button>
+  </div>
+  <label class="interruptor" for="aj-libres">Oscurecer las fichas bloqueadas<input type="checkbox" id="aj-libres"></label>
+  <button class="kb ai ancho" id="aj-listo" type="button">Listo</button>
+</div></div>
+
+<div class="velo" id="s-fichas" hidden><div class="hoja" role="dialog" aria-modal="true" aria-labelledby="fi-tit">
+  <h2 id="fi-tit">Las fichas</h2>
+  <div id="muestrario" style="display:grid;gap:18px"></div>
+  <button class="kb ai ancho" type="button" data-cerrar>Listo</button>
+</div></div>
+
+<div class="velo" id="s-reglas" hidden><div class="hoja" role="dialog" aria-modal="true" aria-labelledby="re-tit">
+  <h2 id="re-tit">Cómo se juega</h2>
+  <ul class="reglas">
+    <li>Juntá pares de fichas iguales que estén libres.</li>
+    <li>Una ficha está libre si no tiene otra encima y le queda despejado al menos un costado, el izquierdo o el derecho.</li>
+    <li>Las cuatro flores se juntan entre sí, igual que las cuatro estaciones.</li>
+    <li>Cada par suma 10 puntos. Si juntás el siguiente en menos de 5 segundos, la cadena multiplica: ×2, ×3, hasta ×5.</li>
+    <li>Limpiar un tablero suma 100 puntos y aparece otro. Si no quedan pares libres, las fichas se barajan solas.</li>
+    <li>Deshacer, Pista y Barajar no tienen límite, pero cortan la cadena.</li>
+    <li>La partida termina cuando vos quieras. Se guardan el mejor puntaje y el mayor tiempo.</li>
+  </ul>
+  <button class="kb ai ancho" type="button" data-cerrar>Listo</button>
+</div></div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('mjzen.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('mjzen.' + k, JSON.stringify(v)); } catch (e) {} },
+};
+const AJ = Object.assign({ sfx: 0.7, music: 0.35, song: 'zen', libres: true }, store.get('ajustes', {}));
+const REC = Object.assign({ puntos: 0, tiempo: 0 }, store.get('records', {}));
+const guardarAj = () => store.set('ajustes', AJ);
+
+/* ============================================================ SONIDO
+   Mismo motor que Fogonazo (WebAudio sintetizado, temas de 4 compases).
+   Las canciones son primas: mismo ritmo, mismo tempo y mismo contorno de melodía,
+   llevadas a escalas pentatónicas (Siesta y Taller) y a la escala in japonesa (Placa),
+   tocadas con koto, flauta, bloque de madera y campana. Las originales de 8 bits
+   quedan incluidas para comparar. */
+const Sound = (() => {
+  let ctx = null, master, sfxBus, musicBus, noiseBuf, revIn, pulseWaves;
+  const set = { sfx: AJ.sfx, music: AJ.music };
+  const last = {};
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+  const NOTE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  const N = s => { const m = /^([A-G])([#b]?)(-?\d)$/.exec(s); return 12 * (+m[3] + 1) + NOTE[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0); };
+
+  function ensure() {
+    if (ctx) { if (ctx.state === 'suspended') ctx.resume().catch(() => {}); return true; }
+    try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return false; }
+    master = ctx.createGain(); master.gain.value = 1.035;
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+    sfxBus = ctx.createGain(); musicBus = ctx.createGain();
+    sfxBus.connect(master); musicBus.connect(master); master.connect(comp); comp.connect(ctx.destination);
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    // sala: reverberación corta para las versiones orientales
+    const len = Math.floor(ctx.sampleRate * 1.5), ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const c = ir.getChannelData(ch); for (let i = 0; i < len; i++) c[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.6); }
+    const conv = ctx.createConvolver(); conv.buffer = ir;
+    revIn = ctx.createGain(); const revOut = ctx.createGain(); revOut.gain.value = 0.8;
+    revIn.connect(conv); conv.connect(revOut); revOut.connect(musicBus);
+    pulseWaves = {};
+    for (const duty of [0.125, 0.25, 0.5]) {
+      const n = 48, re = new Float32Array(n), im = new Float32Array(n);
+      for (let k = 1; k < n; k++) { re[k] = Math.sin(2 * Math.PI * k * duty) / (Math.PI * k); im[k] = (1 - Math.cos(2 * Math.PI * k * duty)) / (Math.PI * k); }
+      pulseWaves[duty] = ctx.createPeriodicWave(re, im);
+    }
+    apply();
+    return true;
+  }
+  function apply() {
+    if (!ctx) return;
+    sfxBus.gain.setTargetAtTime(set.sfx, ctx.currentTime, 0.02);
+    musicBus.gain.setTargetAtTime(set.music * 0.6 * (Music.ducked ? 0.3 : 1), ctx.currentTime, 0.05);
+    if (set.music > 0) Music.resume(); else Music.halt();
+  }
+  function configure(s) { Object.assign(set, s); apply(); }
+  function throttle(name, ms) { const now = performance.now(); if (last[name] && now - last[name] < ms) return false; last[name] = now; return true; }
+
+  // ---------------------------------------------------------- voces básicas (de Fogonazo)
+  function out(dest, pan) { if (!pan || !ctx.createStereoPanner) return dest; const p = ctx.createStereoPanner(); p.pan.value = pan; p.connect(dest); return p; }
+  function env(g, t, a, peak, dec, sus, end, rel) {
+    const tA = Math.max(t + 0.001, Math.min(t + a, end));
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, tA);
+    let lvl = peak, tD = tA;
+    if (dec && end > tA) { tD = Math.min(tA + dec, end); lvl = Math.max(0.0001, peak * Math.pow(sus, (tD - tA) / dec)); g.gain.exponentialRampToValueAtTime(lvl, tD); }
+    if (end > tD) g.gain.setValueAtTime(lvl, end);
+    g.gain.exponentialRampToValueAtTime(0.0001, Math.max(end, tD) + rel);
+  }
+  function tone(o) {
+    const t = o.at !== undefined ? o.at : ctx.currentTime + (o.t || 0);
+    const osc = ctx.createOscillator(), g = ctx.createGain();
+    if (o.duty) osc.setPeriodicWave(pulseWaves[o.duty]); else osc.type = o.type || 'square';
+    osc.frequency.setValueAtTime(o.f, t);
+    if (o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2, t + (o.slide || o.dur));
+    const v = o.vol || 0.15;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + (o.attack || 0.004)); g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur);
+    osc.connect(g); g.connect(out(o.dest || sfxBus, o.pan));
+    osc.start(t); osc.stop(t + o.dur + 0.06);
+  }
+  function noise(o) {
+    const t = o.at !== undefined ? o.at : ctx.currentTime + (o.t || 0);
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+    const f = ctx.createBiquadFilter(); f.type = o.filter || 'lowpass';
+    f.frequency.setValueAtTime(o.freq || 1000, t);
+    if (o.freq2) f.frequency.exponentialRampToValueAtTime(o.freq2, t + o.dur);
+    f.Q.value = o.q || 0.8;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(o.vol || 0.15, t + (o.attack || 0.003)); g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur);
+    src.connect(f); f.connect(g); g.connect(out(o.dest || sfxBus, o.pan));
+    src.start(t, Math.random() * 0.5); src.stop(t + o.dur + 0.03);
+  }
+  function fm(o) {
+    const t = o.at !== undefined ? o.at : ctx.currentTime + (o.t || 0);
+    const f = o.f, ratio = o.ratio || 1, fmf = f * ratio;
+    const car = ctx.createOscillator(), mod = ctx.createOscillator(), mg = ctx.createGain(), g = ctx.createGain();
+    car.type = o.car || 'sine'; mod.type = o.mod || 'sine';
+    car.frequency.setValueAtTime(f, t);
+    if (o.f2) car.frequency.exponentialRampToValueAtTime(o.f2, t + (o.slide || o.dur));
+    mod.frequency.setValueAtTime(fmf, t);
+    if (o.f2) mod.frequency.exponentialRampToValueAtTime(o.f2 * ratio, t + (o.slide || o.dur));
+    const i0 = (o.index || 2) * fmf, i1 = (o.indexEnd !== undefined ? o.indexEnd : (o.index || 2) * 0.3) * fmf;
+    mg.gain.setValueAtTime(i0, t);
+    mg.gain.exponentialRampToValueAtTime(Math.max(0.01, i1), t + (o.indexTime || 0.15));
+    mod.connect(mg); mg.connect(car.frequency);
+    const rel = o.rel || 0.08;
+    env(g, t, o.attack || 0.004, o.vol || 0.12, o.dec || 0, o.sus === undefined ? 1 : o.sus, t + o.dur, rel);
+    car.connect(g); g.connect(out(o.dest || sfxBus, o.pan));
+    if (o.send) g.connect(o.send);
+    car.start(t); mod.start(t); car.stop(t + o.dur + rel + 0.05); mod.stop(t + o.dur + rel + 0.05);
+  }
+
+  // ---------------------------------------------------------- voces orientales
+  // koto: cuerda pulsada FM con una leve caída de afinación al atacar
+  function koto(f, t, vol, dest, pan, send, len) {
+    const L = len || 1.1;
+    fm({ at: t, f: f * 1.008, f2: f, slide: 0.05, ratio: 1, index: 2.6, indexEnd: 0.06, indexTime: 0.16, dur: L, vol, attack: 0.002, dec: L, sus: 0.03, rel: 0.08, pan, dest, send });
+    fm({ at: t, f: f * 3, ratio: 1, index: 0.7, indexEnd: 0.05, indexTime: 0.05, dur: 0.22, vol: vol * 0.3, attack: 0.001, dec: 0.22, sus: 0.02, rel: 0.03, pan, dest });
+    noise({ at: t, dur: 0.016, vol: vol * 0.45, filter: 'bandpass', freq: 3800, q: 1.2, dest, pan });
+  }
+  // flauta tipo dizi: ataque limpio, una nota de adorno desde arriba y vibrato liviano
+  function flauta(f, t, d, vol, dest, pan, send) {
+    const o1 = ctx.createOscillator(), o2 = ctx.createOscillator(), o3 = ctx.createOscillator();
+    const g = ctx.createGain(), g2 = ctx.createGain(), g3 = ctx.createGain(), o = out(dest, pan);
+    o1.type = 'sine'; o2.type = 'triangle'; o3.type = 'sine'; g2.gain.value = 0.45; g3.gain.value = 0.12;
+    const adorno = d > 0.3;
+    [[o1, 1], [o2, 1], [o3, 2]].forEach(([osc, m]) => {
+      if (adorno) { osc.frequency.setValueAtTime(f * m * 1.1225, t); osc.frequency.setValueAtTime(f * m, t + 0.05); }
+      else osc.frequency.setValueAtTime(f * m, t);
+    });
+    o1.connect(g); o2.connect(g2); g2.connect(g); o3.connect(g3); g3.connect(g);
+    if (d > 0.35) {
+      const l = ctx.createOscillator(), lg = ctx.createGain(); l.frequency.value = 5.8;
+      lg.gain.setValueAtTime(0, t); lg.gain.setValueAtTime(0, t + 0.18); lg.gain.linearRampToValueAtTime(f * 0.006, t + Math.min(d, 0.5));
+      l.connect(lg); lg.connect(o1.frequency); lg.connect(o2.frequency); l.start(t); l.stop(t + d + 0.3);
+    }
+    env(g, t, 0.025, vol, 0.3, 0.8, t + d, 0.12);
+    g.connect(o); if (send) g.connect(send);
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = Math.min(f * 3, 8000); bp.Q.value = 2;
+    const ng = ctx.createGain(), hold = Math.max(d, 0.12);
+    ng.gain.setValueAtTime(0.0001, t); ng.gain.exponentialRampToValueAtTime(vol * 0.3, t + 0.015);
+    ng.gain.exponentialRampToValueAtTime(vol * 0.05, t + 0.1); ng.gain.setValueAtTime(vol * 0.05, t + hold); ng.gain.exponentialRampToValueAtTime(0.0001, t + hold + 0.1);
+    src.connect(bp); bp.connect(ng); ng.connect(o);
+    src.start(t, Math.random() * 0.4); src.stop(t + d + 0.3);
+    for (const x of [o1, o2, o3]) { x.start(t); x.stop(t + d + 0.25); }
+  }
+  // pon: tamborcito de mano, para darle rebote
+  function pon(t, f, vol, dest) {
+    tone({ at: t, f, f2: f * 0.7, slide: 0.12, dur: 0.22, vol, type: 'sine', dest });
+    noise({ at: t, dur: 0.02, vol: vol * 0.5, filter: 'lowpass', freq: 1500, dest });
+  }
+  function madera(t, f, vol, dest, pan) {
+    tone({ at: t, f, f2: f * 0.88, slide: 0.05, dur: 0.07, vol, type: 'sine', dest, pan });
+    noise({ at: t, dur: 0.012, vol: vol * 0.7, filter: 'bandpass', freq: f * 2.3, q: 3, dest, pan });
+  }
+  function rin(t, f, vol, dest) {
+    fm({ at: t, f, ratio: 2.76, index: 0.9, indexEnd: 0.05, indexTime: 1.4, dur: 2.4, vol, attack: 0.003, dec: 2.4, sus: 0.01, rel: 0.3, dest });
+    fm({ at: t, f: f * 2.02, ratio: 1, index: 0.2, indexEnd: 0.01, dur: 1.2, vol: vol * 0.35, attack: 0.003, dec: 1.2, sus: 0.01, rel: 0.2, dest });
+  }
+
+  // ---------------------------------------------------------- efectos (primos de los de Fogonazo)
+  const SEMI = [0, 2, 4, 7, 9, 12, 14, 16, 19];
+  const step = c => Math.pow(2, SEMI[Math.min(SEMI.length - 1, (c || 1) - 1)] / 12);
+  const PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];
+  const FX = {
+    toc() { const t = ctx.currentTime; noise({ at: t, dur: 0.028, vol: 0.12, filter: 'bandpass', freq: 2700, q: 1.8 }); fm({ at: t, f: 2100, ratio: 1.41, index: 1.5, indexEnd: 0.2, indexTime: 0.03, dur: 0.035, vol: 0.045 }); },
+    suelta() { noise({ dur: 0.022, vol: 0.06, filter: 'bandpass', freq: 1900, q: 1.8 }); },
+    boton() { madera(ctx.currentTime, 1250, 0.05); },
+    // el «Bip» de Fogonazo (dos notas a una quinta, que suben con la cadena), tocado por un koto
+    par(c) {
+      const t = ctx.currentTime, k = step(c);
+      noise({ at: t, dur: 0.02, vol: 0.1, filter: 'bandpass', freq: 3000, q: 2 });
+      noise({ at: t + 0.025, dur: 0.02, vol: 0.08, filter: 'bandpass', freq: 2500, q: 2 });
+      koto(659.25 * k, t, 0.085, null, -0.1, null, 0.7);
+      koto(987.77 * k, t + 0.05, 0.075, null, 0.1, null, 0.8);
+    },
+    mal() { const t = ctx.currentTime; fm({ at: t, f: 190, ratio: 1.41, index: 3, indexEnd: 1, indexTime: 0.08, dur: 0.09, vol: 0.09, car: 'triangle' }); fm({ at: t + 0.1, f: 150, ratio: 1.41, index: 3, indexEnd: 1, indexTime: 0.08, dur: 0.12, vol: 0.09, car: 'triangle' }); },
+    baraja() {
+      const t = ctx.currentTime;
+      for (let i = 0; i < 10; i++) noise({ at: t + Math.random() * 0.45, dur: 0.022, vol: 0.06 + Math.random() * 0.05, filter: 'bandpass', freq: 1800 + Math.random() * 1600, q: 2, pan: Math.random() * 1.2 - 0.6 });
+      PENTA.forEach((f, i) => koto(f, t + 0.08 + i * 0.045, 0.04, null, (i - 2.5) * 0.12, null, 0.6));
+    },
+    reparte() { const t = ctx.currentTime; for (let i = 0; i < 16; i++) noise({ at: t + i * 0.045 + Math.random() * 0.02, dur: 0.02, vol: 0.05 + Math.random() * 0.04, filter: 'bandpass', freq: 2000 + Math.random() * 1400, q: 2, pan: Math.random() * 1.2 - 0.6 }); },
+    pista() { const t = ctx.currentTime; rin(t, 1568, 0.035); },
+    deshacer() { const t = ctx.currentTime; koto(987.77, t, 0.06, null, 0, null, 0.5); koto(659.25, t + 0.06, 0.055, null, 0, null, 0.6); },
+    limpio() {
+      const t = ctx.currentTime;
+      PENTA.forEach((f, i) => koto(f, t + i * 0.07, 0.07, null, (i - 2.5) * 0.1, null, 0.9));
+      flauta(1046.5, t + 0.45, 0.9, 0.05, sfxBus, 0, null);
+      rin(t + 0.42, 1318.5, 0.045);
+      fm({ at: t + 0.42, f: 98, ratio: 1.4, index: 2, indexEnd: 0.2, indexTime: 0.6, dur: 1.4, vol: 0.06, dec: 1.4, sus: 0.05, rel: 0.2 });
+    },
+    fin() { const t = ctx.currentTime; [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => koto(f, t + i * 0.11, 0.06, null, 0, null, 1)); rin(t + 0.5, 2093, 0.03); },
+    record() { const t = ctx.currentTime; [1046.5, 1318.5, 1568].forEach((f, i) => koto(f, t + i * 0.09, 0.065, null, 0, null, 0.9)); rin(t + 0.3, 2093, 0.035); },
+  };
+  function play(name, arg, gap) {
+    if (!ctx || set.sfx <= 0) return;
+    if (!throttle(name, gap === undefined ? 30 : gap)) return;
+    try { FX[name](arg); } catch (e) {}
+  }
+
+  // ---------------------------------------------------------- música
+  const SONGS = {
+    // Originales de Fogonazo, sin cambios (para comparar)
+    map: { name: 'Taller', bpm: 92,
+      chords: [['C4', 'E4', 'G4'], ['G3', 'B3', 'D4'], ['A3', 'C4', 'E4'], ['F3', 'A3', 'C4']], roots: ['C3', 'G2', 'A2', 'F2'],
+      bass: [0, 6, 8, 14], bassLen: 1.8, octave: [], arpEvery: 2, hats: [2, 6, 10, 14], hatAccent: [],
+      lead: [[0, 'E5', 4], [4, 'G5', 2], [6, 'E5', 2], [8, 'D5', 4], [12, 'C5', 4], [16, 'D5', 2], [18, 'B4', 2], [20, 'D5', 4], [24, 'G5', 6],
+        [32, 'C5', 2], [34, 'E5', 2], [36, 'A5', 4], [40, 'G5', 2], [42, 'E5', 2], [44, 'C5', 4], [48, 'A4', 2], [50, 'C5', 2], [52, 'F5', 4], [56, 'E5', 3], [60, 'D5', 4]] },
+    game: { name: 'Placa', bpm: 104,
+      chords: [['A3', 'C4', 'E4'], ['F3', 'A3', 'C4'], ['C4', 'E4', 'G4'], ['G3', 'B3', 'D4']], roots: ['A2', 'F2', 'C3', 'G2'],
+      bass: [0, 6, 8, 14], bassLen: 1.8, octave: [], arpEvery: 1, hats: [0, 2, 4, 6, 8, 10, 12, 14], hatAccent: [2, 6, 10, 14],
+      lead: [[0, 'E5', 2], [4, 'G5', 2], [8, 'A5', 3], [14, 'G5', 2], [16, 'F5', 2], [20, 'E5', 2], [24, 'C5', 4],
+        [32, 'E5', 2], [36, 'G5', 2], [40, 'C6', 3], [46, 'B5', 2], [48, 'A5', 2], [52, 'G5', 2], [56, 'D5', 4]] },
+    zen: { name: 'Siesta', bpm: 104, soft: true,
+      chords: [['F3', 'A3', 'C4', 'E4'], ['E3', 'G3', 'B3', 'D4'], ['D3', 'F3', 'A3', 'C4'], ['C3', 'E3', 'G3', 'D4']], roots: ['F2', 'E2', 'D2', 'C2'],
+      bass: [0, 10], bassLen: 5, octave: [], arpEvery: 2, hats: [4, 12], hatAccent: [],
+      lead: [[0, 'A5', 6], [8, 'G5', 2], [10, 'E5', 4], [16, 'D5', 6], [24, 'E5', 2], [26, 'G5', 4],
+        [32, 'F5', 6], [40, 'E5', 2], [42, 'C5', 4], [48, 'D5', 4], [52, 'E5', 2], [54, 'G5', 2], [56, 'E5', 6]] },
+
+    // Primas orientales: mismo tempo, ritmo, acordes y bajo que el original de Fogonazo.
+    // La melodía pasa a do pentatónica mayor (sin fa ni si) cambiando solo esas notas por la vecina.
+    // El color oriental lo dan el koto, la flauta, la madera, el tamborcito y el glissando de cierre.
+    zenO: { name: 'Siesta', bpm: 104, jp: true, leadInst: 'flauta', arpVol: 0.024, hatVol: 0.02, ponVol: 0.045, pon: [0, 8], rin: 2093,
+      chords: [['F3', 'A3', 'C4', 'E4'], ['E3', 'G3', 'B3', 'D4'], ['D3', 'F3', 'A3', 'C4'], ['C3', 'E3', 'G3', 'D4']], roots: ['F2', 'E2', 'D2', 'C2'],
+      bass: [0, 10], bassLen: 5, octave: [], arpEvery: 2, hats: [4, 12], hatAccent: [],
+      lead: [[0, 'A5', 6], [8, 'G5', 2], [10, 'E5', 4], [16, 'D5', 6], [24, 'E5', 2], [26, 'G5', 4],
+        [32, 'A5', 6], [40, 'E5', 2], [42, 'C5', 4], [48, 'D5', 4], [52, 'E5', 2], [54, 'G5', 2], [56, 'E5', 6]] },
+    mapO: { name: 'Taller', bpm: 92, jp: true, leadInst: 'koto', arpVol: 0.026, hatVol: 0.022, ponVol: 0.05, pon: [0, 8], rin: 2093,
+      chords: [['C4', 'E4', 'G4'], ['G3', 'B3', 'D4'], ['A3', 'C4', 'E4'], ['F3', 'A3', 'C4']], roots: ['C3', 'G2', 'A2', 'F2'],
+      bass: [0, 6, 8, 14], bassLen: 1.8, octave: [], arpEvery: 2, hats: [2, 6, 10, 14], hatAccent: [],
+      lead: [[0, 'E5', 4], [4, 'G5', 2], [6, 'E5', 2], [8, 'D5', 4], [12, 'C5', 4], [16, 'D5', 2], [18, 'A4', 2], [20, 'D5', 4], [24, 'G5', 6],
+        [32, 'C5', 2], [34, 'E5', 2], [36, 'A5', 4], [40, 'G5', 2], [42, 'E5', 2], [44, 'C5', 4], [48, 'A4', 2], [50, 'C5', 2], [52, 'G5', 4], [56, 'E5', 3], [60, 'D5', 4]] },
+    gameO: { name: 'Placa', bpm: 104, jp: true, leadInst: 'flauta', arpVol: 0.02, hatVol: 0.016, ponVol: 0.05, pon: [0, 8], rin: 2093,
+      chords: [['A3', 'C4', 'E4'], ['F3', 'A3', 'C4'], ['C4', 'E4', 'G4'], ['G3', 'B3', 'D4']], roots: ['A2', 'F2', 'C3', 'G2'],
+      bass: [0, 6, 8, 14], bassLen: 1.8, octave: [], arpEvery: 1, hats: [0, 2, 4, 6, 8, 10, 12, 14], hatAccent: [2, 6, 10, 14],
+      lead: [[0, 'E5', 2], [4, 'G5', 2], [8, 'A5', 3], [14, 'G5', 2], [16, 'G5', 2], [20, 'E5', 2], [24, 'C5', 4],
+        [32, 'E5', 2], [36, 'G5', 2], [40, 'C6', 3], [46, 'A5', 2], [48, 'A5', 2], [52, 'G5', 2], [56, 'D5', 4]] },
+  };
+  for (const s of Object.values(SONGS)) {
+    s.chordsM = s.chords.map(c => c.map(N)); s.rootsM = s.roots.map(N);
+    s.leadByStep = new Map(s.lead.map(([st, n, len]) => [st, [N(n), len]]));
+  }
+  function pluck(f, t, dur, vol, type, dest, duty) {
+    const osc = ctx.createOscillator(), g = ctx.createGain();
+    if (duty) osc.setPeriodicWave(pulseWaves[duty]); else osc.type = type;
+    osc.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(g); g.connect(dest); osc.start(t); osc.stop(t + dur + 0.02);
+  }
+  function hiss(t, vol, dest, dur, freq) {
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf;
+    const f = ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = freq || 7000;
+    const g = ctx.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + (dur || 0.04));
+    src.connect(f); f.connect(g); g.connect(dest); src.start(t, Math.random() * 0.5); src.stop(t + (dur || 0.04) + 0.02);
+  }
+  const ARR = {
+    '8': {
+      bass(f, t, d, dest) { pluck(f, t, d, 0.12, 'square', dest); },
+      arp(f, t, d, dest) { pluck(f, t, d, 0.035, 'triangle', dest); },
+      hat(t, acc, dest) { hiss(t, acc ? 0.05 : 0.025, dest); },
+      lead(f, t, d, dest) { pluck(f, t, d, 0.045, 'square', dest); },
+    },
+    '8s': {
+      bass(f, t, d, dest) { pluck(f, t, Math.min(d, 1.2), 0.13, 'triangle', dest); },
+      arp(f, t, d, dest) { pluck(f, t, d * 1.6, 0.022, null, dest, 0.125); },
+      hat(t, acc, dest) { hiss(t, 0.014, dest, 0.03, 9000); },
+      lead(f, t, d, dest) { pluck(f, t, d, 0.04, null, dest, 0.25); },
+    },
+    jp: {
+      bass(f, t, d, dest) { const L = Math.min(d, 1.0); fm({ at: t, f, ratio: 1, index: 1.5, indexEnd: 0.25, indexTime: 0.12, dur: L, vol: 0.08, dec: L, sus: 0.12, rel: 0.06, dest }); },
+      arp(f, t, d, dest, k, s) { koto(f, t, s.arpVol, dest, k % 4 < 2 ? -0.3 : 0.3, null, Math.max(0.5, d * 1.8)); },
+      hat(t, acc, dest, s) { madera(t, acc ? 1320 : 1000, acc ? s.hatVol * 1.5 : s.hatVol, dest, 0.22); },
+      drum(t, acc, dest, s) { pon(t, acc ? 330 : 262, s.ponVol * (acc ? 1 : 0.75), dest); },
+      lead(f, t, d, dest, send, s) { if (s.leadInst === 'koto') koto(f, t, 0.06, dest, -0.1, send, Math.max(0.9, d * 1.4)); else flauta(f, t, d, 0.05, dest, -0.1, send); },
+    },
+  };
+
+  const Music = (() => {
+    let timer = null, cur = null, stepN = 0, nextT = 0, want = null, ducked = false;
+    function makeBus(jp) {
+      const b = ctx.createGain(); b.gain.value = 1; b.connect(musicBus);
+      const d = ctx.createDelay(1), fb = ctx.createGain(), wet = ctx.createGain(), lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.frequency.value = 2400; fb.gain.value = 0.22; wet.gain.value = 0.14;
+      d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(wet); wet.connect(b);
+      if (jp) { const s = ctx.createGain(); s.gain.value = 0.14; b.connect(s); s.connect(revIn); }
+      return { b, echoIn: d };
+    }
+    function schedStep(c, t, S) {
+      const song = c.song, k = stepN % 64, bar = (k / 16) | 0, b = k % 16, dest = c.bus.b;
+      const A = song.jp ? ARR.jp : ARR[song.soft ? '8s' : '8'];
+      const chord = song.chordsM[bar], root = song.rootsM[bar];
+      if (song.bass.includes(b)) A.bass(mtof(root + (song.octave.includes(b) ? 12 : 0)), t, S * song.bassLen, dest);
+      if (b % song.arpEvery === 0) A.arp(mtof(chord[(b / song.arpEvery) % chord.length] + 12), t, S * song.arpEvery * 0.9, dest, b, song);
+      if (song.hats.includes(b)) A.hat(t, song.hatAccent.includes(b), dest, song);
+      if (song.jp) {
+        if (song.pon.includes(b)) A.drum(t, b === 0, dest, song);
+        if (stepN % 128 === 0) rin(t, song.rin, 0.022, dest);
+        // glissando de koto al cierre de la vuelta sin melodía
+        if (k === 56 && ((stepN / 64) | 0) % 2 === 0) [523.25, 587.33, 659.25, 783.99, 880, 1046.5].forEach((f, i) => koto(f, t + i * S * 0.5, 0.03, dest, (i - 2.5) * 0.12, null, 0.7));
+      }
+      if (((stepN / 64) | 0) % 2 === 1) {
+        const L = song.leadByStep.get(k);
+        if (L) A.lead(mtof(L[0]), t, S * L[1] * 0.95, dest, song.jp ? c.bus.echoIn : null, song);
+      }
+    }
+    function tick() {
+      if (!cur) return;
+      const S = 60 / cur.song.bpm / 4;
+      while (nextT < ctx.currentTime + 0.15) { schedStep(cur, nextT, S); stepN++; nextT += S; }
+    }
+    function start(id) {
+      if (!ctx) return;
+      if (cur && cur.id === id) return;
+      stopNow(0.25);
+      const song = SONGS[id];
+      cur = { id, song, bus: makeBus(!!song.jp) };
+      if (song.jp) cur.bus.echoIn.delayTime.value = (60 / song.bpm / 4) * 3;
+      stepN = 0; nextT = ctx.currentTime + 0.08;
+      if (!timer) timer = setInterval(tick, 30);
+    }
+    function stopNow(fade) {
+      if (cur) {
+        const bb = cur.bus.b, t = ctx.currentTime;
+        bb.gain.setValueAtTime(bb.gain.value, t); bb.gain.linearRampToValueAtTime(0, t + (fade || 0.05));
+        setTimeout(() => { try { bb.disconnect(); } catch (e) {} }, ((fade || 0.05) + 0.6) * 1000);
+      }
+      cur = null;
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+    return {
+      get ducked() { return ducked; },
+      want(id) { want = id; if (ctx && set.music > 0 && !document.hidden) start(id); },
+      resume() { if (want && ctx && !document.hidden) start(want); },
+      halt() { stopNow(0.2); },
+      duck(on) { ducked = on; apply(); },
+      current() { return cur ? cur.id : null; },
+    };
+  })();
+
+  document.addEventListener('visibilitychange', () => {
+    if (!ctx) return;
+    if (document.hidden) { Music.halt(); ctx.suspend().catch(() => {}); }
+    else { ctx.resume().catch(() => {}); apply(); }
+  });
+
+  let orig = false, track = null;
+  const resolve = id => (orig ? id : id + 'O');
+  return {
+    ensure, play, configure,
+    music(id) { track = id; Music.want(resolve(id)); },
+    original(on) { orig = !!on; if (track) Music.want(resolve(track)); },
+    get esOriginal() { return orig; },
+    duck(on) { Music.duck(on); },
+    nombre(id) { return SONGS[id].name; },
+  };
+})();
+
+/* ============================================================ FICHAS DIBUJADAS */
+const AI = '#2B4C7E', SHU = '#B8392B', MID = '#2F6A52', INK = '#1F2A44';
+const JP = "'Shippori Mincho','Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif";
+const r2 = n => +n.toFixed(2);
+function circ(cx, cy, r, c) {
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${c}" stroke="${INK}" stroke-width="1.15"/>` +
+    `<circle cx="${cx}" cy="${cy}" r="${r2(r * 0.5)}" fill="currentColor" stroke="${INK}" stroke-width=".85"/>` +
+    `<circle cx="${cx}" cy="${cy}" r="${r2(r * 0.17)}" fill="${c}"/>`;
+}
+function cana(cx, cy, h, c) {
+  const w = 5.2, x = r2(cx - w / 2), y = r2(cy - h / 2);
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2.6" fill="${c}" stroke="${INK}" stroke-width="1.1"/>` +
+    `<path d="M${x} ${cy}h${w}" stroke="${INK}" stroke-width="1"/>` +
+    `<path d="M${cx} ${r2(y + 2.6)}v${r2(h / 2 - 4.4)}M${cx} ${r2(cy + 1.8)}v${r2(h / 2 - 4.4)}" stroke="currentColor" stroke-opacity=".6" stroke-width="1" stroke-linecap="round"/>`;
+}
+const PIN = {
+  2: [[18, 13, 8, MID], [18, 35, 8, AI]],
+  3: [[9, 10, 6.5, AI], [18, 24, 6.5, SHU], [27, 38, 6.5, MID]],
+  4: [[10, 13, 7, AI], [26, 13, 7, MID], [10, 35, 7, MID], [26, 35, 7, AI]],
+  5: [[9, 10, 6, AI], [27, 10, 6, MID], [18, 24, 6, SHU], [9, 38, 6, MID], [27, 38, 6, AI]],
+  6: [[10, 9, 5.6, MID], [26, 9, 5.6, MID], [10, 27, 5.6, SHU], [26, 27, 5.6, SHU], [10, 40, 5.6, SHU], [26, 40, 5.6, SHU]],
+  7: [[8, 7, 4.6, MID], [18, 11, 4.6, MID], [28, 15, 4.6, MID], [11, 28, 5, SHU], [25, 28, 5, SHU], [11, 40, 5, SHU], [25, 40, 5, SHU]],
+  8: [[11, 7, 4.8, AI], [25, 7, 4.8, AI], [11, 18, 4.8, AI], [25, 18, 4.8, AI], [11, 30, 4.8, AI], [25, 30, 4.8, AI], [11, 41, 4.8, AI], [25, 41, 4.8, AI]],
+  9: [9, 24, 39].flatMap((y, i) => [8, 18, 28].map(x => [x, y, 4.7, [AI, SHU, MID][i]])),
+};
+const SOU = {
+  2: [[18, 13, 17, MID], [18, 35, 17, MID]],
+  3: [[18, 13, 17, MID], [11, 35, 17, MID], [25, 35, 17, MID]],
+  4: [[11, 13, 17, MID], [25, 13, 17, AI], [11, 35, 17, AI], [25, 35, 17, MID]],
+  5: [[10, 13, 17, MID], [26, 13, 17, AI], [18, 24, 17, SHU], [10, 35, 17, AI], [26, 35, 17, MID]],
+  6: [13, 35].flatMap(y => [8, 18, 28].map(x => [x, y, 17, MID])),
+  7: [[18, 9, 12, SHU], ...[25, 39].flatMap(y => [8, 18, 28].map(x => [x, y, 12, MID]))],
+  8: [13, 35].flatMap(y => [6, 14, 22, 30].map(x => [x, y, 17, MID])),
+  9: [8, 24, 40].flatMap(y => [8, 18, 28].map(x => [x, y, 12, x === 18 ? SHU : MID])),
+};
+const PAJARO = `<g stroke="${INK}" stroke-width="1"><ellipse cx="9.5" cy="25" rx="2.4" ry="7" transform="rotate(-30 9.5 25)" fill="${SHU}"/><ellipse cx="7.5" cy="30.5" rx="2.4" ry="7" transform="rotate(-68 7.5 30.5)" fill="${AI}"/><ellipse cx="12" cy="21.5" rx="2.2" ry="6.5" transform="rotate(-8 12 21.5)" fill="${SHU}"/></g>` +
+  `<path d="M17 37l-1 5M21 37l1 5" stroke="${SHU}" stroke-width="1.4" stroke-linecap="round"/>` +
+  `<ellipse cx="19" cy="28" rx="8.5" ry="9" fill="${MID}" stroke="${INK}" stroke-width="1.2"/>` +
+  `<path d="M13.5 27c4-4.5 9-3.5 11.5 1.5-4 3.5-8.5 3.5-11.5-1.5z" fill="${AI}" stroke="${INK}" stroke-width="1"/>` +
+  `<path d="M26.6 15.2l4.4 1.4-4.4 1.8z" fill="${SHU}" stroke="${INK}" stroke-width=".8" stroke-linejoin="round"/>` +
+  `<circle cx="22.5" cy="16.5" r="5" fill="${MID}" stroke="${INK}" stroke-width="1.2"/>` +
+  `<circle cx="24" cy="15.6" r="1.2" fill="${INK}"/>`;
+const PIN1 = `<circle cx="18" cy="24" r="13.5" fill="${MID}" stroke="${INK}" stroke-width="1.4"/>` +
+  Array.from({ length: 10 }, (_, i) => { const a = i * Math.PI / 5; return `<circle cx="${r2(18 + 11.4 * Math.cos(a))}" cy="${r2(24 + 11.4 * Math.sin(a))}" r="1.15" fill="currentColor"/>`; }).join('') +
+  `<circle cx="18" cy="24" r="9.2" fill="currentColor" stroke="${INK}" stroke-width="1"/><circle cx="18" cy="24" r="6.4" fill="${SHU}" stroke="${INK}" stroke-width="1"/>` +
+  `<circle cx="18" cy="24" r="3.4" fill="currentColor" stroke="${INK}" stroke-width=".8"/><circle cx="18" cy="24" r="1.3" fill="${AI}"/>`;
+const txt = (s, y, size, c) => `<text x="18" y="${y}" text-anchor="middle" font-size="${size}" font-weight="700" fill="${c}" font-family="${JP}">${s}</text>`;
+const NUMK = '一二三四五六七八九';
+const NUMES = ['Uno', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve'];
+const FACES = [];
+for (let n = 1; n <= 9; n++) FACES.push({ id: 'p' + n, name: `${NUMES[n - 1]} de círculos`, svg: n === 1 ? PIN1 : PIN[n].map(a => circ(...a)).join('') });
+for (let n = 1; n <= 9; n++) FACES.push({ id: 's' + n, name: `${NUMES[n - 1]} de bambúes`, svg: n === 1 ? PAJARO : SOU[n].map(a => cana(...a)).join('') });
+for (let n = 1; n <= 9; n++) FACES.push({ id: 'm' + n, name: `${NUMES[n - 1]} de caracteres`, svg: txt(NUMK[n - 1], 21, 17, AI) + txt('萬', 42, 16, SHU) });
+[['we', '東', 'Viento del este'], ['ws', '南', 'Viento del sur'], ['ww', '西', 'Viento del oeste'], ['wn', '北', 'Viento del norte']]
+  .forEach(([id, k, name]) => FACES.push({ id, name, svg: txt(k, 32, 25, INK) }));
+FACES.push({ id: 'dr', name: 'Dragón rojo', svg: txt('中', 33, 27, SHU) });
+FACES.push({ id: 'dg', name: 'Dragón verde', svg: txt('發', 32, 25, MID) });
+FACES.push({ id: 'dw', name: 'Dragón blanco', svg: `<rect x="6" y="8" width="24" height="32" rx="3" fill="none" stroke="${AI}" stroke-width="2.4"/><rect x="10" y="12" width="16" height="24" rx="1.5" fill="none" stroke="${AI}" stroke-width="1"/>` });
+const FLOR = `<g fill="${SHU}" stroke="${INK}" stroke-width=".7">` + Array.from({ length: 5 }, (_, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; return `<circle cx="${r2(18 + 3.6 * Math.cos(a))}" cy="${r2(14 + 3.6 * Math.sin(a))}" r="2.7"/>`; }).join('') + `</g><circle cx="18" cy="14" r="1.6" fill="currentColor" stroke="${INK}" stroke-width=".6"/>`;
+const SOL = `<circle cx="18" cy="14" r="4.6" fill="${SHU}" stroke="${INK}" stroke-width=".9"/>` + Array.from({ length: 8 }, (_, i) => { const a = i * Math.PI / 4; return `<path d="M${r2(18 + 6.6 * Math.cos(a))} ${r2(14 + 6.6 * Math.sin(a))}L${r2(18 + 8.6 * Math.cos(a))} ${r2(14 + 8.6 * Math.sin(a))}" stroke="${SHU}" stroke-width="1.3" stroke-linecap="round"/>`; }).join('');
+[['f1', '梅', 'Flor de ciruelo'], ['f2', '蘭', 'Flor de orquídea'], ['f3', '菊', 'Flor de crisantemo'], ['f4', '竹', 'Flor de bambú']]
+  .forEach(([id, k, name]) => FACES.push({ id, name, svg: FLOR + txt(k, 41, 15, MID), key: 'flor' }));
+[['e1', '春', 'Primavera'], ['e2', '夏', 'Verano'], ['e3', '秋', 'Otoño'], ['e4', '冬', 'Invierno']]
+  .forEach(([id, k, name]) => FACES.push({ id, name, svg: SOL + txt(k, 41, 15, AI), key: 'est' }));
+const FACE = {};
+FACES.forEach(f => { f.key = f.key || f.id; FACE[f.id] = f; });
+document.body.insertAdjacentHTML('afterbegin', `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>${FACES.map(f => `<symbol id="f-${f.id}" viewBox="0 0 36 48">${f.svg}</symbol>`).join('')}</defs></svg>`);
+const fichaSVG = id => `<svg viewBox="0 0 36 48" aria-hidden="true"><use href="#f-${id}"/></svg>`;
+const mini = id => `<span class="ficha mini">${fichaSVG(id)}</span>`;
+
+/* ============================================================ TABLEROS */
+const LAYOUTS = [
+  { nombre: 'Pirámide', capas: [
+    Array(5).fill('#######'),
+    ['.......', '.#####.', '.#####.', '.#####.', '.......'],
+    ['.......', '.......', '..###..', '.......', '.......'],
+    ['.......', '.......', '...#...', '.......', '.......']] },
+  { nombre: 'Tortuga', capas: [
+    ['..####..', '.######.', '########', '########', '.######.', '..####..'],
+    ['........', '..####..', '..####..', '..####..', '..####..', '........'],
+    ['........', '........', '...##...', '...##...', '........', '........']], extra: [[6, 5, 3], [8, 5, 3]] },
+  { nombre: 'Mariposa', capas: [
+    ['###..###', '########', '.######.', '########', '###..###'],
+    ['........', '.##..##.', '..####..', '.##..##.', '........'],
+    ['........', '........', '...##...', '........', '........']], extra: [[3, 2, 2], [11, 2, 2], [3, 6, 2], [11, 6, 2]] },
+  { nombre: 'Castillo', capas: [
+    Array(6).fill('#######'),
+    ['##...##', '##...##', '...#...', '...#...', '##...##', '##...##']],
+    extra: [[1, 1, 2], [11, 1, 2], [1, 9, 2], [11, 9, 2]] },
+];
+// Posiciones en medias fichas: cada ficha ocupa 2 × 2 y z es la capa.
+function armar(L) {
+  const P = [];
+  L.capas.forEach((filas, z) => filas.forEach((fila, r) => [...fila].forEach((ch, c) => { if (ch === '#') P.push({ x: 2 * c, y: 2 * r, z }); })));
+  (L.extra || []).forEach(([x, y, z]) => P.push({ x, y, z }));
+  P.sort((a, b) => a.z - b.z || a.y - b.y || a.x - b.x);
+  return P;
+}
+function libreEn(i, occ, P) {
+  const t = P[i]; let izq = false, der = false;
+  for (const j of occ) {
+    if (j === i) continue;
+    const u = P[j];
+    if (u.z > t.z) { if (Math.abs(u.x - t.x) < 2 && Math.abs(u.y - t.y) < 2) return false; }
+    else if (u.z === t.z && Math.abs(u.y - t.y) < 2) {
+      if (u.x < t.x && u.x >= t.x - 2) izq = true;
+      else if (u.x > t.x && u.x <= t.x + 2) der = true;
+    }
+  }
+  return !(izq && der);
+}
+const azar = a => a[(Math.random() * a.length) | 0];
+function mezclar(a) { for (let i = a.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; }
+// Reparte quitando pares libres al azar desde el tablero lleno: el orden inverso siempre tiene solución.
+function repartir(pos, P, pares) {
+  for (let intento = 0; intento < 300; intento++) {
+    const occ = new Set(pos), orden = []; let ok = true;
+    while (occ.size) {
+      const libres = [...occ].filter(i => libreEn(i, occ, P));
+      if (libres.length < 2) { ok = false; break; }
+      const a = azar(libres), b = azar(libres.filter(i => i !== a));
+      orden.push([a, b]); occ.delete(a); occ.delete(b);
+    }
+    if (!ok) continue;
+    const pp = mezclar(pares.slice()), asign = {};
+    orden.forEach(([a, b], k) => { asign[a] = pp[k][0]; asign[b] = pp[k][1]; });
+    return asign;
+  }
+  return null;
+}
+function mazo(n) {
+  const pares = [];
+  FACES.filter(f => f.key === f.id).forEach(f => pares.push([f.id, f.id], [f.id, f.id]));
+  const fl = mezclar(['f1', 'f2', 'f3', 'f4']), es = mezclar(['e1', 'e2', 'e3', 'e4']);
+  pares.push([fl[0], fl[1]], [fl[2], fl[3]], [es[0], es[1]], [es[2], es[3]]);
+  return mezclar(pares).slice(0, n);
+}
+
+/* ============================================================ JUEGO */
+const G = { P: [], face: {}, occ: new Set(), libre: {}, el: [], sel: -1, score: 0, chain: 0, lastMatch: 0, undo: [],
+  board: 0, nombre: '', elapsed: 0, running: false, paused: false, cleared: 0, busy: false, bw: 0, bh: 0 };
+const capa = $('#capa'), tablero = $('#tablero');
+const W = 36, H = 48, SX = 5, SY = 6, PAD = 8;
+const fmtT = ms => { const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, ss = String(s % 60).padStart(2, '0'); return h ? `${h}:${String(m).padStart(2, '0')}:${ss}` : `${m}:${ss}`; };
+const fmtN = n => n.toLocaleString('es-AR');
+
+function nuevoTablero() {
+  G.board++;
+  const L = LAYOUTS[(G.board - 1) % LAYOUTS.length];
+  G.nombre = L.nombre; G.P = armar(L);
+  const pos = G.P.map((_, i) => i);
+  let asign = null;
+  while (!asign) asign = repartir(pos, G.P, mazo(pos.length / 2));
+  G.face = asign; G.occ = new Set(pos); G.undo = []; G.sel = -1; G.chain = 0; G.lastMatch = 0;
+  dibujar(true);
+  Sound.play('reparte');
+}
+function dibujar(entrada) {
+  let minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
+  for (const t of G.P) {
+    const x = t.x * W / 2 - t.z * SX, y = t.y * H / 2 - t.z * SY;
+    minX = Math.min(minX, x); minY = Math.min(minY, y); maxX = Math.max(maxX, x + W + 5); maxY = Math.max(maxY, y + H + 7);
+  }
+  G.bw = maxX - minX + PAD * 2; G.bh = maxY - minY + PAD * 2;
+  capa.innerHTML = G.P.map((t, i) => {
+    const f = FACE[G.face[i]], x = t.x * W / 2 - t.z * SX - minX + PAD, y = t.y * H / 2 - t.z * SY - minY + PAD;
+    return `<button class="ficha${entrada ? ' entra' : ''}" type="button" data-i="${i}" style="left:${x}px;top:${y}px;--d:${Math.min(i * 9, 760)}ms" aria-label="${f.name}">${fichaSVG(f.id)}</button>`;
+  }).join('');
+  G.el = [...capa.children];
+  encajar(); marcarLibres(); hud();
+}
+function encajar() {
+  if (!G.bw) return;
+  const cw = tablero.clientWidth, ch = tablero.clientHeight;
+  const s = Math.min(cw / G.bw, ch / G.bh, 1.7);
+  const ox = (cw - G.bw * s) / 2, oy = Math.max(0, (ch - G.bh * s) / 2);
+  capa.style.width = G.bw + 'px'; capa.style.height = G.bh + 'px';
+  capa.style.transform = `translate(${ox}px,${oy}px) scale(${s})`;
+}
+new ResizeObserver(encajar).observe(tablero);
+function marcarLibres() {
+  for (const i of G.occ) { G.libre[i] = libreEn(i, G.occ, G.P); G.el[i].classList.toggle('bloq', AJ.libres && !G.libre[i]); }
+}
+function paresLibres() {
+  const by = {};
+  for (const i of G.occ) if (G.libre[i]) { const k = FACE[G.face[i]].key; (by[k] = by[k] || []).push(i); }
+  return Object.values(by).filter(a => a.length >= 2).map(a => [a[0], a[1]]);
+}
+function setFace(i) { const f = FACE[G.face[i]]; G.el[i].innerHTML = fichaSVG(f.id); G.el[i].setAttribute('aria-label', f.name); }
+function deseleccionar() { if (G.sel >= 0) G.el[G.sel].classList.remove('sel'); G.sel = -1; }
+function reanimar(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+
+capa.addEventListener('click', e => {
+  const b = e.target.closest('.ficha'); if (!b || G.busy || G.paused) return;
+  const i = +b.dataset.i; if (!G.occ.has(i)) return;
+  b.classList.remove('entra');
+  if (!G.libre[i]) { Sound.play('mal'); reanimar(b, 'nop'); return; }
+  if (G.sel === i) { deseleccionar(); Sound.play('suelta'); return; }
+  if (G.sel >= 0 && FACE[G.face[G.sel]].key === FACE[G.face[i]].key) { juntar(G.sel, i); return; }
+  deseleccionar(); G.sel = i; b.classList.add('sel'); Sound.play('toc');
+});
+
+function juntar(a, b) {
+  deseleccionar();
+  const now = performance.now();
+  G.chain = (G.lastMatch && now - G.lastMatch <= 5000) ? Math.min(5, G.chain + 1) : 1;
+  G.lastMatch = now;
+  const pts = 10 * G.chain;
+  G.score += pts;
+  G.undo.push({ a, b, pts });
+  for (const i of [a, b]) {
+    G.occ.delete(i);
+    const el = G.el[i];
+    el.classList.remove('pista', 'nop', 'vuelve', 'entra'); el.classList.add('sale');
+    clearTimeout(el._tm); el._tm = setTimeout(() => { el.hidden = true; }, 240);
+  }
+  flota(a, b, G.chain > 1 ? `+${pts} · ×${G.chain}` : `+${pts}`);
+  Sound.play('par', G.chain);
+  marcarLibres(); hud();
+  if (!G.occ.size) { limpio(); return; }
+  if (!paresLibres().length) { G.busy = true; setTimeout(() => { aviso('No quedan pares libres. Se barajan solas.'); barajar(true); }, 500); }
+}
+function flota(a, b, texto, grande) {
+  const A = G.el[a], B = b == null ? A : G.el[b];
+  const x = (parseFloat(A.style.left) + parseFloat(B.style.left)) / 2 + W / 2, y = Math.min(parseFloat(A.style.top), parseFloat(B.style.top)) - 6;
+  const d = document.createElement('div');
+  d.className = 'flota' + (grande ? ' grande' : ''); d.textContent = texto;
+  d.style.left = x + 'px'; d.style.top = y + 'px';
+  capa.appendChild(d); setTimeout(() => d.remove(), 950);
+}
+function flotaCentro(texto) {
+  const d = document.createElement('div');
+  d.className = 'flota grande'; d.textContent = texto;
+  d.style.left = G.bw / 2 + 'px'; d.style.top = G.bh / 2 - 20 + 'px'; d.style.animationDuration = '1.4s';
+  capa.appendChild(d); setTimeout(() => d.remove(), 1450);
+}
+function limpio() {
+  G.busy = true; G.cleared++; G.score += 100; hud();
+  Sound.play('limpio');
+  flotaCentro('Tablero limpio +100');
+  setTimeout(() => { G.busy = false; if (G.running) nuevoTablero(); }, 1500);
+}
+function barajar(auto) {
+  deseleccionar(); G.chain = 0; G.lastMatch = 0;
+  const R = [...G.occ], by = {};
+  R.forEach(i => { const f = G.face[i], k = FACE[f].key; (by[k] = by[k] || []).push(f); });
+  const pares = [];
+  Object.values(by).forEach(a => { for (let j = 0; j + 1 < a.length; j += 2) pares.push([a[j], a[j + 1]]); });
+  const asign = pares.length * 2 === R.length ? repartir(R, G.P, pares) : null;
+  if (!asign) {
+    aviso('Este tablero no tiene salida. Va uno nuevo.');
+    G.busy = true; setTimeout(() => { G.busy = false; if (G.running) nuevoTablero(); }, 1100);
+    return;
+  }
+  G.busy = true; Sound.play('baraja');
+  R.forEach(i => { const el = G.el[i]; reanimar(el, 'gira'); setTimeout(() => { G.face[i] = asign[i]; setFace(i); }, 170); });
+  setTimeout(() => { R.forEach(i => G.el[i].classList.remove('gira')); G.busy = false; marcarLibres(); hud(); }, 360);
+}
+function deshacer() {
+  if (G.busy) return;
+  const u = G.undo.pop();
+  if (!u) { Sound.play('mal'); aviso('No hay jugadas para deshacer'); return; }
+  deseleccionar();
+  for (const i of [u.a, u.b]) {
+    G.occ.add(i);
+    const el = G.el[i]; clearTimeout(el._tm);
+    el.hidden = false; el.classList.remove('sale'); reanimar(el, 'vuelve');
+  }
+  G.score = Math.max(0, G.score - u.pts); G.chain = 0; G.lastMatch = 0;
+  marcarLibres(); hud(); Sound.play('deshacer');
+}
+function pista() {
+  if (G.busy) return;
+  const pares = paresLibres();
+  if (!pares.length) { barajar(true); return; }
+  G.chain = 0; G.lastMatch = 0; hud();
+  const [a, b] = azar(pares);
+  for (const i of [a, b]) { const el = G.el[i]; reanimar(el, 'pista'); setTimeout(() => el.classList.remove('pista'), 1700); }
+  Sound.play('pista');
+}
+let avisoTm;
+function aviso(t) {
+  let a = tablero.querySelector('.aviso');
+  if (!a) { a = document.createElement('div'); a.className = 'aviso'; a.setAttribute('role', 'status'); tablero.appendChild(a); }
+  a.textContent = t; a.hidden = false;
+  clearTimeout(avisoTm); avisoTm = setTimeout(() => { a.hidden = true; }, 2200);
+}
+function hud() {
+  $('#h-pts').textContent = fmtN(G.score);
+  $('#h-sub').textContent = `Tablero ${G.board} · ${G.nombre} · quedan ${G.occ.size}`;
+  const cad = $('#h-cad'), vivo = G.chain > 1 && performance.now() - G.lastMatch <= 5000;
+  cad.hidden = !vivo; if (vivo) cad.textContent = `Cadena ×${G.chain}`;
+}
+let lastTick = performance.now();
+setInterval(() => {
+  const now = performance.now();
+  if (G.running && !G.paused && !document.hidden) G.elapsed += now - lastTick;
+  lastTick = now;
+  if (G.running) { $('#h-tie').textContent = fmtT(G.elapsed); hud(); }
+}, 250);
+
+/* ============================================================ PANTALLAS */
+let wake = null;
+async function pedirPantalla() { try { wake = await navigator.wakeLock.request('screen'); } catch (e) { wake = null; } }
+function soltarPantalla() { try { wake && wake.release(); } catch (e) {} wake = null; }
+const enJuego = () => !$('#juego').hidden;
+const temaActual = () => (enJuego() ? AJ.song : 'map');
+
+function mostrarInicio() {
+  $('#juego').hidden = true; $('#inicio').hidden = false;
+  $('#r-pts').textContent = fmtN(REC.puntos); $('#r-tie').textContent = fmtT(REC.tiempo);
+  Sound.music('map'); soltarPantalla();
+}
+function empezar() {
+  Sound.ensure();
+  Object.assign(G, { score: 0, board: 0, cleared: 0, elapsed: 0, running: true, paused: false, busy: false });
+  $('#inicio').hidden = true; $('#juego').hidden = false;
+  lastTick = performance.now();
+  requestAnimationFrame(() => { nuevoTablero(); });
+  Sound.music(AJ.song); pedirPantalla();
+}
+function abrir(id) { document.querySelectorAll('.velo').forEach(v => { v.hidden = v.id !== id; }); const h = $('#' + id); h.hidden = false; const b = h.querySelector('button'); if (b) b.focus({ preventScroll: true }); }
+function cerrar(id) { $('#' + id).hidden = true; }
+function pausar() {
+  if (!G.running) return;
+  G.paused = true; deseleccionar(); Sound.duck(true);
+  $('#p-pts').textContent = fmtN(G.score); $('#p-tie').textContent = fmtT(G.elapsed); $('#p-tab').textContent = G.cleared;
+  abrir('s-pausa');
+}
+function seguir() { cerrar('s-pausa'); G.paused = false; lastTick = performance.now(); Sound.duck(false); }
+function terminar() {
+  G.running = false; G.paused = false; cerrar('s-pausa'); Sound.duck(false);
+  const rp = G.score > REC.puntos, rt = G.elapsed > REC.tiempo;
+  if (rp) REC.puntos = G.score;
+  if (rt) REC.tiempo = Math.floor(G.elapsed);
+  store.set('records', REC);
+  $('#z-pts').textContent = fmtN(G.score); $('#z-tie').textContent = fmtT(G.elapsed); $('#z-tab').textContent = G.cleared;
+  $('#z-rp').hidden = !rp; $('#z-rt').hidden = !rt;
+  Sound.play(rp || rt ? 'record' : 'fin');
+  abrir('s-resumen');
+}
+
+let ajDesdePausa = false;
+function abrirAjustes(desdePausa) {
+  ajDesdePausa = desdePausa;
+  $('#aj-sfx').value = AJ.sfx; $('#aj-mus').value = AJ.music; $('#aj-libres').checked = AJ.libres;
+  marcarCancion(); Sound.duck(false);
+  $('#aj-orig').textContent = 'Escuchar la original de Fogonazo';
+  $('#aj-sonando').textContent = 'Tocá una canción para escucharla.';
+  abrir('s-ajustes');
+}
+function cerrarAjustes() {
+  Sound.original(false); cerrar('s-ajustes');
+  if (ajDesdePausa) { pausar(); Sound.music(AJ.song); } else Sound.music(temaActual());
+}
+function marcarCancion() { document.querySelectorAll('[data-song]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.song === AJ.song))); }
+function sonando() { $('#aj-sonando').textContent = `Sonando: ${Sound.nombre(AJ.song)}, ${Sound.esOriginal ? 'versión original de Fogonazo en 8 bits' : 'versión oriental'}.`; }
+
+$('#b-jugar').addEventListener('click', () => { Sound.play('boton'); empezar(); });
+$('#b-ajustes').addEventListener('click', () => { Sound.ensure(); Sound.play('boton'); abrirAjustes(false); });
+$('#b-fichas').addEventListener('click', () => { Sound.play('boton'); abrir('s-fichas'); });
+$('#b-reglas').addEventListener('click', () => { Sound.play('boton'); abrir('s-reglas'); });
+$('#b-pausa').addEventListener('click', () => { Sound.play('boton'); pausar(); });
+$('#b-seguir').addEventListener('click', () => { Sound.play('boton'); seguir(); });
+$('#b-p-ajustes').addEventListener('click', () => { Sound.play('boton'); cerrar('s-pausa'); abrirAjustes(true); });
+$('#b-terminar').addEventListener('click', terminar);
+$('#b-otra').addEventListener('click', () => { cerrar('s-resumen'); empezar(); });
+$('#b-inicio').addEventListener('click', () => { cerrar('s-resumen'); mostrarInicio(); });
+$('#b-deshacer').addEventListener('click', deshacer);
+$('#b-pista').addEventListener('click', pista);
+$('#b-barajar').addEventListener('click', () => { if (!G.busy) barajar(false); });
+$('#aj-sfx').addEventListener('input', e => { AJ.sfx = +e.target.value; Sound.configure({ sfx: AJ.sfx }); guardarAj(); });
+$('#aj-sfx').addEventListener('change', () => Sound.play('toc'));
+$('#aj-mus').addEventListener('input', e => { AJ.music = +e.target.value; Sound.configure({ music: AJ.music }); guardarAj(); });
+document.querySelectorAll('[data-song]').forEach(b => b.addEventListener('click', () => {
+  AJ.song = b.dataset.song; guardarAj(); marcarCancion();
+  Sound.ensure(); Sound.music(AJ.song); sonando();
+}));
+$('#aj-orig').addEventListener('click', e => {
+  Sound.ensure(); Sound.music(AJ.song); Sound.original(!Sound.esOriginal);
+  e.currentTarget.textContent = Sound.esOriginal ? 'Volver a la versión oriental' : 'Escuchar la original de Fogonazo';
+  sonando();
+});
+$('#aj-libres').addEventListener('change', e => { AJ.libres = e.target.checked; guardarAj(); if (G.P.length) marcarLibres(); });
+$('#aj-listo').addEventListener('click', cerrarAjustes);
+document.querySelectorAll('[data-cerrar]').forEach(b => b.addEventListener('click', () => b.closest('.velo').hidden = true));
+document.querySelectorAll('.velo').forEach(v => v.addEventListener('click', e => {
+  if (e.target !== v) return;
+  if (v.id === 's-pausa') seguir(); else if (v.id === 's-ajustes') cerrarAjustes(); else if (v.id !== 's-resumen') v.hidden = true;
+}));
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const v = [...document.querySelectorAll('.velo')].find(x => !x.hidden);
+  if (!v) { if (enJuego()) pausar(); return; }
+  if (v.id === 's-pausa') seguir(); else if (v.id === 's-ajustes') cerrarAjustes(); else if (v.id !== 's-resumen') v.hidden = true;
+});
+document.addEventListener('pointerdown', () => { if (Sound.ensure()) Sound.music(temaActual()); }, { once: true });
+document.addEventListener('visibilitychange', () => { if (document.hidden && G.running && !G.paused) pausar(); });
+
+/* Muestrario e íconos */
+const grupos = [['Círculos', 'p'], ['Bambúes', 's'], ['Caracteres', 'm'], ['Vientos y dragones', /^[wd]/], ['Flores y estaciones', /^[fe]/]];
+$('#muestrario').innerHTML = grupos.map(([tit, pre]) => {
+  const fs = FACES.filter(f => (typeof pre === 'string' ? f.id[0] === pre : pre.test(f.id)));
+  return `<div class="muestra-grupo"><div class="tit">${tit}</div><div class="muestra-grid">${fs.map(f => `<span class="ficha" role="img" aria-label="${f.name}">${fichaSVG(f.id)}</span>`).join('')}</div></div>`;
+}).join('');
+$('#muestra-fila').innerHTML = ['s1', 'p5', 'm8', 'dr', 'f1'].map(mini).join('');
+$('#ico-fichas').innerHTML = mini('p3');
+$('#ico-reglas').innerHTML = mini('s7') + mini('s7');
+mostrarInicio();
+</script>
+</body>
+</html>
