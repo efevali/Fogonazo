@@ -5,6 +5,7 @@
 | [manifiesto.md](manifiesto.md) | Qué es Fogonazo, lo que se acordó al empezar, las reglas del juego, los niveles y cómo se calibra la dificultad. Se consulta ante cualquier duda de diseño. |
 | [decisiones.md](decisiones.md) | Registro de decisiones por tema, con fecha, motivo y lo descartado. |
 | [bocetos/](bocetos/) | Bocetos aprobados, con su índice. |
+| [sala/](sala/README.md) | Trabajo en curso: la pantalla de inicio de la colección, un living de los 70 cuyos objetos son las puertas a los juegos. Imagen base, bocetos, prototipo, pedidos a Gemini y lo que sigue. |
 | [mahjong/](mahjong/README.md) | Trabajo en curso: el mahjong, primer juego nuevo de la colección. Estado, prototipo jugable y lo que sigue. |
 | [muestrario.html](muestrario.html) | Las pantallas de 16 bits, las tres tipografías que se probaron y la prueba de sonido: los tres temas y los efectos en 8 y 16 bits, y las alternativas del sonido de línea. Se abre en Chrome: https://efevali.github.io/fogonazo/docs/muestrario.html |
 

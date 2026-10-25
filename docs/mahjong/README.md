@@ -21,9 +21,11 @@ Trabajo en curso: el primer juego nuevo de la colección que va a contener a Fog
 
 ## Lo que sigue
 
-- **El menú de entrada de la aplicación**, que va a contener a los juegos. Se trabaja en otra conversación.
+- **Pasar a horizontal**, como toda la colección (referencia: el boceto [S-03e](../sala/bocetos/S-03e-mahjong-horizontal.png)). En horizontal entra la tortuga clásica de 144 fichas.
+- **La pantalla de inicio de la colección** ya tiene prototipo: [la sala](../sala/README.md). El mahjong se abre desde la mesa ratona.
+- Falta decidir si el mahjong conserva la estética de Kasa o se acerca a la de la sala.
 - El nombre del minijuego y el de la colección, sin decidir.
-- Renombrar el repositorio para que aloje varios juegos, a conversar. Ojo con la dirección de GitHub Pages: cambiarla después de instalar hace perder las versiones nuevas y el avance (ver «Versión instalable» en el registro de decisiones).
+- El repositorio se queda como uno solo para toda la colección y se renombra cuando la colección tenga nombre (ver el registro de decisiones).
 
 ## Notas técnicas
 

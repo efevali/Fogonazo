@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Prototipo de la sala de la colección (trabajo en curso). Ver docs/sala/README.md. -->
+<title>Sala de los 70</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,500..900,100&family=Barlow+Semi+Condensed:wght@500;600&display=swap">
+<style>
+/* Layout: one full-bleed illustrated room (Gemini) with an SVG layer in image coordinates; three objects are doors: bench, coffee table, hi-fi. */
+:root {
+  --night: #120c0a;
+  --walnut: #5a3520;
+  --walnut-deep: #3a2214;
+  --alu: #cfcac0;
+  --alu-shade: #b3ada2;
+  --ink: #2a211b;
+  --amber: #ffb648;
+  --dial: #7fe3ff;
+  --kit: #e8a52c;          /* electronics kit box */
+  --kit-deep: #c9771c;
+  --felt: #8e2a2a;         /* mahjong case lining */
+  --ivory: #f3ead6;
+  --chip: rgba(18, 12, 10, .55);
+  --chip-fg: #f3e6d0;
+  --display: "Fraunces", Georgia, "Times New Roman", serif;
+  --label: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hidden; font-family: var(--label); }
+[hidden] { display: none !important; }
+
+#stage { position: relative; width: 100%; height: 100%; }
+#scene { display: block; width: 100%; height: 100%; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
+
+/* ---------- ambient animation ---------- */
+.streak { animation: fall linear infinite; }
+@keyframes fall { from { transform: translateY(-120px); } to { transform: translateY(560px); } }
+.drop { animation: slide ease-in infinite; opacity: 0; }
+@keyframes slide {
+  0% { transform: translate(0, 0); opacity: 0; } 6% { opacity: .9; } 48% { transform: translate(0, 0); }
+  92% { transform: translate(var(--dx), var(--d)); opacity: .85; } 100% { transform: translate(var(--dx), var(--d)); opacity: 0; }
+}
+.blob { transform-box: fill-box; transform-origin: center; animation: rise ease-in-out infinite alternate; }
+@keyframes rise {
+  0% { transform: translate(0, 0) scale(1, 1); }
+  45% { transform: translate(var(--wx), calc(var(--rise) * .55)) scale(var(--sx), var(--sy)); }
+  100% { transform: translate(calc(var(--wx) * -.5), var(--rise)) scale(1, 1.08); }
+}
+.spin { animation: turn 1.8s linear infinite; transform-origin: 0 0; }
+@keyframes turn { to { transform: rotate(360deg); } }
+.breathe { animation: breathe ease-in-out infinite alternate; }
+@keyframes breathe { from { opacity: var(--lo); } to { opacity: var(--hi); } }
+.vu { animation: vu 1.1s steps(1) infinite; }
+@keyframes vu {
+  0% { opacity: .22 } 9% { opacity: .38 } 17% { opacity: .18 } 26% { opacity: .42 } 34% { opacity: .27 }
+  45% { opacity: .46 } 53% { opacity: .2 } 61% { opacity: .35 } 72% { opacity: .24 } 83% { opacity: .44 } 91% { opacity: .19 }
+}
+.blink { animation: blink steps(1) infinite; }
+@keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .15; } }
+.trace { animation: scan 1.6s linear infinite; }
+@keyframes scan { from { transform: translateX(0); } to { transform: translateX(-28px); } }
+.steam { animation: steam 4.2s ease-out infinite; opacity: 0; transform-box: fill-box; transform-origin: center; }
+@keyframes steam {
+  0% { transform: translate(0, 0) scale(.8); opacity: 0; } 25% { opacity: .55; }
+  100% { transform: translate(var(--sx), -70px) scale(1.4); opacity: 0; }
+}
+
+/* access highlights: a brightened copy of the room, masked to each object, pulsing in turn */
+.hl { opacity: 0; animation: hint 5.1s ease-in-out infinite; pointer-events: none; }
+@keyframes hint { 0%, 100% { opacity: 0; } 22% { opacity: .5; } 44% { opacity: 0; } }
+.hl.flash { animation: flash .45s ease-out 1; }
+@keyframes flash { 0% { opacity: .95; } 100% { opacity: 0; } }
+
+.hit { fill: transparent; cursor: pointer; outline: none; }
+.zones .hit { fill: rgba(127, 227, 255, .10); stroke: var(--dial); stroke-width: 4; stroke-dasharray: 18 12; }
+.hit:focus-visible { stroke: var(--amber); stroke-width: 5; }
+.zone-label { display: none; font: 600 34px var(--label); fill: var(--dial); letter-spacing: .06em; }
+.zones .zone-label { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .streak, .drop, .blob, .spin, .breathe, .vu, .blink, .trace, .steam, .hl { animation: none !important; }
+}
+
+/* ---------- chrome ---------- */
+.tools { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); right: calc(12px + env(safe-area-inset-right, 0px)); display: flex; gap: 8px; }
+.tool { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(243, 230, 208, .25); background: var(--chip); color: var(--chip-fg);
+  display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(4px); }
+.tool[aria-pressed="true"] { border-color: var(--dial); color: var(--dial); }
+.tool:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.tool svg { width: 20px; height: 20px; }
+.rotate { position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  background: var(--chip); color: var(--chip-fg); padding: 8px 14px; border-radius: 999px; font-size: 15px; display: none; white-space: nowrap; }
+@media (orientation: portrait) { .rotate { display: block; } }
+
+/* ---------- overlays ---------- */
+.sheet { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10, 6, 4, .5);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px; }
+.btn { border-radius: 6px; padding: 8px 16px; font: 600 14px var(--label); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+.btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+/* sound: receiver faceplate */
+.plate { width: min(560px, 100%); display: grid; grid-template-columns: 16px 1fr 16px; border-radius: 10px; overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .55), 0 2px 0 rgba(255, 255, 255, .08) inset; }
+.cap { background: linear-gradient(90deg, var(--walnut-deep), var(--walnut) 45%, var(--walnut-deep)); }
+.face { background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .07) 0 1px, rgba(0, 0, 0, .03) 1px 2px), linear-gradient(180deg, var(--alu), var(--alu-shade));
+  color: var(--ink); padding: 18px 22px 16px; display: grid; gap: 12px; }
+.head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.head h2 { margin: 0; font: 600 26px/1 var(--display); font-variation-settings: "SOFT" 100; }
+.head span { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+.row { display: grid; grid-template-columns: 92px 1fr 44px; align-items: center; gap: 12px; }
+.row label { font-size: 14px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.row output { font-variant-numeric: tabular-nums; font-size: 15px; text-align: right; }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 26px; background: transparent; cursor: pointer; }
+input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: #2a2622; box-shadow: 0 1px 0 rgba(255, 255, 255, .5); }
+input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: #2a2622; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -8px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #cfcbc2 45%, #8d887f); border: 1px solid #55504a; box-shadow: 0 2px 3px rgba(0, 0, 0, .4); }
+input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff, #cfcbc2 45%, #8d887f); border: 1px solid #55504a; }
+input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.switch { display: flex; align-items: center; gap: 10px; background: #2a2622; color: #e9e2d6; border: 0; box-shadow: 0 2px 0 #11100e; }
+.switch:active { transform: translateY(1px); box-shadow: 0 1px 0 #11100e; }
+.lamp { width: 10px; height: 10px; border-radius: 50%; background: #4a3a26; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .6); }
+.switch[aria-pressed="true"] .lamp { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+.foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.note { font-size: 13px; opacity: .75; max-width: 40ch; margin: 0; }
+.ghost { background: none; border: 1px solid currentColor; color: inherit; }
+
+/* Fogonazo: lid of a 70s electronics kit box */
+.kit { width: min(520px, 100%); background: var(--kit); color: var(--ink); border-radius: 8px; overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .55); display: grid; grid-template-columns: 1fr 120px; }
+.kit .txt { padding: 18px 20px 16px; display: grid; gap: 8px; align-content: start; }
+.kit .eyebrow { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
+.kit h2 { margin: 0; font: 900 40px/0.95 var(--display); font-variation-settings: "SOFT" 100; letter-spacing: .01em; text-transform: uppercase; }
+.kit p { margin: 0; font-size: 16px; line-height: 1.35; max-width: 34ch; }
+.kit .soon { display: inline-block; justify-self: start; background: var(--ink); color: var(--kit); padding: 3px 9px; border-radius: 3px;
+  font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.kit .stripes { background: repeating-linear-gradient(-55deg, var(--ink) 0 14px, var(--kit-deep) 14px 28px, var(--kit) 28px 42px); }
+.kit .btn { justify-self: start; margin-top: 4px; }
+
+/* Mahjong: open case, red felt inside a walnut frame */
+.case { width: min(500px, 100%); border-radius: 10px; padding: 12px; background: linear-gradient(180deg, #6e4128, var(--walnut-deep));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .55), 0 1px 0 rgba(255, 255, 255, .12) inset; }
+.felt { background: radial-gradient(ellipse at 40% 30%, #a43636, var(--felt) 60%, #6c1f1f); color: var(--ivory); border-radius: 4px;
+  padding: 18px 20px 16px; display: grid; gap: 8px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, .45); }
+.felt .eyebrow { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; opacity: .8; }
+.felt h2 { margin: 0; font: 600 38px/1 var(--display); font-variation-settings: "SOFT" 100; }
+.felt p { margin: 0; font-size: 16px; line-height: 1.35; max-width: 36ch; }
+.tiles { display: flex; gap: 6px; margin: 4px 0 2px; }
+.tile { width: 30px; height: 40px; border-radius: 4px; background: linear-gradient(180deg, #fbf5e6, #e9dfc6); box-shadow: 0 3px 0 #3f7a5b, 0 4px 3px rgba(0, 0, 0, .35);
+  display: grid; place-items: center; font: 600 20px/1 "Noto Serif SC", "Songti SC", serif; color: #b0302a; }
+.tile.g { color: #2e7d4f; }
+.tile.b { color: #1f3a60; }
+.felt .btn { justify-self: start; border-color: var(--ivory); color: var(--ivory); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="scene" viewBox="0 120 2576 1200" preserveAspectRatio="xMidYMid slice" aria-label="Living de los 70 de noche, con lluvia: banco de electrónica, sillón con mesa ratona y mahjong, equipo de audio">
+    <defs>
+      <mask id="mBench" maskUnits="userSpaceOnUse" x="0" y="0" width="2576" height="1438"><image href="mask-bench.png" width="2576" height="1438" preserveAspectRatio="none"/></mask>
+      <mask id="mTable" maskUnits="userSpaceOnUse" x="0" y="0" width="2576" height="1438"><image href="mask-table.png" width="2576" height="1438" preserveAspectRatio="none"/></mask>
+      <mask id="mAudio" maskUnits="userSpaceOnUse" x="0" y="0" width="2576" height="1438"><image href="mask-audio.png" width="2576" height="1438" preserveAspectRatio="none"/></mask>
+      <mask id="mRain" maskUnits="userSpaceOnUse" x="0" y="0" width="2576" height="1438"><image href="mask-rain.png" width="2576" height="1438" preserveAspectRatio="none"/></mask>
+      <clipPath id="lavaGlass"><path d="M2181,583 C2178,593 2176.5,605 2176.5,618 C2176.5,633 2177.5,645 2179.5,655 L2195,655 C2197,645 2198,633 2198,618 C2198,605 2196.5,593 2193.5,583 Z"/></clipPath>
+      <clipPath id="scopeScreen"><rect x="243" y="740" width="52" height="58" rx="7"/></clipPath>
+      <filter id="goo" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
+        <feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="g"/>
+        <feComposite in="SourceGraphic" in2="g" operator="atop"/>
+      </filter>
+      <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+      <linearGradient id="liquid" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#de6a07"/><stop offset=".5" stop-color="#f06a10"/><stop offset="1" stop-color="#e26e00"/>
+      </linearGradient>
+      <linearGradient id="liquidEdge" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#a83a02" stop-opacity=".55"/><stop offset=".32" stop-color="#a83a02" stop-opacity="0"/>
+        <stop offset=".68" stop-color="#a83a02" stop-opacity="0"/><stop offset="1" stop-color="#a83a02" stop-opacity=".55"/>
+      </linearGradient>
+      <radialGradient id="wax" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#fff2a0"/><stop offset=".55" stop-color="#ffd23a"/><stop offset="1" stop-color="#f3a51b"/></radialGradient>
+      <radialGradient id="label" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#d9946b"/><stop offset="1" stop-color="#c27a52"/></radialGradient>
+      <radialGradient id="screen" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#2f7a4c"/><stop offset=".7" stop-color="#244f36"/><stop offset="1" stop-color="#18301f"/></radialGradient>
+      <linearGradient id="trail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dfe7f7" stop-opacity="0"/><stop offset="1" stop-color="#dfe7f7" stop-opacity=".45"/></linearGradient>
+      <radialGradient id="warm"><stop offset="0" stop-color="#ffb060"/><stop offset="1" stop-color="#ffb060" stop-opacity="0"/></radialGradient>
+      <radialGradient id="lavaGlow"><stop offset="0" stop-color="#ff8a3c"/><stop offset="1" stop-color="#ff8a3c" stop-opacity="0"/></radialGradient>
+      <radialGradient id="cream"><stop offset="0" stop-color="#ffe6b8"/><stop offset="1" stop-color="#ffe6b8" stop-opacity="0"/></radialGradient>
+      <radialGradient id="cyan"><stop offset="0" stop-color="#7fe3ff"/><stop offset="1" stop-color="#7fe3ff" stop-opacity="0"/></radialGradient>
+      <radialGradient id="vuGlow"><stop offset="0" stop-color="#ffd27a"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="greenGlow"><stop offset="0" stop-color="#6cff9a"/><stop offset="1" stop-color="#6cff9a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="steamG"><stop offset="0" stop-color="#ffffff" stop-opacity=".9"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+    </defs>
+
+    <image href="sala.jpg" x="0" y="0" width="2576" height="1438"/>
+
+    <!-- access highlights -->
+    <image class="hl" id="hlBench" href="sala-luz.jpg" width="2576" height="1438" mask="url(#mBench)" style="animation-delay:0s"/>
+    <image class="hl" id="hlTable" href="sala-luz.jpg" width="2576" height="1438" mask="url(#mTable)" style="animation-delay:1.7s"/>
+    <image class="hl" id="hlAudio" href="sala-luz.jpg" width="2576" height="1438" mask="url(#mAudio)" style="animation-delay:3.4s"/>
+
+    <!-- rain on the window (masked around the arc lamp) -->
+    <g mask="url(#mRain)"><g id="streaks"></g><g id="drops"></g></g>
+
+    <!-- oscilloscope: scrolling trace -->
+    <g clip-path="url(#scopeScreen)">
+      <rect x="243" y="740" width="52" height="58" fill="url(#screen)"/>
+      <g stroke="#3f8f5c" stroke-width=".6" opacity=".6">
+        <line x1="256" y1="740" x2="256" y2="798"/><line x1="269" y1="740" x2="269" y2="798"/><line x1="282" y1="740" x2="282" y2="798"/>
+        <line x1="243" y1="754.5" x2="295" y2="754.5"/><line x1="243" y1="769" x2="295" y2="769"/><line x1="243" y1="783.5" x2="295" y2="783.5"/>
+      </g>
+      <path class="trace" id="tracePath" fill="none" stroke="#9dffbf" stroke-width="2.2" stroke-linecap="round"/>
+      <rect x="243" y="740" width="52" height="58" fill="#ffffff" opacity=".05"/>
+    </g>
+
+    <!-- bench LEDs and soldering station display -->
+    <circle class="blink" cx="366" cy="798" r="2.2" fill="#ff4d3d" style="animation-duration:1.3s"/>
+    <circle class="blink" cx="447" cy="797" r="2.2" fill="#4dff8a" style="animation-duration:.9s;animation-delay:-.4s"/>
+    <circle class="blink" cx="455" cy="805" r="2" fill="#ffd23f" style="animation-duration:2.1s;animation-delay:-1s"/>
+
+    <!-- lava lamp -->
+    <g clip-path="url(#lavaGlass)">
+      <rect x="2170" y="578" width="34" height="82" fill="url(#liquid)"/>
+      <g filter="url(#goo)">
+        <ellipse cx="2187" cy="657" rx="11" ry="4.5" fill="url(#wax)"/>
+        <ellipse class="blob" cx="2188" cy="645" rx="5.5" ry="6.5" fill="url(#wax)" style="--rise:-48px;--wx:1.5px;--sx:.9;--sy:1.25;animation-duration:17s;animation-delay:-3s"/>
+        <ellipse class="blob" cx="2186" cy="650" rx="4" ry="4.5" fill="url(#wax)" style="--rise:-60px;--wx:-1px;--sx:1.15;--sy:.85;animation-duration:23s;animation-delay:-11s"/>
+        <ellipse class="blob" cx="2188" cy="628" rx="4.5" ry="5.5" fill="url(#wax)" style="--rise:-30px;--wx:-1.5px;--sx:.85;--sy:1.3;animation-duration:19s;animation-delay:-7s"/>
+        <ellipse class="blob" cx="2187" cy="606" rx="3.5" ry="4" fill="url(#wax)" style="--rise:-16px;--wx:1px;--sx:1.2;--sy:.9;animation-duration:13s;animation-delay:-5s"/>
+      </g>
+      <rect x="2170" y="578" width="34" height="82" fill="url(#liquidEdge)"/>
+      <path d="M2180,592 C2178.5,610 2178.5,630 2180,650" fill="none" stroke="#fff3d0" stroke-width="1.2" stroke-linecap="round" opacity=".45"/>
+    </g>
+
+    <!-- spinning record label (33 rpm) -->
+    <g transform="translate(1741.5 756) scale(1 .26)">
+      <g class="spin">
+        <circle r="12.5" fill="url(#label)"/>
+        <path d="M0,-11.5 A11.5,11.5 0 0 1 10,-5.75 L4.3,-2.5 A5,5 0 0 0 0,-5 Z" fill="#f6e7cc" opacity=".9"/>
+        <path d="M-10,5.75 A11.5,11.5 0 0 1 -10,-5.75 L-4.3,-2.5 A5,5 0 0 0 -4.3,2.5 Z" fill="#6a2e10" opacity=".85"/>
+      </g>
+    </g>
+    <ellipse cx="1741.5" cy="755.7" rx="1.3" ry=".9" fill="#e6e2da"/>
+
+    <!-- tea steam -->
+    <g id="steam" filter="url(#soft)">
+      <ellipse class="steam" cx="1281" cy="990" rx="9" ry="13" fill="url(#steamG)" style="--sx:-8px;animation-delay:0s"/>
+      <ellipse class="steam" cx="1286" cy="990" rx="8" ry="12" fill="url(#steamG)" style="--sx:7px;animation-delay:-1.4s"/>
+      <ellipse class="steam" cx="1279" cy="990" rx="8.5" ry="12.5" fill="url(#steamG)" style="--sx:-3px;animation-delay:-2.8s"/>
+    </g>
+
+    <!-- light sources (screen blend, gentle) -->
+    <g style="mix-blend-mode:screen">
+      <ellipse class="breathe" cx="2188" cy="618" rx="70" ry="80" fill="url(#lavaGlow)" style="--lo:.14;--hi:.26;animation-duration:2.6s"/>
+      <ellipse class="breathe" cx="2492" cy="820" rx="150" ry="110" fill="url(#warm)" style="--lo:.07;--hi:.12;animation-duration:5.5s"/>
+      <ellipse class="breathe" cx="1860" cy="462" rx="140" ry="50" fill="url(#cream)" style="--lo:.05;--hi:.10;animation-duration:7s"/>
+      <ellipse class="breathe" cx="1104" cy="728" rx="90" ry="22" fill="url(#cream)" style="--lo:.25;--hi:.38;animation-duration:6s"/>
+      <ellipse class="breathe" cx="402" cy="690" rx="70" ry="40" fill="url(#cream)" style="--lo:.18;--hi:.3;animation-duration:4.4s"/>
+      <ellipse class="breathe" cx="269" cy="769" rx="44" ry="40" fill="url(#greenGlow)" style="--lo:.08;--hi:.16;animation-duration:1.6s"/>
+      <ellipse class="breathe" cx="1946" cy="767" rx="90" ry="12" fill="url(#cyan)" style="--lo:.10;--hi:.24;animation-duration:3.8s"/>
+      <ellipse class="vu" cx="2044" cy="767" rx="20" ry="10" fill="url(#vuGlow)"/>
+      <ellipse class="vu" cx="2079" cy="767" rx="20" ry="10" fill="url(#vuGlow)" style="animation-delay:-.37s"/>
+      <ellipse class="vu" cx="2068" cy="857" rx="18" ry="10" fill="url(#vuGlow)" style="animation-delay:-.6s"/>
+      <ellipse class="vu" cx="2101" cy="857" rx="18" ry="10" fill="url(#vuGlow)" style="animation-delay:-.21s"/>
+      <ellipse class="vu" cx="1692" cy="921" rx="24" ry="12" fill="url(#vuGlow)" style="animation-delay:-.83s"/>
+      <ellipse class="vu" cx="1735" cy="921" rx="24" ry="12" fill="url(#vuGlow)" style="animation-delay:-.48s"/>
+      <ellipse class="vu" cx="502" cy="806" rx="16" ry="6" fill="url(#vuGlow)" style="animation-duration:2.3s"/>
+    </g>
+
+    <!-- tap zones -->
+    <path class="hit" id="hitBench" data-open="sheetBench" data-hl="hlBench" role="button" tabindex="0" aria-label="Abrir Fogonazo"
+      d="M160,490H606V1072H160Z M238,905H362V1148H238Z"/>
+    <path class="hit" id="hitTable" data-open="sheetTable" data-hl="hlTable" role="button" tabindex="0" aria-label="Abrir Mahjong"
+      d="M834,960H1102V878H1262V988H1358V1234H834Z"/>
+    <path class="hit" id="hitAudio" data-open="sheetAudio" data-hl="hlAudio" role="button" tabindex="0" aria-label="Abrir ajustes de sonido"
+      d="M1495,652H2250V1052H1495Z"/>
+    <text class="zone-label" x="383" y="470" text-anchor="middle">FOGONAZO</text>
+    <text class="zone-label" x="1096" y="860" text-anchor="middle">MAHJONG</text>
+    <text class="zone-label" x="1872" y="630" text-anchor="middle">SONIDO</text>
+  </svg>
+
+  <div class="tools">
+    <button class="tool" id="zonesBtn" type="button" aria-pressed="false" title="Mostrar zonas táctiles" aria-label="Mostrar zonas táctiles">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2.4"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+    </button>
+    <button class="tool" id="fsBtn" type="button" title="Pantalla completa" aria-label="Pantalla completa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
+  <div class="rotate">Girá el teléfono para verlo en horizontal</div>
+
+  <!-- Fogonazo -->
+  <div class="sheet" id="sheetBench" hidden>
+    <div class="kit" role="dialog" aria-modal="true" aria-labelledby="tBench">
+      <div class="txt">
+        <span class="eyebrow">Kit de juego · Nº 1</span>
+        <h2 id="tBench">Fogonazo</h2>
+        <p>Juntá tres componentes iguales, armá especiales y completá los pedidos de cada placa.</p>
+        <span class="soon">Próximamente, en horizontal</span>
+        <button class="btn ghost" type="button" data-close>Volver</button>
+      </div>
+      <div class="stripes" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <!-- Mahjong -->
+  <div class="sheet" id="sheetTable" hidden>
+    <div class="case" role="dialog" aria-modal="true" aria-labelledby="tTable">
+      <div class="felt">
+        <span class="eyebrow">Modo zen</span>
+        <h2 id="tTable">Mahjong</h2>
+        <div class="tiles" aria-hidden="true"><span class="tile">中</span><span class="tile g">發</span><span class="tile b">東</span><span class="tile">萬</span></div>
+        <p>Emparejá fichas libres hasta vaciar la mesa, sin apuro y sin límite de movimientos.</p>
+        <span class="eyebrow">Próximamente</span>
+        <button class="btn ghost" type="button" data-close>Volver</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sound -->
+  <div class="sheet" id="sheetAudio" hidden>
+    <div class="plate" role="dialog" aria-modal="true" aria-labelledby="tAudio">
+      <div class="cap"></div>
+      <div class="face">
+        <div class="head"><h2 id="tAudio">Sonido</h2><span>Ajustes</span></div>
+        <div class="row"><label for="music">Música</label><input id="music" type="range" min="0" max="100" value="70"><output id="musicOut" for="music">70</output></div>
+        <div class="row"><label for="fx">Efectos</label><input id="fx" type="range" min="0" max="100" value="80"><output id="fxOut" for="fx">80</output></div>
+        <div class="row"><label for="rainVol">Lluvia</label><input id="rainVol" type="range" min="0" max="100" value="45"><output id="rainOut" for="rainVol">45</output></div>
+        <div class="foot">
+          <button class="btn switch" id="rainBtn" type="button" aria-pressed="false"><span class="lamp"></span>Lluvia de fondo</button>
+          <button class="btn ghost" type="button" data-close>Listo</button>
+        </div>
+        <p class="note">Prototipo: la lluvia suena de verdad; música y efectos se conectan cuando se integre al juego.</p>
+      </div>
+      <div class="cap"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('scene');
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+
+  // rain outside
+  const streaks = document.getElementById('streaks');
+  for (let i = 0; i < 40; i++) {
+    const x = rnd(840, 1360), len = rnd(26, 62), y = rnd(170, 640);
+    const l = el('line', { x1: x, y1: y, x2: x - len * 0.12, y2: y + len, stroke: '#c8d3ee', 'stroke-width': rnd(0.9, 1.5).toFixed(2), opacity: rnd(0.10, 0.22).toFixed(2), class: 'streak' });
+    l.style.animationDuration = rnd(0.55, 1.05).toFixed(2) + 's';
+    l.style.animationDelay = (-rnd(0, 1)).toFixed(2) + 's';
+    streaks.appendChild(l);
+  }
+  // drops on the glass
+  const drops = document.getElementById('drops');
+  const panes = [[842, 1084, 280, 440], [1108, 1356, 280, 440], [842, 1084, 520, 660], [1108, 1356, 520, 660]];
+  for (let i = 0; i < 20; i++) {
+    const p = panes[i % 4];
+    const x = rnd(p[0] + 6, p[1] - 6), y = rnd(p[2], p[3]), trail = rnd(18, 48);
+    const g = el('g', { class: 'drop' });
+    g.appendChild(el('rect', { x: x - 0.9, y: y - trail, width: 1.8, height: trail, fill: 'url(#trail)' }));
+    g.appendChild(el('ellipse', { cx: x, cy: y, rx: 2.6, ry: 3.4, fill: '#e6ecf8', opacity: 0.8 }));
+    g.appendChild(el('circle', { cx: x - 0.9, cy: y - 1.1, r: 1, fill: '#ffffff' }));
+    g.style.setProperty('--d', Math.round(rnd(50, 130)) + 'px');
+    g.style.setProperty('--dx', rnd(-4, 4).toFixed(1) + 'px');
+    g.style.animationDuration = rnd(4, 9).toFixed(1) + 's';
+    g.style.animationDelay = (-rnd(0, 9)).toFixed(1) + 's';
+    drops.appendChild(g);
+  }
+  // oscilloscope trace: a long sine that scrolls by exactly one period
+  const tp = document.getElementById('tracePath');
+  let d = '';
+  for (let x = 240; x <= 330; x += 1) d += (x === 240 ? 'M' : 'L') + x + ',' + (769 + 13 * Math.sin((x - 240) / 28 * 2 * Math.PI)).toFixed(2);
+  tp.setAttribute('d', d);
+
+  // portrait: show the whole room instead of cropping it
+  const mq = window.matchMedia('(orientation: portrait)');
+  const fit = () => svg.setAttribute('preserveAspectRatio', mq.matches ? 'xMidYMid meet' : 'xMidYMid slice');
+  fit(); mq.addEventListener ? mq.addEventListener('change', fit) : mq.addListener(fit);
+
+  // tools
+  const zonesBtn = document.getElementById('zonesBtn');
+  zonesBtn.addEventListener('click', () => { const on = svg.classList.toggle('zones'); zonesBtn.setAttribute('aria-pressed', String(on)); });
+  const fsBtn = document.getElementById('fsBtn');
+  if (!document.fullscreenEnabled) fsBtn.hidden = true;
+  fsBtn.addEventListener('click', async () => {
+    try {
+      if (document.fullscreenElement) { await document.exitFullscreen(); return; }
+      await document.documentElement.requestFullscreen();
+      try { await screen.orientation.lock('landscape'); } catch (e) {}
+    } catch (e) { fsBtn.hidden = true; }
+  });
+
+  // doors
+  let lastHit = null;
+  const openSheet = (hit) => {
+    const hl = document.getElementById(hit.dataset.hl), sheet = document.getElementById(hit.dataset.open);
+    hl.classList.remove('flash'); void hl.getBoundingClientRect(); hl.classList.add('flash');
+    lastHit = hit;
+    setTimeout(() => { sheet.hidden = false; const f = sheet.querySelector('input, button'); if (f) f.focus({ preventScroll: true }); }, 260);
+  };
+  document.querySelectorAll('.hl').forEach(h => h.addEventListener('animationend', (e) => { if (e.animationName === 'flash') h.classList.remove('flash'); }));
+  document.querySelectorAll('.hit').forEach(hit => {
+    hit.addEventListener('click', () => openSheet(hit));
+    hit.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSheet(hit); } });
+  });
+  const closeAll = () => { document.querySelectorAll('.sheet').forEach(s => s.hidden = true); if (lastHit) lastHit.focus({ preventScroll: true }); };
+  document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeAll));
+  document.querySelectorAll('.sheet').forEach(s => s.addEventListener('click', (e) => { if (e.target === s) closeAll(); }));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
+
+  for (const [id, out] of [['music', 'musicOut'], ['fx', 'fxOut'], ['rainVol', 'rainOut']]) {
+    const i = document.getElementById(id), o = document.getElementById(out);
+    i.addEventListener('input', () => { o.value = i.value; if (id === 'rainVol') setRain(); });
+  }
+
+  // rain sound: filtered pink noise with a slow swell
+  let ctx = null, gain = null, playing = false;
+  const rainBtn = document.getElementById('rainBtn');
+  function build() {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const len = ctx.sampleRate * 4, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const dd = buf.getChannelData(c); let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < len; i++) {
+        const w = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759; b2 = 0.96900 * b2 + w * 0.1538520;
+        b3 = 0.86650 * b3 + w * 0.3104856; b4 = 0.55000 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.0168980;
+        dd[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11; b6 = w * 0.115926;
+        if (Math.random() < 0.0009) dd[i] += rnd(-0.5, 0.5);
+      }
+    }
+    const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 260;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600;
+    const swell = ctx.createGain(); swell.gain.value = 0.85;
+    const lfo = ctx.createOscillator(); lfo.frequency.value = 0.07;
+    const lfoAmt = ctx.createGain(); lfoAmt.gain.value = 0.15; lfo.connect(lfoAmt).connect(swell.gain);
+    gain = ctx.createGain(); gain.gain.value = 0;
+    src.connect(hp).connect(lp).connect(swell).connect(gain).connect(ctx.destination);
+    src.start(); lfo.start();
+  }
+  function setRain() {
+    if (!ctx) return;
+    const v = playing ? document.getElementById('rainVol').value / 100 * 0.6 : 0;
+    gain.gain.setTargetAtTime(v, ctx.currentTime, 0.25);
+  }
+  rainBtn.addEventListener('click', async () => {
+    try {
+      if (!ctx) build();
+      if (ctx.state === 'suspended') await ctx.resume();
+      playing = !playing; rainBtn.setAttribute('aria-pressed', String(playing)); setRain();
+    } catch (e) { rainBtn.disabled = true; }
+  });
+})();
+</script>
+</body>
+</html>
