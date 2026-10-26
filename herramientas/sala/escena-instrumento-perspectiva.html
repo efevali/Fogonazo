@@ -77,10 +77,12 @@ for (const fx of [F.x0 + 40, F.x1 - 90]) add(`<rect x="${fx}" y="${F.y1 - 4}" wi
 // screen: bezel, CRT
 const S = { x: 676, y: 290, w: 480, h: 356 };
 add(`<rect x="${S.x - 16}" y="${S.y - 16}" width="${S.w + 32}" height="${S.h + 32}" rx="22" fill="#1b1916"/><rect x="${S.x}" y="${S.y}" width="${S.w}" height="${S.h}" rx="16" fill="url(#crt)"/>`);
+if (!CLEAN) {
 add(`<g stroke="#3f8f5c" stroke-width="1" opacity=".55">`);
 for (let i = 1; i < 10; i++) add(`<line x1="${S.x + i * S.w / 10}" y1="${S.y + 8}" x2="${S.x + i * S.w / 10}" y2="${S.y + S.h - 8}" stroke-dasharray="${i === 5 ? '0' : '2 6'}"/>`);
 for (let j = 1; j < 8; j++) add(`<line x1="${S.x + 8}" y1="${S.y + j * S.h / 8}" x2="${S.x + S.w - 8}" y2="${S.y + j * S.h / 8}" stroke-dasharray="${j === 4 ? '0' : '2 6'}"/>`);
 add(`</g>`);
+}
 // control area: power lamp, two selectors, BNC sockets
 const C = { x: 1184, y: 270, w: 292, h: 392 };
 add(`<rect x="${C.x}" y="${C.y}" width="${C.w}" height="${C.h}" rx="8" fill="#2f2c28"/>`);
