@@ -33,6 +33,7 @@ add(`<defs>
   <radialGradient id="crt" cx=".5" cy=".5" r=".7"><stop offset="0" stop-color="#16402a"/><stop offset=".75" stop-color="#0d2a1b"/><stop offset="1" stop-color="#06140c"/></radialGradient>
   <radialGradient id="knob" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#5a5550"/><stop offset=".6" stop-color="#2a2724"/><stop offset="1" stop-color="#141210"/></radialGradient>
   <radialGradient id="cone" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#5b5048"/><stop offset=".3" stop-color="#2c2622"/><stop offset=".85" stop-color="#3b332d"/><stop offset="1" stop-color="#1c1815"/></radialGradient>
+  <linearGradient id="coneLight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe2a8" stop-opacity=".55"/><stop offset=".6" stop-color="#ffc070" stop-opacity=".16"/><stop offset="1" stop-color="#ffb060" stop-opacity=".04"/></linearGradient>
   <radialGradient id="lamp" cx=".18" cy=".05" r=".9"><stop offset="0" stop-color="#ffd9a0" stop-opacity=".45"/><stop offset=".5" stop-color="#ffb060" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
   <filter id="sh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#1a0c04" flood-opacity=".5"/></filter>
   <filter id="glow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
@@ -58,10 +59,8 @@ add(`<g transform="rotate(-3 ${mx + mw / 2} ${my + mh / 2})" filter="url(#sh)"><
   ${[0, 1, 2, 3].map(i => `<rect x="${mx + 24}" y="${my + 258 + i * 9}" width="${mw - 48}" height="3" fill="#b5b1a9"/>`).join('')}
   <circle cx="${mx + mw / 2}" cy="${my + 8}" r="7" fill="#c8402c"/></g>`);
 
-// ---------- lamp from the top-left ----------
-add(`<path d="M-20,40 L170,130 L250,70" stroke="#2f5a3a" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M215,52 L300,120 L250,170 Z" fill="#2f6b45"/><ellipse cx="275" cy="146" rx="30" ry="12" fill="#ffe6a8" transform="rotate(-40 275 146)"/>`);
-
+// ---------- light: a warm cone from an unseen lamp above ----------
+const cone = `<polygon points="560,-20 760,-20 1350,${H} -40,${H}" fill="url(#coneLight)" style="mix-blend-mode:screen"/>`;
 // ---------- oscilloscope: front face facing the camera, top face in perspective ----------
 const F = { x0: 640, x1: 1500, y0: 214, y1: 690 }, k = .3;
 const tl = [F.x0, F.y0], tr = [F.x1, F.y0], btl = toVP(tl, k), btr = toVP(tr, k);
@@ -114,8 +113,10 @@ if (!CLEAN) {
 }
 
 // ---------- pertinax board lying on the bench, with the speaker beside it ----------
-const F1 = [40, 790], F2 = [520, 790], t = .26, B1 = toVP(F1, t), B2 = toVP(F2, t);
-const P = (u, v) => lerp(lerp(F1, F2, v), lerp(B1, B2, v), u);  // u: depth 0 front .. 1 back, v: 0 left .. 1 right
+const G = (X, Z) => lerp([X, 800], VP, Z / (Z + 1500));         // ground plane: X across, Z away from the camera
+const ROT = -11 * Math.PI / 180, GC = [310, 330], GW = 480, GD = 520;  // board centre, width and depth (ground units)
+const P = (u, v) => { const lx = (v - .5) * GW, lz = (u - .5) * GD; return G(GC[0] + lx * Math.cos(ROT) - lz * Math.sin(ROT), GC[1] + lx * Math.sin(ROT) + lz * Math.cos(ROT)); };
+const F1 = P(0, 0), F2 = P(0, 1), B1 = P(1, 0), B2 = P(1, 1);
 // speaker lying face up behind the board, to the left
 const sc = [170, 500];
 add(`<ellipse cx="${sc[0]}" cy="${sc[1] + 16}" rx="150" ry="62" fill="#1a0c04" opacity=".45"/><ellipse cx="${sc[0]}" cy="${sc[1]}" rx="142" ry="58" fill="#2a2724"/><ellipse cx="${sc[0]}" cy="${sc[1] - 4}" rx="118" ry="46" fill="url(#cone)"/><ellipse cx="${sc[0]}" cy="${sc[1] - 6}" rx="36" ry="14" fill="#b9b3a7"/>`);
@@ -143,7 +144,8 @@ const w0 = P(.9, .02), w1 = P(.86, .02);
 add(`<path d="M${w0[0]},${w0[1]} C${w0[0] - 20},${w0[1] - 60} ${sc[0] + 60},${sc[1] + 70} ${sc[0] + 90},${sc[1] + 20}" stroke="#c8402c" stroke-width="5" fill="none"/><path d="M${w1[0]},${w1[1]} C${w1[0] - 30},${w1[1] - 50} ${sc[0] + 40},${sc[1] + 80} ${sc[0] + 70},${sc[1] + 30}" stroke="#1c1a18" stroke-width="5" fill="none"/>`);
 
 // ---------- lamp light ----------
-add(`<rect width="${W}" height="${H}" fill="url(#lamp)" style="mix-blend-mode:screen"/>`);
+add(cone);
+add(`<rect width="${W}" height="${H}" fill="#000" opacity=".18" style="mix-blend-mode:multiply"/>`);
 
 // ---------- the phone's crop (20:9) and the back label, only in the annotated version ----------
 if (!CLEAN) {
