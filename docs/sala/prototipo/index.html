@@ -71,7 +71,9 @@ body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hid
 /* access highlights: a brightened copy of the room, masked to each object, pulsing in turn */
 .hl { opacity: 0; animation: hint 5.1s ease-in-out infinite; pointer-events: none; }
 @keyframes hint { 0%, 100% { opacity: 0; } 22% { opacity: .5; } 44% { opacity: 0; } }
-.hl.flash { animation: flash .45s ease-out 1; }
+/* touch feedback on its own layer, so the hint cycle above is never restarted and keeps its turn */
+.fl { opacity: 0; pointer-events: none; }
+.fl.flash { animation: flash .45s ease-out 1; }
 @keyframes flash { 0% { opacity: .95; } 100% { opacity: 0; } }
 
 .hit { fill: transparent; cursor: pointer; outline: none; }
@@ -81,7 +83,7 @@ body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hid
 .zones .zone-label { display: block; }
 
 @media (prefers-reduced-motion: reduce) {
-  .streak, .drop, .blob, .spin, .breathe, .vu, .blink, .trace, .steam, .hl { animation: none !important; }
+  .streak, .drop, .blob, .spin, .breathe, .vu, .blink, .trace, .steam, .hl, .fl { animation: none !important; }
 }
 
 /* ---------- chrome ---------- */
@@ -198,6 +200,7 @@ input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset:
     <image class="hl" id="hlBench" href="sala-luz.jpg" width="2576" height="1438" mask="url(#mBench)" style="animation-delay:0s"/>
     <image class="hl" id="hlTable" href="sala-luz.jpg" width="2576" height="1438" mask="url(#mTable)" style="animation-delay:1.7s"/>
     <image class="hl" id="hlAudio" href="sala-luz.jpg" width="2576" height="1438" mask="url(#mAudio)" style="animation-delay:3.4s"/>
+    <image class="fl" id="flash" href="sala-luz.jpg" width="2576" height="1438" mask="url(#mBench)"/>
 
     <!-- rain on the window (masked around the arc lamp) -->
     <g mask="url(#mRain)"><g id="streaks"></g><g id="drops"></g></g>
@@ -394,14 +397,16 @@ input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset:
   });
 
   // doors
+  const flash = document.getElementById('flash');
+  flash.addEventListener('animationend', () => flash.classList.remove('flash'));
   let lastHit = null;
   const openSheet = (hit) => {
     const hl = document.getElementById(hit.dataset.hl), sheet = document.getElementById(hit.dataset.open);
-    hl.classList.remove('flash'); void hl.getBoundingClientRect(); hl.classList.add('flash');
+    flash.setAttribute('mask', hl.getAttribute('mask'));
+    flash.classList.remove('flash'); void flash.getBoundingClientRect(); flash.classList.add('flash');
     lastHit = hit;
     setTimeout(() => { sheet.hidden = false; const f = sheet.querySelector('input, button'); if (f) f.focus({ preventScroll: true }); }, 260);
   };
-  document.querySelectorAll('.hl').forEach(h => h.addEventListener('animationend', (e) => { if (e.animationName === 'flash') h.classList.remove('flash'); }));
   document.querySelectorAll('.hit').forEach(hit => {
     hit.addEventListener('click', () => openSheet(hit));
     hit.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSheet(hit); } });

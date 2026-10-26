@@ -7,7 +7,7 @@ Trabajo en curso: la pantalla de inicio de la colección de minijuegos que va a 
 - **Imagen base vigente:** [`arte/sala-v2.png`](arte/sala-v2.png), de 2752 × 1536, generada con Gemini. Vista frontal de un living de los 70, al atardecer con lluvia.
 - **Prototipo:** [`prototipo/`](prototipo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/prototipo/. Es la misma página que el artefacto «Sala de los 70» de claude.ai, con la imagen en alta.
 - Producto lo vio y dijo: «tiene aspecto de juego profesional».
-- Producto lo probó en el teléfono (25/10): los objetos activos se ven bien. Queda un detalle del brillo (ver «Por revisar»).
+- Producto lo probó en el teléfono (25/10): los objetos activos se ven bien. El brillo que se repetía después de tocar un objeto se arregló el 26/10 (ver «Por revisar»).
 
 ## Qué hace el prototipo
 
@@ -80,8 +80,8 @@ El resultado (historial, 3) salió bien salvo el mahjong: el muro de fichas eran
 ## Por revisar
 
 - **La lámpara de arco** se lee como apoyada contra la ventana, detrás del sillón, y no sobre la mesa. Se decidió dejarla así: corregirla toca la geometría y es arriesgado.
-- **El brillo de un objeto activo después de usarlo.** Al cerrar el panel y volver a la sala, al rato el sector que se tocó se vuelve a iluminar solo. Causa: el destello del toque reemplaza la animación de aviso y, cuando termina, esa animación arranca de cero, así que el objeto brilla de nuevo enseguida y queda desfasado de los otros dos. Arreglo posible: devolverle la animación con el desfase que le corresponde en el ciclo. Se corrige más adelante.
-- **Coherencia entre la sala y cada juego.** El mahjong tiene hoy la estética de Kasa (verde papel y tinta azul) y Fogonazo la de 8 y 16 bits; la sala es una ilustración de los 70. Falta decidir si cada juego conserva su aspecto o se acerca al de la sala, y cómo se pasa de la sala al juego.
+- ~~**El brillo de un objeto activo después de usarlo.**~~ Arreglado el 26/10. Al cerrar el panel, el objeto tocado se volvía a iluminar enseguida y quedaba desfasado de los otros dos, porque el destello del toque reemplazaba la animación de aviso y esta arrancaba de cero. Ahora el destello va en una capa propia y el ciclo de aviso no se interrumpe nunca.
+- **Coherencia entre la sala y cada juego.** El mahjong tiene hoy la estética de Kasa (verde papel y tinta azul) y Fogonazo la de 8 y 16 bits; la sala es una ilustración de los 70. Decidido el 26/10: Fogonazo deja el pixel art, y los juegos pueden tener estilos distintos pero tienen que sentirse parte de la colección. Falta definir cómo se ve cada juego y cómo se pasa de la sala al juego.
 
 ## Lo que sigue
 

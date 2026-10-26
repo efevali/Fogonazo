@@ -28,7 +28,7 @@ Criterios que valen siempre:
 - **Primero se conversa y se acuerda, después se implementa.** Nada se cambia en el código en el momento de la revisión.
 - **Primero boceto, siempre.** Antes de cambiar diseño, interfaz o sonido se muestra un boceto para aprobar. Los arreglos de errores y los ajustes ya acordados se aplican directo, y también lo que Producto pida implementar sin boceto.
 - **Lo visual se aprueba viéndolo**: bocetos en PNG de tamaño real, para comparar en la galería del teléfono. **El sonido, escuchándolo**: una página de prueba con las opciones, como el [muestrario](docs/muestrario.html).
-- **8 bits es el estilo por defecto y no se saca.** Todo cambio visual o de sonido se resuelve en los dos estilos.
+- **8 bits es el estilo por defecto y no se saca.** Todo cambio visual o de sonido se resuelve en los dos estilos. *Vale para el Fogonazo publicado; en la colección se reemplaza: Fogonazo deja el pixel art (ver el [registro de decisiones](docs/decisiones.md#colección-y-mahjong-en-curso), 26/10).*
 - **Implementación integral**: no se publica nada aislado ni se dejan cabos sueltos.
 - **Sin duplicados**: lo que está en el juego o en este repositorio no se guarda aparte.
 
