@@ -50,10 +50,10 @@ Las referencias que se usaron para orientar el estilo (las ilustraciones isomét
 
 ### Trabajo con Gemini en Drive
 
-Desde el 25/10 el intercambio con Gemini pasa por una carpeta privada del Drive de Producto, «IAs - Proyectos / Minijuegos», a la que Desarrollo entra con los conectores de Google Drive y Google Docs. Gemini trabaja dentro de una Gem llamada «Minijuegos». Producto supervisa y aprueba cada paso, sin copiar y pegar los pedidos.
+Desde el 25/10 el intercambio con Gemini pasa por una carpeta privada del Drive de Producto, «IAs - Proyectos / Minijuegos», a la que Desarrollo entra con los conectores de Google Drive y Google Docs. Gemini trabaja dentro de una Gem llamada «Minijuegos». Producto supervisa y aprueba cada paso. Los dos documentos los escribe Desarrollo; Gemini los lee y propone, porque desde la Gem la edición en Drive resultó poco confiable (hubo que clonar la memoria para que pudiera escribirla y, en el uso, terminaba ofreciendo el texto para pegar).
 
 - **Mesa de trabajo Claude y Gemini:** el documento conjunto. Cada pedido de imagen lleva número (P-001, P-002…) y reúne en un solo lugar el pedido, la aprobación de Producto, la entrega de Gemini, la revisión de Desarrollo y el cierre. También están ahí lo vigente y los temas abiertos.
-- **Memoria de Gemini:** la documentación propia de Gemini (su rol, las reglas de trabajo, la guía de estilo, el inventario de la sala y los hitos). Reemplaza a su ficha anterior, que quedó en Superados.
+- **Memoria de Gemini:** la documentación propia de Gemini (su rol, las reglas de trabajo, la guía de estilo, el inventario de la sala y los hitos). Reemplaza a su ficha anterior; las versiones viejas quedaron en Superados.
 - **Carpetas:** Vigentes (las imágenes en uso), Superados (lo reemplazado) y Referencias (material de terceros para orientar el estilo).
 - **Este repositorio sigue siendo la fuente de verdad.** Las imágenes aprobadas se copian a `arte/` y las decisiones se registran en el registro de decisiones.
 
