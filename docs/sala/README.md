@@ -43,23 +43,25 @@ Las referencias que se usaron para orientar el estilo (las ilustraciones isomét
 
 - **Gemini genera las imágenes; Desarrollo hace todo lo demás**: la composición, la revisión (lógica de los muebles, posición de los objetos activos, franja segura), las zonas táctiles, los brillos, las animaciones y el código.
 - **Cambios puntuales sobre la misma base.** Se le pide a Gemini que cambie una sola cosa y deje el resto «exactamente igual». Funciona: al corregir el mahjong cambió alrededor del 1 % de la imagen, y la comparación píxel por píxel mostró todo lo demás idéntico. Importa porque las zonas táctiles y las animaciones se miden sobre la imagen: si algo se mueve, hay que volver a medir.
-- **Bajar la imagen con la opción de descarga de Gemini.** Copiarla, compartirla o capturarla da una vista previa (salió una de 512 × 286). La descarga dio 2752 × 1536 en PNG.
+- **Bajar la imagen con la opción de descarga de Gemini.** Copiarla, compartirla o capturarla da una vista previa (salió una de 512 × 286). La descarga dio 2752 × 1536 en PNG. Que Gemini suba la imagen directo a Drive también da una versión reducida (salió un JPEG de 1375 × 768 con nombre .png).
 - **Proporción.** La imagen es casi 16:9 y el teléfono en horizontal ronda 20:9: se recorta arriba y abajo. Lo importante tiene que quedar en la franja central, alrededor del 80 % del alto.
 - **Coordenadas del prototipo.** Están en el sistema de 2576 × 1438 de la primera descarga; la imagen en alta se dibuja escalada en ese mismo recuadro y coincide sin corrimientos (se verificó).
 - **Lo que se anima, chico y simple.** Cuando la imagen ya trae algo que se va a animar (la cera de la lámpara de lava, la etiqueta del disco, la traza del osciloscopio), se repinta encima.
 
 ### Trabajo con Gemini en Drive
 
-Desde el 25/10 el intercambio con Gemini pasa por una carpeta privada del Drive de Producto, «IAs - Proyectos / Minijuegos», a la que Desarrollo entra con los conectores de Google Drive y Google Docs. Gemini trabaja dentro de una Gem llamada «Minijuegos». Producto supervisa y aprueba cada paso. Los dos documentos los escribe Desarrollo; Gemini los lee y propone, porque desde la Gem la edición en Drive resultó poco confiable (hubo que clonar la memoria para que pudiera escribirla y, en el uso, terminaba ofreciendo el texto para pegar).
+Desde el 25/10, Gemini es una herramienta de edición de imágenes: ejecuta pedidos escritos por Desarrollo y aprobados por Producto, dentro de una Gem llamada «Minijuegos». El intercambio pasa por la carpeta privada «IAs - Proyectos / Minijuegos» del Drive de Producto, a la que Desarrollo entra con los conectores de Google Drive y Google Docs.
 
-- **Mesa de trabajo Claude y Gemini:** el documento conjunto. Cada pedido de imagen lleva número (P-001, P-002…) y reúne en un solo lugar el pedido, la aprobación de Producto, la entrega de Gemini, la revisión de Desarrollo y el cierre. También están ahí lo vigente y los temas abiertos.
-- **Memoria de Gemini:** la documentación propia de Gemini (su rol, las reglas de trabajo, la guía de estilo, el inventario de la sala y los hitos). Reemplaza a su ficha anterior; las versiones viejas quedaron en Superados.
-- **Carpetas:** Vigentes (las imágenes en uso), Superados (lo reemplazado) y Referencias (material de terceros para orientar el estilo).
+- **Mesa de trabajo:** el único documento. Lo escribe Desarrollo y Gemini lo lee antes de cada trabajo. Tiene la mecánica general (roles, ciclo de cada pedido, carpetas), las exigencias técnicas (formato y resolución, ediciones puntuales, franja segura, objetos activos, elementos animados, objetos sueltos, nombres de archivo), lo vigente, los temas abiertos y los pedidos en curso. Es general: lo propio de cada pantalla va solo en «Lo vigente» y en los pedidos. Queda solo lo actual; el historial se guarda en este repositorio.
+- **Carpetas:** Entregas (lo entregado, sin revisar), Vigentes (lo que está en uso), Superados (lo reemplazado) y Referencias (material de terceros para orientar el estilo). Desarrollo revisa cada entrega y, si se aprueba, la mueve a Vigentes y pasa la anterior a Superados.
+- **Los pedidos siguen la numeración P-002, P-003…** El P-001 es la corrección del mahjong (abajo).
 - **Este repositorio sigue siendo la fuente de verdad.** Las imágenes aprobadas se copian a `arte/` y las decisiones se registran en el registro de decisiones.
+
+Antes se probó que Gemini tuviera rol de equipo, con una memoria propia que editaba él mismo y un documento conjunto con Desarrollo. Desde la Gem, la edición resultó poco confiable y la Gem se limita a responder pedidos, así que se descartó. La memoria quedó en Superados.
 
 ### Pedidos a Gemini
 
-Desde el 25/10 los pedidos quedan en la mesa de trabajo; acá están los anteriores. El del sector del equipo de audio lo escribió Producto y no quedó registrado. La sala completa se pidió pasando dos imágenes: la composición S-05 y la del equipo de audio elegida (2a).
+Desde el 25/10 los pedidos se escriben en la mesa de trabajo; cuando se cierran, su historial se registra acá. Los anteriores: El del sector del equipo de audio lo escribió Producto y no quedó registrado. La sala completa se pidió pasando dos imágenes: la composición S-05 y la del equipo de audio elegida (2a).
 
 > Te paso dos imágenes. La primera es un boceto de composición de la sala completa de mi juego (vista frontal). La segunda es la ilustración que ya aprobamos del sector del equipo de audio. Convertí el boceto en una ilustración con exactamente el mismo estilo, paleta e iluminación que la segunda imagen.
 > - Mantené el encuadre y la posición de cada mueble del boceto.
