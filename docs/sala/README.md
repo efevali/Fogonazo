@@ -9,7 +9,7 @@ Trabajo en curso: la pantalla de inicio de la colección de minijuegos que va a 
 - **Prototipo:** [`prototipo/`](prototipo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/prototipo/. Es la misma página que el artefacto «Sala de los 70» de claude.ai, con la imagen en alta.
 - Producto lo vio y dijo: «tiene aspecto de juego profesional».
 - Producto lo probó en el teléfono (25/10): los objetos activos se ven bien. El brillo que se repetía después de tocar un objeto se arregló el 26/10 (ver «Por revisar»).
-- **Maqueta de Fogonazo** (26/10): [`maqueta-fogonazo/`](maqueta-fogonazo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/maqueta-fogonazo/. Es la partida del boceto S-06a con las piezas de Gemini. Ver «Maqueta de Fogonazo» más abajo.
+- **Maqueta de Fogonazo** (26/10): [`maqueta-fogonazo/`](maqueta-fogonazo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/maqueta-fogonazo/. Es la partida del boceto S-06a con las piezas de Gemini. Ver «Maqueta de Fogonazo» más abajo. Producto la probó en el teléfono: «se ve muy bien», y se sigue adelante con esta estética.
 
 ## Qué hace el prototipo
 
@@ -104,7 +104,7 @@ Una partida jugable en horizontal para probar en el teléfono cómo se ven y se 
 
 ## Lo que sigue
 
-1. Maqueta de la partida de Fogonazo en horizontal (boceto S-06a) con las piezas de Gemini recortadas, para probar en el teléfono.
+1. ~~Maqueta de la partida de Fogonazo en horizontal (boceto S-06a) con las piezas de Gemini recortadas, para probar en el teléfono.~~ Hecha y aprobada (26/10).
 2. Estructura de colección en el repositorio: la sala como pantalla de inicio y cada juego como módulo, con lo común aparte (sonido, guardado, «atrás» de Android, instalación).
 3. Fogonazo en horizontal, con tablero de 10 × 8 y el marcador a los costados (referencia: S-03d). Obliga a transponer y recalibrar los niveles.
 4. El mahjong en horizontal (referencia: S-03e).
