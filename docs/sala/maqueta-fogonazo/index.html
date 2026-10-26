@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3a2010">
+<title>Fogonazo · maqueta</title>
+<style>
+/* Mockup of a Fogonazo match in landscape (sketch S-06a), with Gemini's pieces (P-003).
+   Design space: 915 x 412. The stage is sized to fit the screen; 1em = one design unit. */
+@font-face { font-family: Barlow; font-weight: 600; src: url(fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Elite; src: url(fuentes/special-elite-latin-400-normal.woff2) format('woff2'); }
+:root { --wood: #4a2914; --ink: #2c2620; --amber: #ffb648; --alu: #d6d2c8; --alu-shade: #a9a49a; }
+html, body { margin: 0; height: 100%; background: var(--wood); overflow: hidden; }
+body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+[hidden] { display: none !important; }
+
+#stage { position: fixed; left: 0; top: 0; font-size: 1px; width: 915em; height: 412em; overflow: clip; }
+#stage > * { position: absolute; }
+#bg { left: 0; top: 0; width: 100%; height: 100%; display: block; }
+#hud { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+#board { left: 232.5em; top: 26em; width: 450em; height: 360em; overflow: clip; touch-action: none; }
+#light { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;
+  background:
+    radial-gradient(ellipse 75% 75% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,.5) 100%),
+    radial-gradient(ellipse 90% 90% at 22% 5%, rgba(255,217,160,.42) 0%, rgba(255,176,96,.12) 50%, rgba(255,176,96,0) 100%); }
+
+.piece { position: absolute; left: 0; top: 0; width: 43em; height: 43em; pointer-events: none;
+  transition-property: transform; transition-timing-function: cubic-bezier(.4, 0, .6, 1); will-change: transform; }
+.piece.fall { transition-timing-function: cubic-bezier(.5, 0, .75, 1.18); }
+.piece.pop { animation: pop .24s ease-in forwards; }
+@keyframes pop { 0% { opacity: 1; } 35% { opacity: 1; filter: brightness(1.8); } 100% { opacity: 0; filter: brightness(2.4); } }
+#sel { position: absolute; left: 0; top: 0; width: 42em; height: 42em; border-radius: 7em; pointer-events: none;
+  background: rgba(255, 210, 122, .33); box-shadow: 0 0 0 2.4em var(--amber) inset, 0 0 6em rgba(255, 182, 72, .8); }
+.spark { position: absolute; left: 0; top: 0; width: 45em; height: 45em; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, #fffbe8 0%, #ffe48a 22%, rgba(255, 170, 60, .55) 45%, rgba(255, 140, 40, 0) 70%);
+  animation: spark .3s ease-out forwards; mix-blend-mode: screen; }
+@keyframes spark { from { opacity: 1; transform: scale(.25); } to { opacity: 0; transform: scale(1.7); } }
+
+#pause { font-size: inherit; left: 848em; top: 14em; width: 38em; height: 38em; border-radius: 50%; border: 0; background: transparent; cursor: pointer; padding: 0; }
+#pause:focus-visible { outline: 2em solid var(--amber); outline-offset: 1em; }
+
+/* overlays: an aluminum plate like the left panel */
+.sheet { left: 0; top: 0; width: 100%; height: 100%; display: grid; place-items: center; background: rgba(20, 10, 4, .55); }
+.plate { width: 330em; padding: 20em 24em 18em; border-radius: 8em; color: #2c2924; display: grid; gap: 10em;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, rgba(0,0,0,.03) 1px 2px), linear-gradient(180deg, var(--alu), var(--alu-shade));
+  box-shadow: 0 14em 30em rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.6); }
+.plate h2 { margin: 0; font: 700 24em/1 Barlow; letter-spacing: .12em; text-transform: uppercase; }
+.plate p { margin: 0; font: 600 14em/1.35 Barlow; }
+.plate .row { display: flex; gap: 10em; flex-wrap: wrap; }
+.btn { font: 700 14em/1 Barlow; letter-spacing: .12em; text-transform: uppercase; padding: .75em 1.1em; border-radius: .4em;
+  border: 0; background: #2a2622; color: #f1ebe0; box-shadow: 0 .15em 0 #11100e; cursor: pointer; }
+.btn.ghost { background: transparent; color: #2c2924; box-shadow: inset 0 0 0 .12em #2c2924; }
+.btn:active { transform: translateY(.07em); }
+.btn:focus-visible { outline: .15em solid var(--amber); outline-offset: .15em; }
+.stars { display: flex; gap: 8em; }
+.stars svg { width: 34em; height: 34em; }
+.note { opacity: .7; }
+
+#rotate { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20, 10, 4, .82); color: #f3e6d0;
+  font: 600 18px/1.4 Barlow, sans-serif; text-align: center; padding: 24px; z-index: 5; }
+@media (orientation: portrait) { #rotate { display: grid; } }
+</style>
+</head>
+<body>
+<div id="stage">
+  <img id="bg" src="fondo.webp" alt="" draggable="false">
+  <svg id="hud" viewBox="0 0 915 412" aria-hidden="true">
+    <defs>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <clipPath id="dialClip"><rect x="48" y="212" width="130.5" height="92" rx="3"/></clipPath>
+    </defs>
+    <g id="digits" filter="url(#glow)"></g>
+    <g clip-path="url(#dialClip)"><line id="needle" x1="113.25" y1="318" x2="113.25" y2="238" stroke="#1b1612" stroke-width="2" stroke-linecap="round"/></g>
+    <g id="starFill"></g>
+    <text id="score" x="113.25" y="332" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="22" letter-spacing="1" fill="#2c2924">0</text>
+    <g id="orders" transform="rotate(1.6 805.75 199)"></g>
+  </svg>
+  <div id="board" role="application" aria-label="Placa de 10 por 8 componentes"><div id="sel" hidden></div></div>
+  <div id="light"></div>
+  <button id="pause" type="button" aria-label="Pausa"></button>
+
+  <div class="sheet" id="menu" hidden>
+    <div class="plate" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+      <h2 id="menuTitle">Pausa</h2>
+      <div class="row">
+        <button class="btn" type="button" data-act="resume">Seguir</button>
+        <button class="btn ghost" type="button" data-act="restart">Empezar de nuevo</button>
+      </div>
+      <div class="row">
+        <button class="btn ghost" type="button" data-act="sound" id="soundBtn">Sonido: sí</button>
+        <button class="btn ghost" type="button" data-act="full" id="fullBtn">Pantalla completa</button>
+        <button class="btn ghost" type="button" data-act="room">Ir a la sala</button>
+      </div>
+      <p class="note">Maqueta: solo intercambios, cascadas y pedido. Sin especiales ni obstáculos todavía.</p>
+    </div>
+  </div>
+
+  <div class="sheet" id="end" hidden>
+    <div class="plate" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+      <h2 id="endTitle">Placa armada</h2>
+      <div class="stars" id="endStars"></div>
+      <p id="endText"></p>
+      <div class="row">
+        <button class="btn" type="button" data-act="restart">Otra vez</button>
+        <button class="btn ghost" type="button" data-act="room">Ir a la sala</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="rotate">Girá el teléfono para jugar en horizontal</div>
+
+<script>
+(() => {
+  'use strict';
+  const COLS = 10, ROWS = 8, TYPES = 7, C = 45;
+  const LEVEL = { moves: 25, orders: [[2, 10], [4, 10], [6, 8]], stars: [500, 1000, 1600], bonus: 50 };
+  const NS = 'http://www.w3.org/2000/svg';
+  const $ = id => document.getElementById(id);
+  const stage = $('stage'), board = $('board'), selEl = $('sel');
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+
+  // ---------- stage fit: 1em = one design unit ----------
+  let s = 1;
+  function fit() {
+    const vv = window.visualViewport;
+    const w = document.documentElement.clientWidth || innerWidth, h = (vv && vv.height) || innerHeight;
+    s = Math.min(w / 915, h / 412);
+    stage.style.fontSize = s + 'px';
+    stage.style.left = ((w - 915 * s) / 2) + 'px';
+    stage.style.top = ((h - 412 * s) / 2) + 'px';
+  }
+  addEventListener('resize', fit); if (window.visualViewport) visualViewport.addEventListener('resize', fit); fit();
+
+  // ---------- seven-segment display ----------
+  const SEG = { 0: 'abcdef', 1: 'bc', 2: 'abged', 3: 'abgcd', 4: 'fgbc', 5: 'afgcd', 6: 'afgedc', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' };
+  const segEls = [];
+  (function buildDigits() {
+    const g = $('digits'), w = 28, h = 42, t = w * .2;
+    const R = { a: [t * .6, 0, w - t * 1.2, t], d: [t * .6, h - t, w - t * 1.2, t], g: [t * .6, h / 2 - t / 2, w - t * 1.2, t],
+      f: [0, t * .6, t, h / 2 - t * .9], b: [w - t, t * .6, t, h / 2 - t * .9], e: [0, h / 2 + t * .3, t, h / 2 - t * .9], c: [w - t, h / 2 + t * .3, t, h / 2 - t * .9] };
+    for (let i = 0; i < 2; i++) {
+      const dg = document.createElementNS(NS, 'g');
+      dg.setAttribute('transform', `translate(${81.25 + i * 38} 112) skewX(-7)`);
+      const map = {};
+      for (const k in R) {
+        const r = document.createElementNS(NS, 'rect'); const [x, y, ww, hh] = R[k];
+        r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', ww); r.setAttribute('height', hh); r.setAttribute('rx', t / 2);
+        dg.appendChild(r); map[k] = r;
+      }
+      g.appendChild(dg); segEls.push(map);
+    }
+  })();
+  function showMoves(n) {
+    const str = String(Math.max(0, n)).padStart(2, ' ');
+    [...str].forEach((ch, i) => { for (const k in segEls[i]) segEls[i][k].setAttribute('fill', (SEG[ch] || '').includes(k) ? '#ff3a26' : 'rgba(0,0,0,0)'); });
+  }
+
+  // ---------- meter: needle and stars ----------
+  const STAR_DEG = [-20, 14, 44];
+  const starPath = (cx, cy, r, ri = r * .45) => { let p = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? ri : r; p += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(2) + ',' + (cy + rr * Math.sin(a)).toFixed(2); } return p + 'Z'; };
+  const starEls = STAR_DEG.map(d => {
+    const a = (-90 + d) * Math.PI / 180, p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', starPath(113.25 + 52 * Math.cos(a), 318 + 52 * Math.sin(a), 7.5)); p.setAttribute('fill', 'none');
+    p.setAttribute('stroke', '#3a3128'); p.setAttribute('stroke-width', '1.2'); $('starFill').appendChild(p); return p;
+  });
+  const needle = $('needle');
+  needle.style.transformOrigin = '113.25px 318px'; needle.style.transformBox = 'view-box'; needle.style.transition = 'transform .7s cubic-bezier(.3,1.4,.5,1)';
+  function needleDeg(sc) {
+    const [a, b, c] = LEVEL.stars;
+    if (sc <= a) return -48 + 28 * sc / a;
+    if (sc <= b) return -20 + 34 * (sc - a) / (b - a);
+    if (sc <= c) return 14 + 30 * (sc - b) / (c - b);
+    return Math.min(48, 44 + 4 * (sc - c) / c);
+  }
+  const starsFor = sc => LEVEL.stars.filter(t => sc >= t).length;
+
+  // ---------- order card ----------
+  const orderEls = [];
+  (function buildOrders() {
+    const g = $('orders');
+    LEVEL.orders.forEach(([t], i) => {
+      const y = 124 + i * 66;
+      const img = document.createElementNS(NS, 'image');
+      img.setAttribute('href', `piezas/pieza${t}.png`); img.setAttribute('x', 726); img.setAttribute('y', y - 6); img.setAttribute('width', 56); img.setAttribute('height', 56);
+      const tx = document.createElementNS(NS, 'text');
+      tx.setAttribute('x', 789); tx.setAttribute('y', y + 31); tx.setAttribute('font-family', 'Elite'); tx.setAttribute('font-size', 22); tx.setAttribute('fill', '#2c2620');
+      const done = document.createElementNS(NS, 'g'); done.setAttribute('visibility', 'hidden');
+      done.innerHTML = `<path d="M785,${y + 23} C813,${y + 21} 843,${y + 25} 866,${y + 22}" stroke="#2c2620" stroke-width="1.8" fill="none"/><path d="M752,${y + 34} l8,9 l18,-26" stroke="#c8402c" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+      g.append(img, tx, done); orderEls.push({ tx, done });
+    });
+  })();
+
+  // ---------- sound: a few short synthesized effects ----------
+  let actx = null, master = null, soundOn = true;
+  try { soundOn = localStorage.getItem('maqueta.sonido') !== 'no'; } catch (e) {}
+  function audio() {
+    if (!soundOn) return null;
+    try {
+      if (!actx) { actx = new (window.AudioContext || window.webkitAudioContext)(); master = actx.createGain(); master.gain.value = .35; master.connect(actx.destination); }
+      if (actx.state === 'suspended') actx.resume();
+    } catch (e) { return null; }
+    return actx;
+  }
+  function tone(f, t0, dur, type = 'triangle', vol = .25, f2) {
+    const a = audio(); if (!a) return;
+    const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + t0;
+    o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .005); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+    o.connect(g).connect(master); o.start(t); o.stop(t + dur + .02);
+  }
+  function crackle(t0, dur, freq, vol) {
+    const a = audio(); if (!a) return;
+    const n = Math.floor(a.sampleRate * dur), buf = a.createBuffer(1, n, a.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (Math.random() < .3 ? 1 : .25);
+    const src = a.createBufferSource(), bp = a.createBiquadFilter(), g = a.createGain(), t = a.currentTime + t0;
+    src.buffer = buf; bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 1.2;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+    src.connect(bp).connect(g).connect(master); src.start(t);
+  }
+  const sfx = {
+    swap: () => tone(880, 0, .05, 'square', .06),
+    zap: chain => { const k = Math.pow(2, Math.min(chain - 1, 6) * 2 / 12); crackle(0, .16, 3200 * k, .35); tone(520 * k, 0, .14, 'triangle', .18, 1040 * k); },
+    nope: () => { tone(150, 0, .09, 'square', .07); tone(120, .1, .12, 'square', .07); },
+    win: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .1, .25, 'triangle', .16)),
+    lose: () => [392, 330, 262].forEach((f, i) => tone(f, i * .14, .3, 'triangle', .14)),
+  };
+
+  // ---------- game state ----------
+  let grid, moves, score, have, busy = false, sel = null, over = false, nextId = 0;
+  const piecePos = (r, c) => [c * C + 1, r * C + 1];
+  function makePiece(t, r, c) {
+    const el = document.createElement('img');
+    el.className = 'piece'; el.src = `piezas/pieza${t}.png`; el.alt = ''; el.draggable = false;
+    const p = { t, el, id: nextId++ };
+    place(p, r, c, 0); board.appendChild(el); return p;
+  }
+  function place(p, r, c, ms, lift = 0) {
+    const [x, y] = piecePos(r, c);
+    p.el.style.transitionDuration = ms + 'ms';
+    p.el.style.transform = `translate(${x}em, ${y + lift}em)` + (lift ? ' scale(1.06)' : '');
+  }
+  const randType = () => Math.floor(Math.random() * TYPES);
+  function makesRun(g, r, c, t) {
+    return (c >= 2 && g[r][c - 1] === t && g[r][c - 2] === t) || (r >= 2 && g[r - 1][c] === t && g[r - 2][c] === t);
+  }
+  function freshTypes() {
+    for (;;) {
+      const g = [];
+      for (let r = 0; r < ROWS; r++) { g.push([]); for (let c = 0; c < COLS; c++) { let t; do t = randType(); while (makesRun(g, r, c, t)); g[r].push(t); } }
+      if (hasMove(g)) return g;
+    }
+  }
+  const typesOf = () => grid.map(row => row.map(p => (p ? p.t : -1)));
+  function runsIn(g) {
+    const cells = new Set();
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS;) { let e = c; while (e + 1 < COLS && g[r][e + 1] === g[r][c]) e++; if (e - c >= 2) for (let k = c; k <= e; k++) cells.add(r * COLS + k); c = e + 1; }
+    for (let c = 0; c < COLS; c++) for (let r = 0; r < ROWS;) { let e = r; while (e + 1 < ROWS && g[e + 1][c] === g[r][c]) e++; if (e - r >= 2) for (let k = r; k <= e; k++) cells.add(k * COLS + c); r = e + 1; }
+    return cells;
+  }
+  function hasMove(g) {
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) for (const [dr, dc] of [[0, 1], [1, 0]]) {
+      const r2 = r + dr, c2 = c + dc; if (r2 >= ROWS || c2 >= COLS) continue;
+      [g[r][c], g[r2][c2]] = [g[r2][c2], g[r][c]];
+      const ok = runsIn(g).size > 0;
+      [g[r][c], g[r2][c2]] = [g[r2][c2], g[r][c]];
+      if (ok) return true;
+    }
+    return false;
+  }
+
+  function hud() {
+    showMoves(moves);
+    $('score').textContent = score.toLocaleString('es-AR');
+    needle.style.transform = `rotate(${needleDeg(score)}deg)`;
+    const st = starsFor(score);
+    starEls.forEach((p, i) => p.setAttribute('fill', i < st ? '#d8962a' : 'none'));
+    LEVEL.orders.forEach(([t, need], i) => {
+      const n = Math.min(have[i], need), done = n >= need;
+      orderEls[i].tx.textContent = `${n} / ${need}`; orderEls[i].tx.setAttribute('fill', done ? '#7a7166' : '#2c2620');
+      orderEls[i].done.setAttribute('visibility', done ? 'visible' : 'hidden');
+    });
+  }
+
+  function newGame() {
+    board.querySelectorAll('.piece, .spark').forEach(e => e.remove());
+    const g = freshTypes();
+    grid = g.map((row, r) => row.map((t, c) => makePiece(t, r, c)));
+    moves = LEVEL.moves; score = 0; have = LEVEL.orders.map(() => 0); sel = null; over = false; busy = false;
+    selEl.hidden = true; $('end').hidden = true; hud();
+  }
+
+  // ---------- selection ----------
+  function select(cell) {
+    if (sel) { const p = grid[sel[0]][sel[1]]; place(p, sel[0], sel[1], 90); }
+    sel = cell;
+    if (!cell) { selEl.hidden = true; return; }
+    const [x, y] = piecePos(cell[0], cell[1]);
+    selEl.style.transform = `translate(${x - .5}em, ${y - .5}em)`; selEl.hidden = false;
+    place(grid[cell[0]][cell[1]], cell[0], cell[1], 90, -3);
+  }
+
+  // ---------- moves and cascades ----------
+  async function trySwap(a, b) {
+    busy = true; select(null);
+    const pa = grid[a[0]][a[1]], pb = grid[b[0]][b[1]];
+    grid[a[0]][a[1]] = pb; grid[b[0]][b[1]] = pa;
+    place(pa, b[0], b[1], 150); place(pb, a[0], a[1], 150); sfx.swap();
+    await wait(160);
+    if (!runsIn(typesOf()).size) {
+      grid[a[0]][a[1]] = pa; grid[b[0]][b[1]] = pb;
+      place(pa, a[0], a[1], 150); place(pb, b[0], b[1], 150); sfx.nope();
+      await wait(160); busy = false; return;
+    }
+    moves--; hud();
+    await resolve();
+    busy = false; checkEnd();
+  }
+
+  async function resolve() {
+    let chain = 0;
+    for (;;) {
+      const cells = runsIn(typesOf());
+      if (!cells.size) break;
+      chain++; sfx.zap(chain);
+      for (const i of cells) {
+        const r = (i / COLS) | 0, c = i % COLS, p = grid[r][c];
+        p.el.classList.add('pop');
+        const sp = document.createElement('div'); sp.className = 'spark';
+        sp.style.translate = `${c * C}em ${r * C}em`; board.appendChild(sp);
+        setTimeout(() => sp.remove(), 320);
+        LEVEL.orders.forEach(([t], k) => { if (p.t === t) have[k]++; });
+        grid[r][c] = null;
+      }
+      score += cells.size * 10 * chain; hud();
+      await wait(230);
+      board.querySelectorAll('.piece.pop').forEach(e => e.remove());
+      // gravity, column by column; new pieces enter from the top edge
+      let longest = 0;
+      for (let c = 0; c < COLS; c++) {
+        let write = ROWS - 1;
+        for (let r = ROWS - 1; r >= 0; r--) {
+          const p = grid[r][c]; if (!p) continue;
+          if (r !== write) {
+            grid[write][c] = p; grid[r][c] = null;
+            const ms = 90 + 55 * Math.sqrt(write - r) * 1.6; longest = Math.max(longest, ms);
+            p.el.classList.add('fall'); place(p, write, c, ms);
+          }
+          write--;
+        }
+        const missing = write + 1;
+        for (let k = 0; k < missing; k++) {
+          const r = write - k, p = makePiece(randType(), r - missing, c);
+          grid[r][c] = p; p.el.classList.add('fall');
+          void p.el.offsetWidth;
+          const ms = 90 + 55 * Math.sqrt(missing) * 1.6; longest = Math.max(longest, ms);
+          place(p, r, c, ms);
+        }
+      }
+      await wait(longest + 40);
+      board.querySelectorAll('.piece.fall').forEach(e => e.classList.remove('fall'));
+    }
+    if (!hasMove(typesOf())) await reshuffle();
+  }
+
+  async function reshuffle() {
+    const g = freshTypes();
+    grid.forEach((row, r) => row.forEach((p, c) => { p.el.style.transitionDuration = '200ms'; p.el.style.opacity = '0'; }));
+    await wait(220);
+    grid.forEach((row, r) => row.forEach((p, c) => { p.t = g[r][c]; p.el.src = `piezas/pieza${p.t}.png`; p.el.style.opacity = '1'; }));
+  }
+
+  function checkEnd() {
+    const won = LEVEL.orders.every(([, need], i) => have[i] >= need);
+    if (!won && moves > 0) return;
+    over = true;
+    const left = moves, bonus = won ? left * LEVEL.bonus : 0;
+    if (bonus) { score += bonus; hud(); }
+    const st = won ? Math.max(1, starsFor(score)) : 0;
+    $('endTitle').textContent = won ? 'Placa armada' : 'Sin movimientos';
+    $('endText').textContent = won
+      ? `${score.toLocaleString('es-AR')} puntos` + (left ? `, con ${bonus} de bonus por ${left} ${left === 1 ? 'movimiento' : 'movimientos'} de sobra.` : '.')
+      : `Faltaron componentes del pedido. ${score.toLocaleString('es-AR')} puntos.`;
+    $('endStars').innerHTML = [0, 1, 2].map(i => `<svg viewBox="0 0 34 34"><path d="${starPath(17, 18, 15)}" fill="${i < st ? '#d8962a' : 'none'}" stroke="#3a3128" stroke-width="1.6"/></svg>`).join('');
+    setTimeout(() => { (won ? sfx.win : sfx.lose)(); $('end').hidden = false; $('end').querySelector('button').focus({ preventScroll: true }); }, 350);
+  }
+
+  // ---------- input: swipe a piece toward a neighbor, or tap two neighbors ----------
+  let drag = null;
+  function cellAt(e) {
+    const rect = board.getBoundingClientRect();
+    const c = Math.floor((e.clientX - rect.left) / (C * s)), r = Math.floor((e.clientY - rect.top) / (C * s));
+    return (r >= 0 && r < ROWS && c >= 0 && c < COLS) ? [r, c] : null;
+  }
+  board.addEventListener('pointerdown', e => {
+    audio();
+    if (busy || over) return;
+    const cell = cellAt(e); if (!cell) return;
+    board.setPointerCapture(e.pointerId);
+    drag = { cell, x: e.clientX, y: e.clientY, used: false };
+  });
+  board.addEventListener('pointermove', e => {
+    if (!drag || drag.used || busy) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y, th = C * s * .32;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < th) return;
+    const [r, c] = drag.cell, t = Math.abs(dx) > Math.abs(dy) ? [r, c + Math.sign(dx)] : [r + Math.sign(dy), c];
+    drag.used = true;
+    if (t[0] >= 0 && t[0] < ROWS && t[1] >= 0 && t[1] < COLS) trySwap(drag.cell, t);
+  });
+  board.addEventListener('pointerup', e => {
+    if (!drag) return;
+    const d = drag; drag = null;
+    if (d.used || busy || over) return;
+    const cell = d.cell;
+    if (!sel) return select(cell);
+    if (sel[0] === cell[0] && sel[1] === cell[1]) return select(null);
+    if (Math.abs(sel[0] - cell[0]) + Math.abs(sel[1] - cell[1]) === 1) return trySwap(sel, cell);
+    select(cell);
+  });
+  board.addEventListener('pointercancel', () => { drag = null; });
+
+  // ---------- menus ----------
+  const menu = $('menu');
+  $('pause').addEventListener('click', () => { if (busy) return; menu.hidden = false; menu.querySelector('button').focus({ preventScroll: true }); });
+  const fullBtn = $('fullBtn');
+  if (!document.fullscreenEnabled) fullBtn.hidden = true;
+  function syncSoundBtn() { $('soundBtn').textContent = 'Sonido: ' + (soundOn ? 'sí' : 'no'); }
+  syncSoundBtn();
+  document.addEventListener('click', async e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const act = b.dataset.act;
+    if (act === 'resume') menu.hidden = true;
+    if (act === 'restart') { menu.hidden = true; newGame(); }
+    if (act === 'room') location.href = '../prototipo/';
+    if (act === 'sound') { soundOn = !soundOn; try { localStorage.setItem('maqueta.sonido', soundOn ? 'si' : 'no'); } catch (err) {} syncSoundBtn(); if (soundOn) sfx.swap(); }
+    if (act === 'full') {
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else { await document.documentElement.requestFullscreen(); try { await screen.orientation.lock('landscape'); } catch (err) {} }
+        setTimeout(fit, 250);
+      } catch (err) { fullBtn.hidden = true; }
+      menu.hidden = true;
+    }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) menu.hidden = true; });
+
+  newGame();
+  window.__maqueta = { state: () => ({ moves, score, have, over, busy, types: typesOf() }), trySwap, hasMove, runsIn, LEVEL };
+})();
+</script>
+</body>
+</html>

@@ -9,6 +9,7 @@ Trabajo en curso: la pantalla de inicio de la colección de minijuegos que va a 
 - **Prototipo:** [`prototipo/`](prototipo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/prototipo/. Es la misma página que el artefacto «Sala de los 70» de claude.ai, con la imagen en alta.
 - Producto lo vio y dijo: «tiene aspecto de juego profesional».
 - Producto lo probó en el teléfono (25/10): los objetos activos se ven bien. El brillo que se repetía después de tocar un objeto se arregló el 26/10 (ver «Por revisar»).
+- **Maqueta de Fogonazo** (26/10): [`maqueta-fogonazo/`](maqueta-fogonazo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/maqueta-fogonazo/. Es la partida del boceto S-06a con las piezas de Gemini. Ver «Maqueta de Fogonazo» más abajo.
 
 ## Qué hace el prototipo
 
@@ -27,6 +28,7 @@ Trabajo en curso: la pantalla de inicio de la colección de minijuegos que va a 
 | [`arte/historial/`](arte/historial/) | Las imágenes anteriores: (1) la prueba del sector del equipo de audio con ChatGPT; (2a) la de Gemini elegida, con la costilla de Adán, que fue la base del primer prototipo; (2b) su alternativa; (3) la primera sala completa de Gemini, con el mahjong mal resuelto. |
 | [`bocetos/`](bocetos/) | Las pruebas que hizo Desarrollo dibujando con código, de la S-01 a la S-05 (ver abajo). |
 | [`prototipo/`](prototipo/) | La página, la imagen base para la web, una copia aclarada para el brillo de los objetos activos y las máscaras de cada objeto activo y de la ventana. |
+| [`maqueta-fogonazo/`](maqueta-fogonazo/index.html) | La maqueta jugable de la partida de Fogonazo: la página, el fondo prerenderizado, las piezas recortadas y las fuentes. |
 
 Las referencias que se usaron para orientar el estilo (las ilustraciones isométricas y las fotos de livings de época) no se guardan acá: son de terceros y el repositorio es público. Para eso está la carpeta Referencias de Drive, que es privada (ver «Trabajo con Gemini en Drive»).
 
@@ -83,6 +85,16 @@ Desde el 25/10 los pedidos se escriben en la mesa de trabajo; cuando se cierran,
 El resultado (historial, 3) salió bien salvo el mahjong: el muro de fichas eran libros y la mano, una barra con letras inventadas. Se corrigió con:
 
 > En la mesa ratona, reemplazá la pila de libros verdes y la barra gris por fichas de mahjong reales: una fila de fichas apiladas boca abajo con el dorso verde, y una fila de fichas paradas de frente, color marfil, con símbolos tradicionales (círculos, bambúes y caracteres chinos), sin letras latinas. Las fichas dentro del estuche abierto, también con esos símbolos. Dejá todo lo demás exactamente igual.
+
+## Maqueta de Fogonazo
+
+Una partida jugable en horizontal para probar en el teléfono cómo se ven y se juegan la estética del banco y las piezas de Gemini. No es el juego: tiene una lógica mínima propia, separada de `codigo/engine.js`.
+
+- **Qué tiene:** placa de 10 × 8 con los siete componentes; intercambio deslizando o tocando dos piezas vecinas; líneas de tres o más, cascadas con puntaje creciente, caída y reposición desde arriba, y rebarajado si no quedan jugadas. Marcador con display de LED (movimientos), instrumento de aguja con las tres estrellas y puntaje; pedido en la ficha, que se tacha al completarse; carteles de fin («Placa armada» o «Sin movimientos»); pausa con «Empezar de nuevo», sonido, pantalla completa e «Ir a la sala». Sonidos mínimos sintetizados.
+- **Qué no tiene:** especiales, obstáculos, niveles, guardado ni la música del juego.
+- **Calibración de prueba:** nivel 27 con 25 movimientos y un pedido de 10 LEDs, 10 chips y 8 cristales; estrellas en 500, 1.000 y 1.600 puntos, y 50 de bonus por movimiento que sobra. Simulado: una estrategia al azar completa el pedido el 65 % de las veces y una codiciosa el 82 %.
+- **Cómo está hecha:** el fondo (banco, protoboard, paneles y ficha) es una imagen prerenderizada; encima, los datos que cambian van en SVG y las piezas, como imágenes animadas con la sombra incluida, para que ande fluido en el teléfono. La escena mide 915 × 412 unidades y se ajusta a la pantalla.
+- **Cómo se regenera:** el fondo sale de [`herramientas/sala/escena-banco.html`](../../herramientas/sala/escena-banco.html) con `?v=a&bg=1`, capturado a 915 × 412 con densidad 2,625 (la misma página dibuja el boceto S-06a con `?v=a`). Las piezas salen de la imagen vigente de Gemini con [`herramientas/sala/piezas.py`](../../herramientas/sala/piezas.py): recorte del magenta, patas acortadas, sombra incluida y 256 × 256 píxeles.
 
 ## Por revisar
 

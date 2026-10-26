@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: Fraunces; font-weight: 600; src: url(node_modules/@fontsource/fraunces/files/fraunces-latin-600-normal.woff2); }
+@font-face { font-family: Fraunces; font-weight: 900; src: url(node_modules/@fontsource/fraunces/files/fraunces-latin-900-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 500; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-500-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-600-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-700-normal.woff2); }
+@font-face { font-family: Elite; src: url(../../docs/sala/maqueta-fogonazo/fuentes/special-elite-latin-400-normal.woff2); }
+html, body { margin: 0; background: #000; }
+svg { display: block; }
+</style>
+</head>
+<body>
+<svg id="s" width="915" height="412" viewBox="0 0 915 412" xmlns="http://www.w3.org/2000/svg"></svg>
+<script>
+const V = new URLSearchParams(location.search).get('v') || 'a';
+const W = 915, H = 412;
+const IMG = new URLSearchParams(location.search).get('img');
+const BG = new URLSearchParams(location.search).get('bg') === '1';
+const pc = (t, x, y, w, h) => IMG
+  ? `<image href="../../docs/sala/maqueta-fogonazo/piezas/pieza${t}.png" x="${x + w * .06}" y="${y + h * .06}" width="${w * .88}" height="${h * .88}" preserveAspectRatio="xMidYMid meet"/>`
+  : `<use href="#pA${t}" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+const svg = document.getElementById('s');
+let out = '';
+const add = s => out += s;
+
+// ---------- board: 10 x 8, seven types, no lines of 3 and no 2x2 squares ----------
+let seed = 27;
+const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const COLS = 10, ROWS = 8, T = 7;
+const B = [];
+for (let r = 0; r < ROWS; r++) {
+  B.push([]);
+  for (let c = 0; c < COLS; c++) {
+    let t, ok;
+    do {
+      t = Math.floor(rand() * T); ok = true;
+      if (c >= 2 && B[r][c - 1] === t && B[r][c - 2] === t) ok = false;
+      if (r >= 2 && B[r - 1][c] === t && B[r - 2][c] === t) ok = false;
+      if (r >= 1 && c >= 1 && B[r - 1][c] === t && B[r][c - 1] === t && B[r - 1][c - 1] === t) ok = false;
+    } while (!ok);
+    B[r].push(t);
+  }
+}
+const SEL = [3, 6];
+// order: 0 resistencia, 1 electrolítico, 2 LED, 3 bobina, 4 chip, 5 cerámico, 6 cristal
+const ORDERS = [[2, 7, 12], [4, 12, 12], [6, 3, 9]];
+
+const star = (cx, cy, r, ri = r * .45) => {
+  let p = '';
+  for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? ri : r; p += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(2) + ',' + (cy + rr * Math.sin(a)).toFixed(2); }
+  return p + 'Z';
+};
+
+// seven-segment digits
+const SEGS = { 0: 'abcdef', 1: 'bc', 2: 'abged', 3: 'abgcd', 4: 'fgbc', 5: 'afgcd', 6: 'afgedc', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' };
+function seg7(str, x, y, w, h, gap, on, off) {
+  let s = '';
+  const t = w * .2;
+  [...str].forEach((ch, i) => {
+    const ox = x + i * (w + gap);
+    const R = {
+      a: [t * .6, 0, w - t * 1.2, t], d: [t * .6, h - t, w - t * 1.2, t], g: [t * .6, h / 2 - t / 2, w - t * 1.2, t],
+      f: [0, t * .6, t, h / 2 - t * .9], b: [w - t, t * .6, t, h / 2 - t * .9],
+      e: [0, h / 2 + t * .3, t, h / 2 - t * .9], c: [w - t, h / 2 + t * .3, t, h / 2 - t * .9],
+    };
+    const lit = SEGS[ch] || '';
+    s += `<g transform="translate(${ox} ${y}) skewX(-7)">`;
+    for (const k in R) { const [a, b, c, d] = R[k]; s += `<rect x="${a}" y="${b}" width="${c}" height="${d}" rx="${t / 2}" fill="${lit.includes(k) ? on : off}"/>`; }
+    s += '</g>';
+  });
+  return s;
+}
+
+// ======================================================================
+// PIECES — variant A: real components seen from above, lamp from top-left
+// ======================================================================
+const piecesA = `
+<linearGradient id="rBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7c088"/><stop offset=".35" stop-color="#e8873a"/><stop offset="1" stop-color="#9c4a14"/></linearGradient>
+<linearGradient id="shadeV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".45"/></linearGradient>
+<linearGradient id="lead" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f2f2"/><stop offset="1" stop-color="#8a8a8a"/></linearGradient>
+<linearGradient id="eSleeve" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3f7fe0"/><stop offset=".3" stop-color="#5e98ef"/><stop offset=".75" stop-color="#1f4fa6"/><stop offset="1" stop-color="#14306a"/></linearGradient>
+<linearGradient id="eTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#c3c7cc"/><stop offset="1" stop-color="#8d939a"/></linearGradient>
+<radialGradient id="ledG" cx=".38" cy=".3" r=".75"><stop offset="0" stop-color="#ffb3a8"/><stop offset=".3" stop-color="#ff4a36"/><stop offset=".75" stop-color="#d11c12"/><stop offset="1" stop-color="#7d0c08"/></radialGradient>
+<radialGradient id="ledGlow"><stop offset="0" stop-color="#ff5a40" stop-opacity=".55"/><stop offset="1" stop-color="#ff5a40" stop-opacity="0"/></radialGradient>
+<radialGradient id="torG" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#5fc27c"/><stop offset=".7" stop-color="#2a8a4a"/><stop offset="1" stop-color="#145a2c"/></radialGradient>
+<linearGradient id="cuG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd2a0"/><stop offset=".5" stop-color="#d27a36"/><stop offset="1" stop-color="#8c4512"/></linearGradient>
+<linearGradient id="chipG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6ae0"/><stop offset=".5" stop-color="#6c3fb6"/><stop offset="1" stop-color="#3f2178"/></linearGradient>
+<radialGradient id="ceraG" cx=".38" cy=".32" r=".72"><stop offset="0" stop-color="#fff0a8"/><stop offset=".45" stop-color="#f6c22e"/><stop offset="1" stop-color="#b9780c"/></radialGradient>
+<linearGradient id="xtalG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#d5d9de"/><stop offset=".55" stop-color="#9ea4ac"/><stop offset=".8" stop-color="#e3e6ea"/><stop offset="1" stop-color="#7f858d"/></linearGradient>
+<filter id="dropA" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="2.5" dy="3.5" stdDeviation="2.2" flood-color="#2a1608" flood-opacity=".5"/></filter>
+
+<symbol id="pA0" viewBox="0 0 100 100">
+  <path d="M4,50 H96" stroke="#9c9c9c" stroke-width="5" stroke-linecap="round"/><path d="M5,48.8 H95" stroke="#ececec" stroke-width="1.6" stroke-linecap="round"/><circle cx="5" cy="50" r="3.4" fill="#6e6e6e"/><circle cx="95" cy="50" r="3.4" fill="#6e6e6e"/>
+  <path d="M15,50 C15,26 31,26 34,33 H66 C69,26 85,26 85,50 C85,74 69,74 66,67 H34 C31,74 15,74 15,50 Z" fill="url(#rBody)"/>
+  <rect x="27" y="29" width="7" height="42" fill="#5a2a0a"/><rect x="40" y="33" width="7" height="34" fill="#16110d"/>
+  <rect x="52" y="33" width="7" height="34" fill="#c3241a"/><rect x="69" y="29" width="6.5" height="42" fill="#d4a63c"/>
+  <path d="M15,50 C15,26 31,26 34,33 H66 C69,26 85,26 85,50 C85,74 69,74 66,67 H34 C31,74 15,74 15,50 Z" fill="url(#shadeV)"/>
+  <ellipse cx="44" cy="37" rx="22" ry="3.2" fill="#fff" opacity=".45"/>
+</symbol>
+
+<symbol id="pA1" viewBox="0 0 100 100">
+  <path d="M27,38 V76 A23,8.5 0 0 0 73,76 V38 Z" fill="url(#eSleeve)"/>
+  <path d="M60,38 V82.5 A23,8.5 0 0 0 68,80 V38 Z" fill="#b9d2f4" opacity=".85"/>
+  <rect x="61.5" y="48" width="5" height="3" fill="#1f4fa6"/><rect x="61.5" y="60" width="5" height="3" fill="#1f4fa6"/><rect x="61.5" y="72" width="5" height="3" fill="#1f4fa6"/>
+  <ellipse cx="50" cy="38" rx="23" ry="9" fill="url(#eTop)"/>
+  <ellipse cx="50" cy="38" rx="23" ry="9" fill="none" stroke="#5a6068" stroke-width="1.2"/>
+  <path d="M50,30.5 V45.5 M39,33 L50,38 L61,33 M50,38 L41,44" stroke="#7d838a" stroke-width="1.6" fill="none"/>
+  <ellipse cx="42" cy="35" rx="8" ry="2.4" fill="#fff" opacity=".8"/>
+  <rect x="30" y="44" width="4" height="30" fill="#fff" opacity=".22"/>
+</symbol>
+
+<symbol id="pA2" viewBox="0 0 100 100">
+  <circle cx="50" cy="48" r="40" fill="url(#ledGlow)"/>
+  <ellipse cx="50" cy="66" rx="25" ry="9" fill="#8a1009"/>
+  <ellipse cx="50" cy="63" rx="25" ry="9" fill="#c9231a"/>
+  <path d="M30,62 V40 A20,20 0 0 1 70,40 V62 A20,7 0 0 1 30,62 Z" fill="url(#ledG)"/>
+  <path d="M45,46 h10 v8 h-10 z" fill="#7d0c08" opacity=".45"/>
+  <path d="M43,52 L50,44 L57,52" stroke="#5a0805" stroke-width="1.6" fill="none" opacity=".5"/>
+  <ellipse cx="41" cy="31" rx="6.5" ry="9" fill="#fff" opacity=".7" transform="rotate(-20 41 31)"/>
+  <circle cx="61" cy="56" r="2.5" fill="#fff" opacity=".35"/>
+</symbol>
+
+<symbol id="pA3" viewBox="0 0 100 100">
+  <path d="M30,78 L22,92 M70,78 L78,92" stroke="url(#cuG)" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="50" cy="50" r="30" fill="none" stroke="url(#torG)" stroke-width="22"/>
+  <g id="wind" stroke="url(#cuG)" stroke-width="3.6" stroke-linecap="round"></g>
+  <circle cx="50" cy="50" r="18.5" fill="none" stroke="#0e3d1d" stroke-width="1.5" opacity=".6"/>
+  <path d="M28,34 A27,27 0 0 1 52,22" stroke="#fff" stroke-width="3" fill="none" opacity=".45" stroke-linecap="round"/>
+</symbol>
+
+<symbol id="pA4" viewBox="0 0 100 100">
+  <g fill="url(#lead)">
+    <rect x="26" y="20" width="7" height="12" rx="1.5"/><rect x="40" y="20" width="7" height="12" rx="1.5"/><rect x="54" y="20" width="7" height="12" rx="1.5"/><rect x="68" y="20" width="7" height="12" rx="1.5"/>
+    <rect x="26" y="68" width="7" height="12" rx="1.5"/><rect x="40" y="68" width="7" height="12" rx="1.5"/><rect x="54" y="68" width="7" height="12" rx="1.5"/><rect x="68" y="68" width="7" height="12" rx="1.5"/>
+  </g>
+  <rect x="17" y="29" width="66" height="42" rx="4" fill="url(#chipG)"/>
+  <rect x="19" y="31" width="62" height="6" rx="3" fill="#fff" opacity=".22"/>
+  <path d="M17,44 A6,6 0 0 1 17,56 Z" fill="#2c1556"/>
+  <circle cx="27" cy="63" r="2.6" fill="#2c1556"/>
+  <rect x="35" y="45" width="30" height="2.4" rx="1.2" fill="#c9b6ee" opacity=".55"/><rect x="35" y="51" width="20" height="2.4" rx="1.2" fill="#c9b6ee" opacity=".4"/>
+</symbol>
+
+<symbol id="pA5" viewBox="0 0 100 100">
+  <path d="M43,62 V94 M57,62 V94" stroke="url(#lead)" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="50" cy="44" r="27" fill="url(#ceraG)"/>
+  <circle cx="50" cy="44" r="27" fill="none" stroke="#9a5f08" stroke-width="1.4" opacity=".7"/>
+  <ellipse cx="50" cy="66" rx="9" ry="4" fill="#c9840e"/>
+  <ellipse cx="41" cy="33" rx="10" ry="5.5" fill="#fff" opacity=".55" transform="rotate(-25 41 33)"/>
+  <rect x="44" y="45" width="12" height="2.4" rx="1.2" fill="#7a4a06" opacity=".45"/>
+</symbol>
+
+<symbol id="pA6" viewBox="0 0 100 100">
+  <path d="M38,70 V92 M62,70 V92" stroke="url(#lead)" stroke-width="3.5" stroke-linecap="round"/>
+  <rect x="20" y="62" width="60" height="12" rx="4" fill="#80868e"/>
+  <rect x="22" y="22" width="56" height="48" rx="20" fill="url(#xtalG)"/>
+  <rect x="22" y="22" width="56" height="48" rx="20" fill="none" stroke="#6e747c" stroke-width="1.2"/>
+  <path d="M31,30 C38,26 50,25 60,27" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".9"/>
+  <rect x="28" y="44" width="44" height="7" rx="3.5" fill="#fff" opacity=".35"/>
+</symbol>`;
+
+// ======================================================================
+// PIECES — variant B: flat, outlined, printed-box illustration
+// ======================================================================
+const INK = '#2a211b';
+const piecesB = `
+<symbol id="pB0" viewBox="0 0 100 100">
+  <path d="M5,50 H95" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>
+  <path d="M18,50 C18,28 33,28 36,35 H64 C67,28 82,28 82,50 C82,72 67,72 64,65 H36 C33,72 18,72 18,50 Z" fill="#f28a22" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M22,56 C24,66 32,68 36,62 H64 C68,68 76,66 78,56" fill="#c8641a" opacity=".9"/>
+  <rect x="30" y="31" width="6" height="38" fill="${INK}"/><rect x="43" y="35" width="6" height="30" fill="${INK}"/><rect x="56" y="35" width="6" height="30" fill="#fff4dc"/>
+  <path d="M26,42 C28,36 34,36 37,40" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".7"/>
+</symbol>
+<symbol id="pB1" viewBox="0 0 100 100">
+  <path d="M24,34 V76 A26,10 0 0 0 76,76 V34 Z" fill="#2f6fd6" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M60,40 V84.5 A26,10 0 0 0 68,83 V40 Z" fill="#cfe0fa"/>
+  <ellipse cx="50" cy="34" rx="26" ry="10" fill="#d9e2ee" stroke="${INK}" stroke-width="5"/>
+  <path d="M50,27 V41 M41,30 L50,34 L59,30" stroke="${INK}" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M30,46 V70" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".6"/>
+</symbol>
+<symbol id="pB2" viewBox="0 0 100 100">
+  <path d="M24,66 A26,9 0 0 0 76,66 V60 H24 Z" fill="#a8231b" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M30,60 V40 A20,20 0 0 1 70,40 V60 Z" fill="#ee3a2c" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M58,26 A20,20 0 0 1 70,42 V60 H60 Z" fill="#c42a1f"/>
+  <path d="M30,60 V40 A20,20 0 0 1 70,40 V60" fill="none" stroke="${INK}" stroke-width="5"/>
+  <ellipse cx="41" cy="35" rx="5" ry="8" fill="#fff" opacity=".85" transform="rotate(-20 41 35)"/>
+</symbol>
+<symbol id="pB3" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="30" fill="none" stroke="${INK}" stroke-width="30"/>
+  <circle cx="50" cy="50" r="30" fill="none" stroke="#3f9e58" stroke-width="20"/>
+  <g id="windB" stroke="#d9823e" stroke-width="5" stroke-linecap="round"></g>
+  <path d="M27,36 A26,26 0 0 1 48,24" stroke="#fff" stroke-width="4" fill="none" opacity=".6" stroke-linecap="round"/>
+</symbol>
+<symbol id="pB4" viewBox="0 0 100 100">
+  <g fill="${INK}"><rect x="25" y="18" width="8" height="14"/><rect x="39" y="18" width="8" height="14"/><rect x="53" y="18" width="8" height="14"/><rect x="67" y="18" width="8" height="14"/>
+  <rect x="25" y="68" width="8" height="14"/><rect x="39" y="68" width="8" height="14"/><rect x="53" y="68" width="8" height="14"/><rect x="67" y="68" width="8" height="14"/></g>
+  <rect x="15" y="28" width="70" height="44" rx="5" fill="#7d4fc8" stroke="${INK}" stroke-width="5"/>
+  <rect x="17.5" y="60" width="65" height="9.5" fill="#5b3699"/>
+  <path d="M15,43 A7,7 0 0 1 15,57 Z" fill="${INK}"/>
+  <circle cx="26" cy="38" r="3" fill="#fff" opacity=".8"/>
+  <path d="M36,40 H66" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".5"/>
+</symbol>
+<symbol id="pB5" viewBox="0 0 100 100">
+  <path d="M42,66 V95 M58,66 V95" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="50" cy="44" r="28" fill="#f6c42c" stroke="${INK}" stroke-width="5"/>
+  <path d="M74,50 A26,26 0 0 1 30,62 A28,28 0 0 0 74,50 Z" fill="#d79a12"/>
+  <path d="M74,48 A25,25 0 0 1 27,58" fill="none" stroke="#d79a12" stroke-width="7"/>
+  <circle cx="50" cy="44" r="28" fill="none" stroke="${INK}" stroke-width="5"/>
+  <ellipse cx="40" cy="33" rx="8" ry="4.5" fill="#fff" opacity=".75" transform="rotate(-25 40 33)"/>
+</symbol>
+<symbol id="pB6" viewBox="0 0 100 100">
+  <path d="M38,70 V94 M62,70 V94" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+  <rect x="18" y="60" width="64" height="14" rx="4" fill="#8f959d" stroke="${INK}" stroke-width="5"/>
+  <rect x="20" y="20" width="60" height="48" rx="20" fill="#cdd1d7" stroke="${INK}" stroke-width="5"/>
+  <path d="M62,24 A18,18 0 0 1 76,44 V54 A12,12 0 0 1 64,64 H40 C60,58 66,44 62,24 Z" fill="#a3a9b1"/>
+  <rect x="20" y="20" width="60" height="48" rx="20" fill="none" stroke="${INK}" stroke-width="5"/>
+  <path d="M31,32 C38,28 46,27 54,28" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>
+</symbol>`;
+
+function windings(id, n, r1, r2, extra = '') {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const a = i / n * Math.PI * 2;
+    s += `<line x1="${(50 + r1 * Math.cos(a)).toFixed(2)}" y1="${(50 + r1 * Math.sin(a)).toFixed(2)}" x2="${(50 + r2 * Math.cos(a)).toFixed(2)}" y2="${(50 + r2 * Math.sin(a)).toFixed(2)}" ${extra}/>`;
+  }
+  return s;
+}
+
+// ======================================================================
+// VARIANT A — the workbench: protoboard on a walnut bench, instruments
+// ======================================================================
+function variantA() {
+  const C = 45, bx = (W - COLS * C) / 2, by = (H - ROWS * C) / 2;
+  const px = bx - 26, py = by - 9, pw = COLS * C + 52, ph = ROWS * C + 18;
+  add(`<defs>${piecesA}
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.0035 0.09" numOctaves="4" seed="8"/>
+      <feColorMatrix values="0 0 0 0 .16  0 0 0 0 .08  0 0 0 0 .03  0 0 0 1.6 -.55"/>
+    </filter>
+    <filter id="grain2" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02 0.5" numOctaves="2" seed="3"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 .85  0 0 0 0 .6  0 0 0 .5 -.18"/>
+    </filter>
+    <radialGradient id="lamp" cx=".22" cy=".05" r=".9"><stop offset="0" stop-color="#ffd9a0" stop-opacity=".42"/><stop offset=".5" stop-color="#ffb060" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></radialGradient>
+    <pattern id="holes" x="${bx}" y="${by}" width="${C / 5}" height="${C / 5}" patternUnits="userSpaceOnUse">
+      <rect x="${C / 10 - 1.4}" y="${C / 10 - 1.4}" width="2.8" height="2.8" rx=".5" fill="#a59c88"/><rect x="${C / 10 - 1.4}" y="${C / 10 - 1.4}" width="2.8" height="1.1" fill="#6f6756"/>
+    </pattern>
+    <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4efe2"/><stop offset="1" stop-color="#ddd5c2"/></linearGradient>
+    <linearGradient id="alu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcd8cf"/><stop offset="1" stop-color="#a9a49a"/></linearGradient>
+    <filter id="brush" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9 0.012" numOctaves="2" seed="5"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .35 -.1"/></filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="2" dy="4" stdDeviation="3.5" flood-color="#1a0c04" flood-opacity=".55"/></filter>
+    <filter id="glowR" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="dial" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6ecd2"/><stop offset="1" stop-color="#e3d3ac"/></linearGradient>
+  </defs>`);
+  // walnut bench
+  add(`<rect width="${W}" height="${H}" fill="#6a3c20"/>`);
+  add(`<rect width="${W}" height="${H}" filter="url(#grain)"/>`);
+  add(`<rect width="${W}" height="${H}" filter="url(#grain2)" opacity=".5"/>`);
+  for (const y of [96, 214, 331]) add(`<rect x="0" y="${y}" width="${W}" height="2" fill="#2e170a" opacity=".55"/><rect x="0" y="${y + 2}" width="${W}" height="1" fill="#c48552" opacity=".25"/>`);
+  // stray parts on the bench (decor, out of the play area)
+  // solder wire spool
+  add(`<g filter="url(#soft)"><circle cx="872" cy="372" r="30" fill="#4a4f57"/><circle cx="872" cy="372" r="24" fill="#c9ccd1"/><circle cx="872" cy="372" r="24" fill="none" stroke="#9ea2a8" stroke-width="1" stroke-dasharray="1.5 1.5"/><circle cx="872" cy="372" r="8" fill="#2a2d32"/></g><path d="M850,352 C820,330 812,350 790,338" stroke="#c9ccd1" stroke-width="1.6" fill="none"/>`);
+
+  // protoboard
+  add(`<g filter="url(#soft)"><rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="7" fill="url(#plate)"/></g>`);
+  // power rails on both sides
+  for (const rx of [px + 5, px + pw - 21]) {
+    add(`<rect x="${rx}" y="${py + 12}" width="16" height="${ph - 24}" rx="2" fill="#e9e3d3"/>`);
+    add(`<line x1="${rx + 1.5}" y1="${py + 14}" x2="${rx + 1.5}" y2="${py + ph - 14}" stroke="#d2382c" stroke-width="1.6"/><line x1="${rx + 14.5}" y1="${py + 14}" x2="${rx + 14.5}" y2="${py + ph - 14}" stroke="#2f5fb8" stroke-width="1.6"/>`);
+    for (let y = py + 20; y < py + ph - 18; y += 9) add(`<rect x="${rx + 4}" y="${y}" width="2.6" height="2.6" fill="#8f8775"/><rect x="${rx + 9.5}" y="${y}" width="2.6" height="2.6" fill="#8f8775"/>`);
+  }
+  add(`<rect x="${bx}" y="${by}" width="${COLS * C}" height="${ROWS * C}" fill="url(#holes)"/>`);
+  // center channel
+  add(`<rect x="${bx + 5 * C - 3}" y="${py + 3}" width="6" height="${ph - 6}" fill="#c7bea9"/><rect x="${bx + 5 * C - 3}" y="${py + 3}" width="6" height="2" fill="#a59c88"/>`);
+  // faint cell grid (printed)
+  add(`<g stroke="#b9b09b" stroke-width=".6" opacity=".55">`);
+  for (let c = 1; c < COLS; c++) if (c !== 5) add(`<line x1="${bx + c * C}" y1="${by}" x2="${bx + c * C}" y2="${by + ROWS * C}"/>`);
+  for (let r = 1; r < ROWS; r++) add(`<line x1="${bx}" y1="${by + r * C}" x2="${bx + COLS * C}" y2="${by + r * C}"/>`);
+  add(`</g>`);
+
+  // selected cell
+  const [sr, sc] = SEL;
+  if (!BG) {
+  add(`<rect x="${bx + sc * C + 1.5}" y="${by + sr * C + 1.5}" width="${C - 3}" height="${C - 3}" rx="7" fill="#ffd27a" opacity=".35"/>`);
+  // pieces
+  add(`<g filter="url(#dropA)">`);
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const lift = (r === sr && c === sc) ? -3 : 0;
+    add(pc(B[r][c], bx + c * C + 1, by + r * C + 1 + lift, C - 2, C - 2));
+  }
+  add(`</g>`);
+  add(`<rect x="${bx + sc * C + 1.5}" y="${by + sr * C + 1.5}" width="${C - 3}" height="${C - 3}" rx="7" fill="none" stroke="#ffb648" stroke-width="2.4" filter="url(#glowR)"/>`);
+  }
+
+  // ---------- left: Dymo labels + instrument panel ----------
+  const lx = 34, lw = px - lx - 14, cx = lx + lw / 2;
+  const dymo = (x, y, w, txt, rot, col = '#1c1c1c') => `<g transform="rotate(${rot} ${x + w / 2} ${y + 11})" filter="url(#soft)"><path d="M${x},${y} h${w} l-3,11 l3,11 h-${w} l3,-11 z" fill="${col}"/><rect x="${x}" y="${y + 1.5}" width="${w}" height="2" fill="#fff" opacity=".08"/><text x="${x + w / 2}" y="${y + 16}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">${txt}</text></g>`;
+  add(dymo(lx + 4, 16, lw - 8, 'NIVEL 27', -1.5));
+  add(dymo(lx - 2, 44, lw + 4, 'DISPLAY 7 SEG.', 1, '#2e2e2e'));
+  // aluminum panel
+  const ay = 80, ah = 300;
+  add(`<g filter="url(#soft)"><rect x="${lx}" y="${ay}" width="${lw}" height="${ah}" rx="6" fill="url(#alu)"/></g>`);
+  add(`<rect x="${lx}" y="${ay}" width="${lw}" height="${ah}" rx="6" filter="url(#brush)" opacity=".6"/>`);
+  add(`<rect x="${lx + .5}" y="${ay + .5}" width="${lw - 1}" height="${ah - 1}" rx="6" fill="none" stroke="#fff" stroke-opacity=".5"/>`);
+  for (const [sx, sy] of [[lx + 9, ay + 9], [lx + lw - 9, ay + 9], [lx + 9, ay + ah - 9], [lx + lw - 9, ay + ah - 9]]) add(`<circle cx="${sx}" cy="${sy}" r="4" fill="#8d887e"/><circle cx="${sx}" cy="${sy}" r="3.2" fill="#c9c4ba"/><line x1="${sx - 2.6}" y1="${sy}" x2="${sx + 2.6}" y2="${sy}" stroke="#6a655c" stroke-width="1.1" transform="rotate(35 ${sx} ${sy})"/>`);
+  // LED display: moves
+  const dw = 92, dh = 58, dx = cx - dw / 2, dyy = ay + 24;
+  add(`<rect x="${dx - 6}" y="${dyy - 6}" width="${dw + 12}" height="${dh + 12}" rx="5" fill="#2a2724"/><rect x="${dx}" y="${dyy}" width="${dw}" height="${dh}" rx="3" fill="#1d0705"/>`);
+  add(BG ? seg7('88', dx + 14, dyy + 8, 28, 42, 10, '#3a0f0a', '#3a0f0a') : `<g filter="url(#glowR)">${seg7('18', dx + 14, dyy + 8, 28, 42, 10, '#ff3a26', '#3a0f0a')}</g>`);
+  add(`<rect x="${dx}" y="${dyy}" width="${dw}" height="${dh / 2}" rx="3" fill="#fff" opacity=".05"/>`);
+  add(`<text x="${cx}" y="${dyy + dh + 24}" text-anchor="middle" font-family="Barlow" font-weight="600" font-size="13" letter-spacing="2.4" fill="#4a463f">MOVIMIENTOS</text>`);
+  // analog meter: score toward stars
+  const mw = lw - 28, mh = 92, mx = lx + 14, my = ay + 132;
+  add(`<rect x="${mx - 4}" y="${my - 4}" width="${mw + 8}" height="${mh + 8}" rx="6" fill="#2a2724"/><rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="3" fill="url(#dial)"/>`);
+  const pcx = cx, pcy = my + mh + 14, R = 78;
+  const ang = d => (-90 + d) * Math.PI / 180;
+  let ticks = '';
+  for (let d = -48; d <= 48; d += 6) { const a = ang(d), r1 = d % 24 === 0 ? R - 14 : R - 9; ticks += `<line x1="${(pcx + r1 * Math.cos(a)).toFixed(1)}" y1="${(pcy + r1 * Math.sin(a)).toFixed(1)}" x2="${(pcx + R * Math.cos(a)).toFixed(1)}" y2="${(pcy + R * Math.sin(a)).toFixed(1)}"/>`; }
+  add(`<clipPath id="mclip"><rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="3"/></clipPath><g clip-path="url(#mclip)">`);
+  add(`<path d="M${pcx + R * Math.cos(ang(14))},${pcy + R * Math.sin(ang(14))} A${R},${R} 0 0 1 ${pcx + R * Math.cos(ang(48))},${pcy + R * Math.sin(ang(48))}" stroke="#c8402c" stroke-width="5" fill="none" opacity=".75"/>`);
+  add(`<g stroke="#3a3128" stroke-width="1.3">${ticks}</g>`);
+  for (const [d, on] of [[-20, true], [14, true], [44, false]]) { const a = ang(d), r = R - 26; add(`<path d="${star(pcx + r * Math.cos(a), pcy + r * Math.sin(a), 7.5)}" fill="${on && !BG ? '#d8962a' : 'none'}" stroke="#3a3128" stroke-width="1.2"/>`); }
+  const na = ang(26);
+  if (!BG) add(`<line x1="${pcx}" y1="${pcy}" x2="${(pcx + (R + 2) * Math.cos(na)).toFixed(1)}" y2="${(pcy + (R + 2) * Math.sin(na)).toFixed(1)}" stroke="#1b1612" stroke-width="2" stroke-linecap="round"/>`);
+  add(`</g><rect x="${mx}" y="${my}" width="${mw}" height="${mh * .45}" rx="3" fill="#fff" opacity=".18"/>`);
+  if (!BG) add(`<text x="${cx}" y="${my + mh + 28}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="22" letter-spacing="1" fill="#2c2924">12 450</text>`);
+  add(`<text x="${cx}" y="${my + mh + 44}" text-anchor="middle" font-family="Barlow" font-weight="600" font-size="12" letter-spacing="2.4" fill="#4a463f">PUNTOS</text>`);
+
+  // ---------- right: pause push-button + order card ----------
+  const rx0 = px + pw + 14, rw = W - rx0 - 26, rcx = rx0 + rw / 2;
+  add(`<g filter="url(#soft)"><circle cx="${rx0 + rw - 22}" cy="34" r="19" fill="#2a2724"/><circle cx="${rx0 + rw - 22}" cy="33" r="15" fill="url(#alu)"/></g><rect x="${rx0 + rw - 28}" y="26" width="4.5" height="14" rx="1" fill="#4a463f"/><rect x="${rx0 + rw - 20.5}" y="26" width="4.5" height="14" rx="1" fill="#4a463f"/>`);
+  const cy0 = 70, chh = 258;
+  add(`<g transform="rotate(1.6 ${rcx} ${cy0 + chh / 2})"><g filter="url(#soft)"><rect x="${rx0}" y="${cy0}" width="${rw}" height="${chh}" rx="2" fill="#f6eedb"/></g>`);
+  for (let y = cy0 + 50; y < cy0 + chh - 8; y += 22) add(`<line x1="${rx0}" y1="${y}" x2="${rx0 + rw}" y2="${y}" stroke="#9bb8d8" stroke-width=".8"/>`);
+  add(`<line x1="${rx0}" y1="${cy0 + 36}" x2="${rx0 + rw}" y2="${cy0 + 36}" stroke="#d25a4a" stroke-width="1"/>`);
+  add(`<text x="${rx0 + 14}" y="${cy0 + 27}" font-family="Elite" font-size="19" fill="#2c2620">Pedido</text>`);
+  if (!BG) ORDERS.forEach(([t, n, of], i) => {
+    const y = cy0 + 54 + i * 66, done = n >= of;
+    add(`<g filter="url(#dropA)">${pc(t, rx0 + 10, y, 46, 46)}</g>`);
+    add(`<text x="${rx0 + 66}" y="${y + 31}" font-family="Elite" font-size="22" fill="${done ? '#7a7166' : '#2c2620'}">${n} / ${of}</text>`);
+    if (done) add(`<path d="M${rx0 + 62},${y + 23} C${rx0 + 90},${y + 21} ${rx0 + 120},${y + 25} ${rx0 + 140},${y + 22}" stroke="#2c2620" stroke-width="1.8" fill="none"/><path d="M${rx0 + 30},${y + 34} l8,9 l18,-26" stroke="#c8402c" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`);
+  });
+  add(`</g>`);
+  // masking tape holding the card
+  add(`<g transform="rotate(-4 ${rcx} ${cy0})"><rect x="${rcx - 32}" y="${cy0 - 10}" width="64" height="20" fill="#e8dcb8" opacity=".85"/><rect x="${rcx - 32}" y="${cy0 - 10}" width="64" height="20" filter="url(#grain2)" opacity=".4"/></g>`);
+
+  // lamp light and vignette over everything
+  if (!BG) {
+  add(`<rect width="${W}" height="${H}" fill="url(#lamp)" style="mix-blend-mode:screen"/>`);
+  add(`<rect width="${W}" height="${H}" fill="url(#vig)"/>`);
+  }
+  window.LAYOUT = { C, bx, by, lx, lw, cx, dx, dyy, dw, dh, mx, my, mw, mh, pcx, pcy, R, rx0, rw, rcx, cy0, chh, ay };
+}
+
+// ======================================================================
+// VARIANT B — the kit box: molded tray on the printed lid
+// ======================================================================
+function variantB() {
+  const C = 45, bx = (W - COLS * C) / 2 - 4, by = (H - ROWS * C) / 2;
+  const KIT = '#e8a52c', KITD = '#c9771c', CREAM = '#f3ead6';
+  add(`<defs>${piecesB}
+    <pattern id="stripes" width="42" height="42" patternUnits="userSpaceOnUse" patternTransform="rotate(-55)">
+      <rect width="14" height="42" fill="${INK}"/><rect x="14" width="14" height="42" fill="${KITD}"/><rect x="28" width="14" height="42" fill="${KIT}"/>
+    </pattern>
+    <filter id="paper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="2"/><feColorMatrix values="0 0 0 0 .3  0 0 0 0 .2  0 0 0 0 .1  0 0 0 .5 -.2"/></filter>
+    <filter id="halftone" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="1" seed="9"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 .9  0 0 0 0 .6  0 0 0 .6 -.25"/></filter>
+    <pattern id="dots" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="3.5" cy="3.5" r="1.2" fill="${KITD}"/></pattern>
+  </defs>`);
+  // lid
+  add(`<rect width="${W}" height="${H}" fill="${KIT}"/>`);
+  add(`<rect width="${W}" height="${H}" fill="url(#dots)" opacity=".35"/>`);
+  add(`<rect x="${W - 30}" y="0" width="30" height="${H}" fill="url(#stripes)"/><rect x="${W - 33}" y="0" width="3" height="${H}" fill="${INK}"/>`);
+  // tray
+  const tx = bx - 14, ty = by - 12, tw = COLS * C + 28, th = ROWS * C + 24;
+  add(`<rect x="${tx + 5}" y="${ty + 6}" width="${tw}" height="${th}" rx="16" fill="${INK}" opacity=".9"/>`);
+  add(`<rect x="${tx}" y="${ty}" width="${tw}" height="${th}" rx="16" fill="${CREAM}" stroke="${INK}" stroke-width="3"/>`);
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const x = bx + c * C + 2.5, y = by + r * C + 2.5, s = C - 5;
+    add(`<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="9" fill="#e4d4ae"/><path d="M${x + 1.5},${y + s - 9} V${y + 9} a7.5,7.5 0 0 1 7.5,-7.5 H${x + s - 9}" stroke="#c8b386" stroke-width="2.4" fill="none"/>`);
+  }
+  const [sr, sc] = SEL;
+  add(`<rect x="${bx + sc * C + 1}" y="${by + sr * C + 1}" width="${C - 2}" height="${C - 2}" rx="10" fill="#fff6c8"/>`);
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const lift = (r === sr && c === sc) ? -3 : 0, x = bx + c * C + 3, y = by + r * C + 3 + lift;
+    add(`<use href="#pB${B[r][c]}" x="${x + 1.5}" y="${y + 2}" width="${C - 6}" height="${C - 6}" opacity=".18" style="filter:brightness(0)"/>`);
+    add(`<use href="#pB${B[r][c]}" x="${x}" y="${y}" width="${C - 6}" height="${C - 6}"/>`);
+  }
+  add(`<rect x="${bx + sc * C + 1}" y="${by + sr * C + 1}" width="${C - 2}" height="${C - 2}" rx="10" fill="none" stroke="${INK}" stroke-width="3" stroke-dasharray="6 4"/>`);
+
+  // ---------- left: printed lid typography ----------
+  const lx = 36, lw = tx - lx - 18, cx = lx + lw / 2;
+  add(`<text x="${lx}" y="34" font-family="Barlow" font-weight="600" font-size="13" letter-spacing="2.4" fill="${INK}">KIT DE JUEGO · Nº 27</text>`);
+  add(`<text x="${lx}" y="62" font-family="Fraunces" font-weight="900" font-size="25" fill="${INK}">Display</text>`);
+  add(`<text x="${lx}" y="86" font-family="Fraunces" font-weight="900" font-size="25" fill="${INK}">7 segmentos</text>`);
+  // moves sticker
+  const scx = cx, scy = 172, sr0 = 54;
+  add(`<circle cx="${scx + 4}" cy="${scy + 5}" r="${sr0}" fill="${INK}"/><circle cx="${scx}" cy="${scy}" r="${sr0}" fill="${CREAM}" stroke="${INK}" stroke-width="3"/>`);
+  add(`<circle cx="${scx}" cy="${scy}" r="${sr0 - 7}" fill="none" stroke="${INK}" stroke-width="1.2" stroke-dasharray="3 3"/>`);
+  add(`<text x="${scx}" y="${scy + 14}" text-anchor="middle" font-family="Fraunces" font-weight="900" font-size="46" fill="#b8361e">18</text>`);
+  add(`<text x="${scx}" y="${scy + 29}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="10" letter-spacing="1.1" fill="${INK}">MOVIMIENTOS</text>`);
+  // stars + score bar
+  const sy = 268;
+  add(`<rect x="${lx}" y="${sy}" width="${lw - 12}" height="12" rx="6" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/><rect x="${lx + 2}" y="${sy + 2}" width="${lw * .64}" height="8" rx="4" fill="#b8361e"/>`);
+  [[.3, true], [.58, true], [.86, false]].forEach(([f, on]) => add(`<path d="${star(lx + lw * f, sy + 6, 13)}" fill="${on ? CREAM : KIT}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>`));
+  add(`<text x="${lx}" y="${sy + 52}" font-family="Fraunces" font-weight="900" font-size="30" fill="${INK}">12 450</text>`);
+  add(`<text x="${lx}" y="${sy + 70}" font-family="Barlow" font-weight="600" font-size="13" letter-spacing="2.4" fill="${INK}">PUNTOS</text>`);
+
+  // ---------- right: pause + "contents" checklist ----------
+  const rx0 = tx + tw + 22, rw = W - 33 - rx0 - 18;
+  add(`<circle cx="${rx0 + rw - 18}" cy="${34 + 3}" r="18" fill="${INK}" opacity=".9"/><circle cx="${rx0 + rw - 21}" cy="34" r="18" fill="${CREAM}" stroke="${INK}" stroke-width="3"/><rect x="${rx0 + rw - 28}" y="26" width="5" height="16" fill="${INK}"/><rect x="${rx0 + rw - 19}" y="26" width="5" height="16" fill="${INK}"/>`);
+  add(`<text x="${rx0}" y="96" font-family="Fraunces" font-weight="900" font-size="25" fill="${INK}">Pedido</text>`);
+  add(`<rect x="${rx0}" y="106" width="${rw}" height="3" fill="${INK}"/>`);
+  ORDERS.forEach(([t, n, of], i) => {
+    const y = 122 + i * 72, done = n >= of;
+    add(`<rect x="${rx0}" y="${y}" width="56" height="56" rx="10" fill="${CREAM}" stroke="${INK}" stroke-width="2.5"/><use href="#pB${t}" x="${rx0 + 6}" y="${y + 6}" width="44" height="44"/>`);
+    add(`<text x="${rx0 + 68}" y="${y + 37}" font-family="Fraunces" font-weight="900" font-size="25" fill="${INK}">${n}<tspan font-size="17" font-weight="600"> / ${of}</tspan></text>`);
+    if (done) add(`<circle cx="${rx0 + 54}" cy="${y + 3}" r="12" fill="${INK}"/><path d="M${rx0 + 48},${y + 3} l4.5,5 l8,-10" stroke="${KIT}" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`);
+  });
+  add(`<rect width="${W}" height="${H}" filter="url(#paper)" opacity=".35"/>`);
+}
+
+(V === 'a' ? variantA : variantB)();
+svg.innerHTML = out;
+document.querySelectorAll('#wind').forEach(g => g.innerHTML = windings('w', 22, 18, 42));
+document.querySelectorAll('#windB').forEach(g => g.innerHTML = windings('w', 12, 20, 41));
+document.fonts.ready.then(() => document.body.setAttribute('data-ready', '1'));
+</script>
+</body>
+</html>
