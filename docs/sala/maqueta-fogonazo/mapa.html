@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3a2010">
+<title>Fogonazo · mapa</title>
+<style>
+/* The level map (S-08b): a measured signal on graph paper. Levels are points on the peaks and troughs;
+   what is played is inked, what is next is in pencil. The paper scrolls sideways. */
+@font-face { font-family: Barlow; font-weight: 700; src: url(fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Caveat; font-weight: 600; src: url(fuentes/caveat-latin-600-normal.woff2) format('woff2'); }
+html, body { margin: 0; height: 100%; background: #f7f2e3; overflow: hidden; }
+body { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+#stage { position: fixed; left: 0; top: 0; width: 915em; height: 412em; font-size: 1px; overflow: clip; touch-action: none; }
+svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
+.lvl { cursor: pointer; }
+.ui { position: absolute; cursor: pointer; }
+#rotate { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20, 10, 4, .85); color: #f3e6d0;
+  font: 700 18px/1.4 Barlow, sans-serif; text-align: center; padding: 24px; z-index: 5; }
+@media (orientation: portrait) { #rotate { display: grid; } }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="paper" width="915" height="412" viewBox="0 0 915 412" style="width:915em;height:412em">
+    <defs>
+      <pattern id="mm" width="40" height="40" patternUnits="userSpaceOnUse" x="0" y="6">
+        <path d="M0,0 H40 M0,4 H40 M0,8 H40 M0,12 H40 M0,16 H40 M0,24 H40 M0,28 H40 M0,32 H40 M0,36 H40 M0,0 V40 M4,0 V40 M8,0 V40 M12,0 V40 M16,0 V40 M24,0 V40 M28,0 V40 M32,0 V40 M36,0 V40" stroke="#e3a27a" stroke-width=".35" opacity=".55"/>
+        <path d="M0,20 H40 M20,0 V40" stroke="#e3a27a" stroke-width=".6" opacity=".75"/>
+        <path d="M0,0 H40 M0,0 V40" stroke="#d9824e" stroke-width="1" opacity=".8"/>
+      </pattern>
+      <radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".65" stop-color="#3a2010" stop-opacity="0"/><stop offset="1" stop-color="#3a2010" stop-opacity=".35"/></radialGradient>
+    </defs>
+    <g id="track"></g>
+    <rect width="915" height="412" fill="url(#vig)" pointer-events="none"/>
+  </svg>
+  <svg class="ui" id="back" style="left:18em;top:18em;width:132em;height:34em" viewBox="0 0 132 34" role="button" tabindex="0" aria-label="Volver a Fogonazo">
+    <g transform="rotate(-1.5 66 17)"><path d="M2,4 h126 l-4,13 l4,13 h-126 l4,-13 z" fill="#1c1c1c"/><text x="66" y="23" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">◀ FOGONAZO</text></g>
+  </svg>
+  <svg class="ui" id="total" style="left:719em;top:16em;width:180em;height:40em;cursor:default" viewBox="0 0 180 40" aria-live="polite">
+    <g transform="rotate(1.5 90 20)"><rect x="2" y="3" width="176" height="34" fill="#fbf8ef" stroke="#c9c4ba"/><path id="totalStar" fill="#c8402c"/><text id="totalTxt" x="38" y="29" font-family="Caveat" font-weight="600" font-size="24" fill="#1d3a94"></text></g>
+  </svg>
+</div>
+<div id="rotate">Girá el teléfono para jugar en horizontal</div>
+
+<script src="comun.js"></script>
+<script>
+(() => {
+  'use strict';
+  const M = window.Maqueta, $ = id => document.getElementById(id), NS = 'http://www.w3.org/2000/svg';
+  const stage = $('stage');
+  let s = 1;
+  function fit() {
+    const w = document.documentElement.clientWidth || innerWidth, h = (window.visualViewport && visualViewport.height) || innerHeight;
+    s = Math.min(w / 915, h / 412);
+    stage.style.fontSize = s + 'px'; stage.style.left = ((w - 915 * s) / 2) + 'px'; stage.style.top = ((h - 412 * s) / 2) + 'px';
+  }
+  addEventListener('resize', fit); fit();
+
+  const star = (cx, cy, r, ri = r * .45) => { let p = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? ri : r; p += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1); } return p + 'Z'; };
+  $('totalStar').setAttribute('d', star(20, 20, 9));
+  $('totalTxt').textContent = `${M.total()} · ${M.MODES[M.modo]}`;
+
+  // ---------- the signal ----------
+  const cur = M.next(), last = cur + 8, step = 74, x0 = 96, ax = 44, ay = 206;
+  const xOf = n => x0 + (n - 1) * step;
+  const y = x => ay - (62 + 14 * Math.sin((x - ax) / 900 * Math.PI * 2)) * Math.cos((x - x0) / (2 * step) * Math.PI * 2) - 4 * Math.sin((x - ax) / 19 * Math.PI * 2);
+  const width = xOf(last) + 200, curX = xOf(cur);
+  let o = `<rect x="-40" y="0" width="${width + 80}" height="412" fill="#f7f2e3"/><rect x="-40" y="0" width="${width + 80}" height="412" fill="url(#mm)"/>`;
+  o += `<line x1="${ax}" y1="24" x2="${ax}" y2="392" stroke="#2a2f45" stroke-width="1.4"/><line x1="${ax}" y1="${ay}" x2="${width}" y2="${ay}" stroke="#2a2f45" stroke-width="1.2"/>`;
+  let inked = '', pencil = '';
+  for (let x = ax; x <= width; x += 1.5) { const p = `${x.toFixed(1)},${y(x).toFixed(1)}`; if (x <= curX) inked += (inked ? 'L' : 'M') + p; if (x >= curX) pencil += (pencil ? 'L' : 'M') + p; }
+  if (inked) o += `<path d="${inked}" stroke="#1d3a94" stroke-width="2.2" fill="none" stroke-linejoin="round"/>`;
+  o += `<path d="${pencil}" stroke="#6b6b6b" stroke-width="1.2" fill="none" stroke-dasharray="3 3" opacity=".7"/>`;
+  for (let n = 1; n <= last; n++) {
+    const x = xOf(n), yy = y(x), st = M.best(n), done = n < cur, now = n === cur, peak = (n - 1) % 2 === 0;
+    const gy = yy + (peak ? (done ? -46 : now ? -32 : -22) : (done ? 34 : 30));
+    o += `<g class="lvl" data-n="${n}" role="button" tabindex="${done || now ? 0 : -1}" aria-label="Nivel ${n}">`;
+    o += `<rect x="${x - 34}" y="${Math.min(yy, gy) - 34}" width="68" height="${Math.abs(gy - yy) + 60}" fill="transparent"/>`;
+    if (now) o += `<circle cx="${x}" cy="${yy}" r="22" fill="#c8402c" opacity=".08"/><circle cx="${x}" cy="${yy}" r="17" fill="none" stroke="#c8402c" stroke-width="2.4"/>`;
+    o += `<circle cx="${x}" cy="${yy}" r="${done || now ? 7 : 5}" fill="${done ? '#1d3a94' : now ? '#c8402c' : '#f7f2e3'}" stroke="${done ? '#1d3a94' : now ? '#c8402c' : '#7a7a7a'}" stroke-width="1.6"/>`;
+    o += `<text x="${x}" y="${gy + (done ? 0 : 9)}" text-anchor="middle" font-family="Caveat" font-weight="600" font-size="${now ? 30 : 26}" fill="${done ? '#1d3a94' : now ? '#c8402c' : '#8a8a8a'}">${n}</text>`;
+    if (done) for (let k = 0; k < 3; k++) o += `<path d="${star(x - 15 + k * 15, gy + 15, 6)}" fill="${k < st ? '#c8402c' : 'none'}" stroke="#c8402c" stroke-width="1.2" opacity="${k < st ? 1 : .55}"/>`;
+    o += `</g>`;
+  }
+  o += `<text x="${curX + 24}" y="${y(curX) - 22}" font-family="Caveat" font-weight="600" font-size="20" fill="#c8402c" transform="rotate(-4 ${curX + 24} ${y(curX)})">← jugar</text>`;
+  const track = $('track');
+  track.innerHTML = o;
+
+  // ---------- horizontal scroll by dragging ----------
+  const minX = Math.min(0, 915 - width), maxX = 0;
+  let off = Math.max(minX, Math.min(maxX, 420 - curX));
+  const apply = () => track.setAttribute('transform', `translate(${off} 0)`);
+  apply();
+  let drag = null, moved = false;
+  stage.addEventListener('pointerdown', e => { drag = { x: e.clientX, off }; moved = false; });
+  addEventListener('pointermove', e => {
+    if (!drag) return;
+    const d = (e.clientX - drag.x) / s;
+    if (Math.abs(d) > 6) moved = true;
+    off = Math.max(minX, Math.min(maxX, drag.off + d)); apply();
+  });
+  addEventListener('pointerup', () => { drag = null; });
+  stage.addEventListener('click', e => {
+    if (moved) return;
+    const b = e.target.closest('#back'); if (b) { location.href = 'instrumento.html'; return; }
+    const l = e.target.closest('.lvl'); if (!l) return;
+    const n = +l.dataset.n;
+    if (M.open(n)) location.href = 'index.html?nivel=' + n;
+  });
+  stage.addEventListener('keydown', e => { if (e.key === 'Enter') e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+  window.__mapa = { off: () => off, curX };
+})();
+</script>
+</body>
+</html>

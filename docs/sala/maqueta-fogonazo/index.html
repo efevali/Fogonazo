@@ -69,13 +69,14 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   <svg id="hud" viewBox="0 0 915 412" aria-hidden="true">
     <defs>
       <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      <clipPath id="dialClip"><rect x="48" y="212" width="130.5" height="92" rx="3"/></clipPath>
+      <clipPath id="dialClip"><rect x="48" y="206" width="130.5" height="92" rx="3"/></clipPath>
     </defs>
     <g id="digits" filter="url(#glow)"></g>
-    <g clip-path="url(#dialClip)"><line id="needle" x1="113.25" y1="318" x2="113.25" y2="238" stroke="#1b1612" stroke-width="2" stroke-linecap="round"/></g>
+    <g id="dymo"></g>
+    <g clip-path="url(#dialClip)"><line id="needle" x1="113.25" y1="312" x2="113.25" y2="232" stroke="#1b1612" stroke-width="2" stroke-linecap="round"/></g>
     <g id="starFill"></g>
-    <text id="score" x="113.25" y="332" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="22" letter-spacing="1" fill="#2c2924">0</text>
-    <g id="orders" transform="rotate(1.6 805.75 199)"></g>
+    <text id="score" x="113.25" y="330" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="22" letter-spacing="1" fill="#2c2924">0</text>
+    <g id="orders" transform="rotate(1.6 805.75 154)"></g>
   </svg>
   <div id="board" role="application" aria-label="Placa de 10 por 8 componentes"><div id="sel" hidden></div></div>
   <div id="light"></div>
@@ -89,9 +90,8 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
         <button class="btn ghost" type="button" data-act="restart">Empezar de nuevo</button>
       </div>
       <div class="row">
-        <button class="btn ghost" type="button" data-act="sound" id="soundBtn">Sonido: sí</button>
+        <button class="btn ghost" type="button" data-act="map">Volver al mapa</button>
         <button class="btn ghost" type="button" data-act="full" id="fullBtn">Pantalla completa</button>
-        <button class="btn ghost" type="button" data-act="room">Ir a la sala</button>
       </div>
       <p class="note">Maqueta: solo intercambios, cascadas y pedido. Sin especiales ni obstáculos todavía.</p>
     </div>
@@ -103,19 +103,23 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
       <div class="stars" id="endStars"></div>
       <p id="endText"></p>
       <div class="row">
-        <button class="btn" type="button" data-act="restart">Otra vez</button>
-        <button class="btn ghost" type="button" data-act="room">Ir a la sala</button>
+        <button class="btn" type="button" data-act="next" id="nextBtn">Siguiente nivel</button>
+        <button class="btn" type="button" data-act="restart" id="againBtn">Otra vez</button>
+        <button class="btn ghost" type="button" data-act="map">Mapa</button>
       </div>
     </div>
   </div>
 </div>
 <div id="rotate">Girá el teléfono para jugar en horizontal</div>
 
+<script src="comun.js"></script>
 <script>
 (() => {
   'use strict';
   const COLS = 10, ROWS = 8, TYPES = 7, C = 45;
-  const LEVEL = { moves: 25, orders: [[2, 10], [4, 10], [6, 8]], stars: [500, 1000, 1600], bonus: 50 };
+  const M = window.Maqueta;
+  const N = Math.max(1, parseInt(new URLSearchParams(location.search).get('nivel'), 10) || M.next());
+  const LEVEL = M.level(N);
   const NS = 'http://www.w3.org/2000/svg';
   const $ = id => document.getElementById(id);
   const stage = $('stage'), board = $('board'), selEl = $('sel');
@@ -133,6 +137,9 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   }
   addEventListener('resize', fit); if (window.visualViewport) visualViewport.addEventListener('resize', fit); fit();
 
+  // ---------- level label (Dymo) ----------
+  $('dymo').innerHTML = `<g transform="rotate(-1.5 113.25 27)"><path d="M38,16 h150.5 l-3,11 l3,11 h-150.5 l3,-11 z" fill="#1c1c1c"/><text x="113.25" y="32" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">NIVEL ${N} · ${M.MODES[M.modo].toUpperCase()}</text></g>`;
+
   // ---------- seven-segment display ----------
   const SEG = { 0: 'abcdef', 1: 'bc', 2: 'abged', 3: 'abgcd', 4: 'fgbc', 5: 'afgcd', 6: 'afgedc', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' };
   const segEls = [];
@@ -142,7 +149,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
       f: [0, t * .6, t, h / 2 - t * .9], b: [w - t, t * .6, t, h / 2 - t * .9], e: [0, h / 2 + t * .3, t, h / 2 - t * .9], c: [w - t, h / 2 + t * .3, t, h / 2 - t * .9] };
     for (let i = 0; i < 2; i++) {
       const dg = document.createElementNS(NS, 'g');
-      dg.setAttribute('transform', `translate(${81.25 + i * 38} 112) skewX(-7)`);
+      dg.setAttribute('transform', `translate(${81.25 + i * 38} 94) skewX(-7)`);
       const map = {};
       for (const k in R) {
         const r = document.createElementNS(NS, 'rect'); const [x, y, ww, hh] = R[k];
@@ -162,11 +169,11 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   const starPath = (cx, cy, r, ri = r * .45) => { let p = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? ri : r; p += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(2) + ',' + (cy + rr * Math.sin(a)).toFixed(2); } return p + 'Z'; };
   const starEls = STAR_DEG.map(d => {
     const a = (-90 + d) * Math.PI / 180, p = document.createElementNS(NS, 'path');
-    p.setAttribute('d', starPath(113.25 + 52 * Math.cos(a), 318 + 52 * Math.sin(a), 7.5)); p.setAttribute('fill', 'none');
+    p.setAttribute('d', starPath(113.25 + 52 * Math.cos(a), 312 + 52 * Math.sin(a), 7.5)); p.setAttribute('fill', 'none');
     p.setAttribute('stroke', '#3a3128'); p.setAttribute('stroke-width', '1.2'); $('starFill').appendChild(p); return p;
   });
   const needle = $('needle');
-  needle.style.transformOrigin = '113.25px 318px'; needle.style.transformBox = 'view-box'; needle.style.transition = 'transform .7s cubic-bezier(.3,1.4,.5,1)';
+  needle.style.transformOrigin = '113.25px 312px'; needle.style.transformBox = 'view-box'; needle.style.transition = 'transform .7s cubic-bezier(.3,1.4,.5,1)';
   function needleDeg(sc) {
     const [a, b, c] = LEVEL.stars;
     if (sc <= a) return -48 + 28 * sc / a;
@@ -181,24 +188,24 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   (function buildOrders() {
     const g = $('orders');
     LEVEL.orders.forEach(([t], i) => {
-      const y = 124 + i * 66;
+      const y = 110 + i * 42;
       const img = document.createElementNS(NS, 'image');
-      img.setAttribute('href', `piezas/pieza${t}.png`); img.setAttribute('x', 726); img.setAttribute('y', y - 6); img.setAttribute('width', 56); img.setAttribute('height', 56);
+      img.setAttribute('href', `piezas/pieza${t}.png`); img.setAttribute('x', 734); img.setAttribute('y', y - 2); img.setAttribute('width', 40); img.setAttribute('height', 40);
       const tx = document.createElementNS(NS, 'text');
-      tx.setAttribute('x', 789); tx.setAttribute('y', y + 31); tx.setAttribute('font-family', 'Elite'); tx.setAttribute('font-size', 22); tx.setAttribute('fill', '#2c2620');
+      tx.setAttribute('x', 784.5); tx.setAttribute('y', y + 26); tx.setAttribute('font-family', 'Elite'); tx.setAttribute('font-size', 20); tx.setAttribute('fill', '#2c2620');
       const done = document.createElementNS(NS, 'g'); done.setAttribute('visibility', 'hidden');
-      done.innerHTML = `<path d="M785,${y + 23} C813,${y + 21} 843,${y + 25} 866,${y + 22}" stroke="#2c2620" stroke-width="1.8" fill="none"/><path d="M752,${y + 34} l8,9 l18,-26" stroke="#c8402c" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+      done.innerHTML = `<path d="M780.5,${y + 19} C808.5,${y + 17} 834.5,${y + 21} 856.5,${y + 18}" stroke="#2c2620" stroke-width="1.6" fill="none"/><path d="M748.5,${y + 28} l7,8 l15,-22" stroke="#c8402c" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
       g.append(img, tx, done); orderEls.push({ tx, done });
     });
   })();
 
   // ---------- sound: a few short synthesized effects ----------
-  let actx = null, master = null, soundOn = true;
-  try { soundOn = localStorage.getItem('maqueta.sonido') !== 'no'; } catch (e) {}
+  let actx = null, master = null;
+  const soundOn = M.vol.efectos > 0;
   function audio() {
     if (!soundOn) return null;
     try {
-      if (!actx) { actx = new (window.AudioContext || window.webkitAudioContext)(); master = actx.createGain(); master.gain.value = .35; master.connect(actx.destination); }
+      if (!actx) { actx = new (window.AudioContext || window.webkitAudioContext)(); master = actx.createGain(); master.gain.value = .35 * M.vol.efectos / 8; master.connect(actx.destination); }
       if (actx.state === 'suspended') actx.resume();
     } catch (e) { return null; }
     return actx;
@@ -378,6 +385,8 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     const left = moves, bonus = won ? left * LEVEL.bonus : 0;
     if (bonus) { score += bonus; hud(); }
     const st = won ? Math.max(1, starsFor(score)) : 0;
+    if (won) M.record(N, st);
+    $('nextBtn').hidden = !won; $('againBtn').hidden = won;
     $('endTitle').textContent = won ? 'Placa armada' : 'Sin movimientos';
     $('endText').textContent = won
       ? `${score.toLocaleString('es-AR')} puntos` + (left ? `, con ${bonus} de bonus por ${left} ${left === 1 ? 'movimiento' : 'movimientos'} de sobra.` : '.')
@@ -425,15 +434,13 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   $('pause').addEventListener('click', () => { if (busy) return; menu.hidden = false; menu.querySelector('button').focus({ preventScroll: true }); });
   const fullBtn = $('fullBtn');
   if (!document.fullscreenEnabled) fullBtn.hidden = true;
-  function syncSoundBtn() { $('soundBtn').textContent = 'Sonido: ' + (soundOn ? 'sí' : 'no'); }
-  syncSoundBtn();
   document.addEventListener('click', async e => {
     const b = e.target.closest('[data-act]'); if (!b) return;
     const act = b.dataset.act;
     if (act === 'resume') menu.hidden = true;
     if (act === 'restart') { menu.hidden = true; newGame(); }
-    if (act === 'room') location.href = '../prototipo/';
-    if (act === 'sound') { soundOn = !soundOn; try { localStorage.setItem('maqueta.sonido', soundOn ? 'si' : 'no'); } catch (err) {} syncSoundBtn(); if (soundOn) sfx.swap(); }
+    if (act === 'map') location.href = 'mapa.html';
+    if (act === 'next') location.href = 'index.html?nivel=' + (N + 1);
     if (act === 'full') {
       try {
         if (document.fullscreenElement) await document.exitFullscreen();

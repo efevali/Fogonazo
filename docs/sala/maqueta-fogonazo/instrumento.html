@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3a2010">
+<title>Fogonazo · instrumento</title>
+<style>
+/* Fogonazo's own screen (P-004, ChatGPT) with the game's layer on top, in the image's coordinates (1679 × 937).
+   The viewBox keeps the central 20:9 band and slices to fill the screen. */
+@font-face { font-family: Barlow; font-weight: 600; src: url(fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Mono; src: url(fuentes/share-tech-mono-latin-400-normal.woff2) format('woff2'); }
+:root { --amber: #ffb648; --ph: #9dffbf; }
+html, body { margin: 0; height: 100%; background: #2a1708; overflow: hidden; }
+body { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; touch-action: manipulation; }
+.hit { fill: transparent; cursor: pointer; }
+.hit:focus-visible { outline: none; stroke: var(--amber); stroke-width: 3; }
+.lbl { cursor: pointer; }
+.knob-ptr { transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); transform-box: view-box; }
+.wave { animation: scroll 2.4s linear infinite; }
+@keyframes scroll { to { transform: translateX(-200px); } }
+.sheet { display: none; } .sheet.open { display: inline; }
+.led { transition: opacity .12s; }
+#rotate { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20, 10, 4, .85); color: #f3e6d0;
+  font: 600 18px/1.4 Barlow, sans-serif; text-align: center; padding: 24px; z-index: 5; }
+@media (orientation: portrait) { #rotate { display: grid; } }
+@media (prefers-reduced-motion: reduce) { .wave { animation: none; } }
+</style>
+</head>
+<body>
+<svg id="scene" viewBox="0 91 1679 755" preserveAspectRatio="xMidYMid slice" role="application" aria-label="Fogonazo: osciloscopio de juego">
+  <defs>
+    <filter id="glow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="ledg" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".5"/></filter>
+    <clipPath id="scr"><rect x="718" y="307" width="492" height="346" rx="10"/></clipPath>
+    <pattern id="perf" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="7" cy="7" r="1.6" fill="#5a3412" opacity=".55"/></pattern>
+    <linearGradient id="pert" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b0773a"/><stop offset="1" stop-color="#94602b"/></linearGradient>
+    <radialGradient id="knob" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#5a5550"/><stop offset=".6" stop-color="#2a2724"/><stop offset="1" stop-color="#141210"/></radialGradient>
+  </defs>
+  <image href="instrumento.webp" width="1679" height="937"/>
+
+  <!-- screen -->
+  <g clip-path="url(#scr)">
+    <g id="grid" stroke="#3f8f5c" stroke-width=".8" opacity=".45"></g>
+    <g id="screen" filter="url(#glow)" font-family="Mono" fill="#9dffbf"></g>
+  </g>
+  <rect class="hit" id="hitScreen" x="718" y="307" width="492" height="346" rx="10" tabindex="0" role="button" aria-label="Pantalla"/>
+
+  <!-- selectors -->
+  <g id="knobs" font-family="Barlow" font-weight="700"></g>
+
+  <!-- LEDs of the sound board -->
+  <g id="boardLeds"></g>
+  <path class="hit" id="hitSound" tabindex="0" role="button" aria-label="Sonido" d="M40,470 C60,420 300,420 340,470 L330,590 L655,615 L640,800 L130,800 L110,760 L160,640 L40,560 Z"/>
+  <path class="hit" id="hitManual" tabindex="0" role="button" aria-label="Manual" d="M330,78 L582,70 L600,398 L358,404 Z"/>
+
+  <!-- back to the room -->
+  <g id="back" class="lbl" transform="translate(28 112) rotate(-1.5)" tabindex="0" role="button" aria-label="Volver a la sala">
+    <path d="M0,0 h132 l-5,16 l5,16 h-132 l5,-16 z" fill="#1c1c1c"/>
+    <text x="66" y="22" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="17" letter-spacing="2.5" fill="#f4f1ea">◀ SALA</text>
+  </g>
+
+  <!-- sound sheet -->
+  <g id="sound" class="sheet">
+    <rect x="0" y="0" width="1679" height="937" fill="#120803" opacity=".62"/>
+    <g filter="url(#sh)"><rect x="300" y="190" width="1080" height="560" rx="10" fill="url(#pert)"/></g>
+    <rect x="300" y="190" width="1080" height="560" rx="10" fill="url(#perf)"/>
+    <text x="340" y="252" font-family="Barlow" font-weight="700" font-size="34" letter-spacing="7" fill="#f6e4c2">SONIDO</text>
+    <text x="340" y="282" font-family="Barlow" font-weight="600" font-size="17" letter-spacing="1.5" fill="#f6e4c2" opacity=".75">Tocá un LED o girá la perilla. Vale para toda la colección.</text>
+    <g id="channels"></g>
+    <g id="done" class="lbl" transform="translate(1210 678)" tabindex="0" role="button" aria-label="Listo">
+      <rect width="130" height="46" rx="5" fill="#2a2622"/><text x="65" y="30" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="19" letter-spacing="3" fill="#f1ebe0">LISTO</text>
+    </g>
+    <text x="340" y="712" font-family="Barlow" font-weight="600" font-size="15" fill="#f6e4c2" opacity=".7">Maqueta: la música todavía no suena; los efectos, sí.</text>
+  </g>
+
+  <!-- manual sheet: a magazine page -->
+  <g id="manual" class="sheet">
+    <rect x="0" y="0" width="1679" height="937" fill="#120803" opacity=".62"/>
+    <g filter="url(#sh)"><rect x="470" y="120" width="740" height="700" fill="#f3efe4"/></g>
+    <rect x="500" y="150" width="680" height="48" fill="#8f8a82"/>
+    <text x="520" y="186" font-family="Barlow" font-weight="700" font-size="30" letter-spacing="3" fill="#fbf8ef">CÓMO SE JUEGA</text>
+    <g id="manualText" font-family="Barlow" font-weight="600" font-size="19" fill="#2c2924"></g>
+    <g id="closeManual" class="lbl" transform="translate(1050 760)" tabindex="0" role="button" aria-label="Cerrar">
+      <rect width="130" height="42" rx="5" fill="#2a2622"/><text x="65" y="28" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="17" letter-spacing="3" fill="#f1ebe0">CERRAR</text>
+    </g>
+  </g>
+
+  <text id="toast" x="964" y="690" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="20" fill="#ffe6b0" opacity="0" style="transition: opacity .3s"></text>
+</svg>
+<div id="rotate">Girá el teléfono para jugar en horizontal</div>
+
+<script src="comun.js"></script>
+<script>
+(() => {
+  'use strict';
+  const M = window.Maqueta, NS = 'http://www.w3.org/2000/svg', $ = id => document.getElementById(id);
+  const S = { x: 718, y: 307, w: 492, h: 346 };
+  const star = (cx, cy, r, ri = r * .45) => { let p = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? ri : r; p += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1); } return p + 'Z'; };
+  const T = (x, y, txt, size, extra = '') => `<text x="${x}" y="${y}" font-size="${size}" ${extra}>${txt}</text>`;
+
+  // graticule
+  let g = '';
+  for (let i = 1; i < 10; i++) g += `<line x1="${S.x + i * S.w / 10}" y1="${S.y}" x2="${S.x + i * S.w / 10}" y2="${S.y + S.h}" stroke-dasharray="${i === 5 ? '0' : '2 6'}"/>`;
+  for (let j = 1; j < 8; j++) g += `<line x1="${S.x}" y1="${S.y + j * S.h / 8}" x2="${S.x + S.w}" y2="${S.y + j * S.h / 8}" stroke-dasharray="${j === 4 ? '0' : '2 6'}"/>`;
+  $('grid').innerHTML = g;
+
+  // ---------- selectors ----------
+  const KNOBS = [
+    { id: 'modo', cx: 1410, cy: 412, r: 60, labels: ['NIVELES', 'ZEN', 'RÉCORDS'], title: 'MODO' },
+    { id: 'dif', cx: 1410, cy: 590, r: 48, labels: ['FÁCIL', 'NORMAL', 'DIFÍCIL'], title: 'DIFICULTAD' },
+  ];
+  const ang = i => (-140 + 50 * i) * Math.PI / 180;
+  let mode = 0;
+  const value = k => k.id === 'modo' ? mode : M.modo;
+  function drawKnobs() {
+    let s = '';
+    KNOBS.forEach(k => {
+      k.labels.forEach((l, i) => {
+        const a = ang(i), x = k.cx + (k.r + 14) * Math.cos(a), y = k.cy + (k.r + 14) * Math.sin(a) + 5;
+        const anchor = Math.cos(a) < -.3 ? 'end' : Math.cos(a) > .3 ? 'start' : 'middle';
+        s += `<g class="lbl" data-knob="${k.id}" data-i="${i}" role="button" tabindex="0" aria-label="${k.title}: ${l}"><rect x="${anchor === 'end' ? x - 84 : anchor === 'start' ? x - 6 : x - 45}" y="${y - 26}" width="90" height="36" fill="transparent"/><text x="${x}" y="${y}" text-anchor="${anchor}" font-size="15" letter-spacing="1.4" fill="${i === value(k) ? '#ffb648' : '#e6dfd2'}">${l}</text></g>`;
+      });
+      s += `<text x="${k.cx}" y="${k.cy + k.r + 26}" text-anchor="middle" font-size="12" letter-spacing="3.4" fill="#e6dfd2" opacity=".8">${k.title}</text>`;
+      const deg = -140 + 50 * value(k) + 90;
+      s += `<g class="lbl" data-knob="${k.id}" data-i="next" role="button" tabindex="0" aria-label="Girar ${k.title}"><circle cx="${k.cx}" cy="${k.cy}" r="${k.r}" fill="transparent"/>
+        <line class="knob-ptr" x1="${k.cx}" y1="${k.cy}" x2="${k.cx}" y2="${k.cy - k.r * .7}" stroke="#f4f1ea" stroke-width="5.5" stroke-linecap="round" style="transform-origin:${k.cx}px ${k.cy}px; transform: rotate(${deg}deg)"/></g>`;
+    });
+    $('knobs').innerHTML = s;
+  }
+  function setKnob(id, i) {
+    const k = KNOBS.find(x => x.id === id), cur = value(k);
+    const v = i === 'next' ? (cur + 1) % k.labels.length : +i;
+    if (id === 'modo') mode = v; else M.modo = v;
+    click(); drawKnobs(); drawScreen();
+  }
+
+  // ---------- screen ----------
+  function wave(y, amp, per) {
+    let d = ''; for (let x = S.x - 10; x <= S.x + S.w + 210; x += 3) d += (d ? 'L' : 'M') + x + ',' + (y + amp * Math.sin((x - S.x) / per * Math.PI * 2)).toFixed(1);
+    return `<path class="wave" d="${d}" stroke="#9dffbf" stroke-width="2.6" fill="none"/>`;
+  }
+  function drawScreen() {
+    const x = S.x + 30, mn = M.MODES[M.modo].toUpperCase();
+    let s = '';
+    if (mode === 0) {
+      s += T(x, S.y + 44, 'NIVELES', 17, 'letter-spacing="4" opacity=".8"');
+      s += T(x, S.y + 128, `NIVEL ${M.next()}`, 72, 'letter-spacing="2"');
+      s += wave(S.y + 196, 22, 100);
+      s += `<path d="${star(x + 12, S.y + 271, 10)}"/>` + T(x + 30, S.y + 279, `${M.total()} ESTRELLAS · ${mn}`, 22, 'letter-spacing="1.5"');
+      s += T(x, S.y + 318, 'TOCÁ LA PANTALLA PARA JUGAR ▶', 16, 'letter-spacing="2.5" opacity=".75"');
+    } else if (mode === 1) {
+      s += T(x, S.y + 44, 'ZEN', 17, 'letter-spacing="4" opacity=".8"');
+      s += T(x, S.y + 120, 'SIN LÍMITE', 58, 'letter-spacing="2"');
+      s += wave(S.y + 190, 10, 160);
+      s += T(x, S.y + 262, 'RÉCORD  —', 22, 'letter-spacing="2"');
+      s += T(x, S.y + 312, 'TODAVÍA NO ESTÁ EN LA MAQUETA', 16, 'letter-spacing="2.5" opacity=".75"');
+    } else {
+      s += T(x, S.y + 40, 'RÉCORDS', 17, 'letter-spacing="4" opacity=".8"');
+      M.MODES.forEach((m, i) => {
+        const cx = S.x + 90 + i * 156, on = i === M.modo;
+        s += T(cx, S.y + 80, m.toUpperCase(), 15, `text-anchor="middle" letter-spacing="2" opacity="${on ? 1 : .7}"`);
+        s += T(cx, S.y + 128, String(M.maxLevel(i) || '—'), 44, 'text-anchor="middle"');
+        s += T(cx, S.y + 148, 'NIVEL', 11, 'text-anchor="middle" letter-spacing="2" opacity=".7"');
+        s += `<path d="${star(cx - 16, S.y + 174, 7)}"/>` + T(cx - 4, S.y + 181, String(M.total(i)), 19);
+      });
+      s += `<line x1="${S.x + 22}" y1="${S.y + 202}" x2="${S.x + S.w - 22}" y2="${S.y + 202}" stroke="#9dffbf" stroke-opacity=".5"/>`;
+      s += T(x, S.y + 236, 'ZEN', 16, 'letter-spacing="3" opacity=".75"') + T(x + 80, S.y + 236, '—', 19);
+      s += T(x, S.y + 286, 'El avance se guarda solo en este teléfono, en Chrome.', 13.5, 'opacity=".75"');
+      s += T(x, S.y + 306, 'Si borrás los datos del sitio, se pierde.', 13.5, 'opacity=".75"');
+    }
+    $('screen').innerHTML = s;
+  }
+
+  // ---------- LEDs of the board in the scene (top row: music, bottom row: effects) ----------
+  const ROWS = {
+    musica: [[365, 644], [389, 644], [414, 647], [438, 649], [463, 653], [487, 655], [511, 658], [535, 660], [560, 661], [585, 664]],
+    efectos: [[286, 719], [311, 722], [338, 725], [365, 728], [392, 731], [420, 733], [447, 737], [476, 739], [504, 741], [533, 743]],
+  };
+  const LEDC = i => i < 6 ? '#7dff6a' : i < 8 ? '#ffe45a' : '#ff4a36';
+  function drawBoardLeds() {
+    let s = '';
+    for (const k in ROWS) ROWS[k].forEach(([x, y], i) => { if (i < M.vol[k]) s += `<circle cx="${x}" cy="${y}" r="13" fill="${LEDC(i)}" opacity=".75" filter="url(#ledg)" style="mix-blend-mode:screen"/><circle cx="${x}" cy="${y - 2}" r="4" fill="#fff" opacity=".55"/>`; });
+    $('boardLeds').innerHTML = s;
+  }
+
+  // ---------- sound sheet ----------
+  const CH = [['musica', 'MÚSICA', 410], ['efectos', 'EFECTOS', 590]];
+  function drawChannels() {
+    let s = '';
+    CH.forEach(([k, lab, y]) => {
+      const v = M.vol[k], px = 430, deg = -135 + 27 * v;
+      s += `<text x="${px}" y="${y - 70}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="17" letter-spacing="3" fill="#f6e4c2">${lab}</text>`;
+      s += `<g class="lbl pot" data-ch="${k}" role="slider" tabindex="0" aria-label="${lab}" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${v}">
+        <circle cx="${px}" cy="${y}" r="58" fill="#000" opacity=".3" transform="translate(0 6)"/><circle cx="${px}" cy="${y}" r="56" fill="url(#knob)"/>`;
+      for (let t = 0; t < 30; t++) { const a = t / 30 * Math.PI * 2; s += `<line x1="${px + 51 * Math.cos(a)}" y1="${y + 51 * Math.sin(a)}" x2="${px + 56 * Math.cos(a)}" y2="${y + 56 * Math.sin(a)}" stroke="#55504a" stroke-width="2.5"/>`; }
+      s += `<circle cx="${px}" cy="${y}" r="36" fill="#33302c"/><line x1="${px}" y1="${y}" x2="${px}" y2="${y - 46}" stroke="#f4f1ea" stroke-width="6" stroke-linecap="round" transform="rotate(${deg} ${px} ${y})"/></g>`;
+      for (let i = 0; i < 10; i++) {
+        const lx = 560 + i * 74, on = i < v, c = LEDC(i);
+        s += `<g class="lbl" data-ch="${k}" data-v="${i + 1}" role="button" tabindex="0" aria-label="${lab} ${i + 1}"><rect x="${lx - 30}" y="${y - 40}" width="66" height="80" fill="transparent"/>
+          <ellipse cx="${lx}" cy="${y + 20}" rx="22" ry="7" fill="#000" opacity=".25"/>
+          ${on ? `<circle cx="${lx}" cy="${y}" r="30" fill="${c}" opacity=".55" filter="url(#ledg)"/>` : ''}
+          <path d="M${lx - 18},${y + 16} V${y - 4} A18,18 0 0 1 ${lx + 18},${y - 4} V${y + 16} Z" fill="${c}" opacity="${on ? 1 : .28}"/>
+          <rect x="${lx - 21}" y="${y + 13}" width="42" height="7" rx="2" fill="${c}" opacity="${on ? .9 : .25}"/>
+          <ellipse cx="${lx - 6}" cy="${y - 8}" rx="5" ry="8" fill="#fff" opacity="${on ? .7 : .3}"/></g>`;
+      }
+    });
+    $('channels').innerHTML = s;
+  }
+  function setVol(k, v) { M.setVol(k, Math.max(0, Math.min(10, v))); drawChannels(); drawBoardLeds(); if (k === 'efectos') click(); }
+
+  // ---------- manual ----------
+  const MANUAL = [
+    'Deslizá un componente hacia su vecino, o tocá uno y después el otro.',
+    'Si quedan tres o más iguales en línea, se queman y caen otros nuevos.',
+    'Cumplí el pedido de la ficha antes de quedarte sin movimientos.',
+    'Las cascadas suman cada vez más puntos; las estrellas, según el puntaje.',
+    '',
+    'ESPECIALES',
+    'Rayo (4 en línea): barre la fila o la columna.',
+    'Sobrecarga (línea en L o en T): explota alrededor.',
+    'Batería (5 en línea): se lleva todos los de un tipo.',
+    'Antena (cuadrado de 2 × 2): rompe sus vecinas y transmite.',
+    '',
+    'En la maqueta todavía no hay especiales ni obstáculos.',
+  ];
+  $('manualText').innerHTML = MANUAL.map((l, i) => `<text x="520" y="${250 + i * 38}" ${l === 'ESPECIALES' ? 'font-weight="700" letter-spacing="3"' : ''}>${l}</text>`).join('');
+
+  // ---------- sound effect for the controls ----------
+  let actx = null;
+  function click() {
+    const v = M.vol.efectos; if (!v) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === 'suspended') actx.resume();
+      const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+      o.type = 'square'; o.frequency.value = 1400; g.gain.setValueAtTime(.05 * v / 8, t); g.gain.exponentialRampToValueAtTime(.0005, t + .03);
+      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + .04);
+    } catch (e) {}
+  }
+  const toast = msg => { const t = $('toast'); t.textContent = msg; t.style.opacity = 1; clearTimeout(toast.t); toast.t = setTimeout(() => t.style.opacity = 0, 1800); };
+
+  // ---------- input ----------
+  const open = id => { document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open')); if (id) $(id).classList.add('open'); };
+  const isOpen = () => !!document.querySelector('.sheet.open');
+  function activate(el) {
+    if (!el) return;
+    if (el.dataset.knob) return setKnob(el.dataset.knob, el.dataset.i);
+    if (el.dataset.ch && el.dataset.v) { const k = el.dataset.ch, v = +el.dataset.v; return setVol(k, M.vol[k] === v && v === 1 ? 0 : v); }
+    switch (el.id) {
+      case 'hitScreen': if (mode === 0) location.href = 'mapa.html'; else if (mode === 1) toast('El zen todavía no está en la maqueta'); break;
+      case 'hitSound': click(); open('sound'); drawChannels(); break;
+      case 'hitManual': click(); open('manual'); break;
+      case 'done': case 'closeManual': click(); open(null); break;
+      case 'back': location.href = '../prototipo/'; break;
+    }
+  }
+  const svg = $('scene');
+  // drag on a pot: up or right turns it up
+  let drag = null;
+  svg.addEventListener('pointerdown', e => {
+    const pot = e.target.closest('.pot');
+    if (pot) { drag = { k: pot.dataset.ch, y: e.clientY, x: e.clientX, v: M.vol[pot.dataset.ch], moved: false }; svg.setPointerCapture(e.pointerId); }
+  });
+  svg.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const d = (drag.y - e.clientY + e.clientX - drag.x) / 18;
+    if (Math.abs(d) >= 1) { drag.moved = true; setVol(drag.k, Math.round(drag.v + d)); }
+  });
+  svg.addEventListener('pointerup', () => { drag = null; });
+  svg.addEventListener('click', e => {
+    const el = e.target.closest('[data-knob], [data-v], #hitScreen, #hitSound, #hitManual, #done, #closeManual, #back');
+    if (!el) return;
+    if (isOpen() && !el.closest('.sheet')) return;
+    activate(el);
+  });
+  svg.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(document.activeElement); }
+    if (e.key === 'Escape') open(null);
+  });
+  // the sheet's dark backdrop closes it
+  document.querySelectorAll('.sheet > rect:first-child').forEach(r => r.addEventListener('click', () => open(null)));
+
+  drawKnobs(); drawScreen(); drawBoardLeds();
+  window.__inst = { setKnob, setVol, open, M };
+})();
+</script>
+</body>
+</html>

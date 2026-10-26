@@ -301,7 +301,7 @@ function variantA() {
   // ---------- left: Dymo labels + instrument panel ----------
   const lx = 34, lw = px - lx - 14, cx = lx + lw / 2;
   const dymo = (x, y, w, txt, rot, col = '#1c1c1c') => `<g transform="rotate(${rot} ${x + w / 2} ${y + 11})" filter="url(#soft)"><path d="M${x},${y} h${w} l-3,11 l3,11 h-${w} l3,-11 z" fill="${col}"/><rect x="${x}" y="${y + 1.5}" width="${w}" height="2" fill="#fff" opacity=".08"/><text x="${x + w / 2}" y="${y + 16}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">${txt}</text></g>`;
-  add(dymo(lx + 4, 16, lw - 8, 'NIVEL 27', -1.5));
+  if (!(BG && A2)) add(dymo(lx + 4, 16, lw - 8, 'NIVEL 27', -1.5));
   if (!A2) add(dymo(lx - 2, 44, lw + 4, 'DISPLAY 7 SEG.', 1, '#2e2e2e'));
   // aluminum panel
   const ay = A2 ? 54 : 80, ah = A2 ? 334 : 300;
@@ -351,7 +351,7 @@ function variantA() {
   // masking tape holding the card
   add(`<g transform="rotate(-4 ${rcx} ${cy0})"><rect x="${rcx - 32}" y="${cy0 - 10}" width="64" height="20" fill="#e8dcb8" opacity=".85"/><rect x="${rcx - 32}" y="${cy0 - 10}" width="64" height="20" filter="url(#grain2)" opacity=".4"/></g>`);
 
-  if (A2) {
+  if (A2 && !BG) {
     const nx = rx0 - 2, ny = 258, nw = rw + 8, nh = 132, ink = '#1d3a94';
     let n = `<g transform="rotate(-3 ${nx + nw / 2} ${ny + nh / 2})"><g filter="url(#soft)"><path d="M${nx + 2},${ny + 3} L${nx + nw},${ny} L${nx + nw + 2},${ny + nh - 2} L${nx},${ny + nh} Z" fill="#fbf8ef"/></g>`;
     for (let x = nx + 4; x < nx + nw; x += 8) n += `<line x1="${x}" y1="${ny + 2}" x2="${x}" y2="${ny + nh - 1}" stroke="#8fb3d9" stroke-width=".5"/>`;
