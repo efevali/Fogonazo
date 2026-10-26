@@ -103,6 +103,12 @@ Un recorrido navegable para probar en el teléfono la estructura nueva ([estruct
 
 ## Por revisar
 
+- **Observaciones de Producto sobre la maqueta de Fogonazo** (26/10). En general la ve bien. A resolver:
+  - **Tipografías difíciles de leer:** revisar tamaños, pesos y contraste en todas las pantallas (la del osciloscopio, las etiquetas de las perillas, el sonido, el manual y el marcador de la partida).
+  - **El manual se ve demasiado plano:** que la página parezca una revista de verdad (papel, foto, columnas, algo de textura y sombra), no un recuadro blanco.
+  - **Las perillas del sonido no giran al arrastrar.** Causa probable: el lienzo tiene `touch-action: manipulation`, así que en el teléfono el arrastre se toma como desplazamiento y el gesto se cancela; hay que poner `touch-action: none` en las perillas y probarlo en un teléfono real.
+  - **Los LEDs del volumen, arrastrando:** en vez de tocarlos de a uno, deslizar el dedo sobre la fila y que el volumen siga al dedo.
+
 - **La lámpara de arco** se lee como apoyada contra la ventana, detrás del sillón, y no sobre la mesa. Se decidió dejarla así: corregirla toca la geometría y es arriesgado.
 - ~~**El brillo de un objeto activo después de usarlo.**~~ Arreglado el 26/10. Al cerrar el panel, el objeto tocado se volvía a iluminar enseguida y quedaba desfasado de los otros dos, porque el destello del toque reemplazaba la animación de aviso y esta arrancaba de cero. Ahora el destello va en una capa propia y el ciclo de aviso no se interrumpe nunca.
 - **Coherencia entre la sala y cada juego.** El mahjong tiene hoy la estética de Kasa (verde papel y tinta azul) y Fogonazo la de 8 y 16 bits; la sala es una ilustración de los 70. Decidido el 26/10: Fogonazo deja el pixel art, y los juegos pueden tener estilos distintos pero tienen que sentirse parte de la colección. Falta definir cómo se ve cada juego y cómo se pasa de la sala al juego.
