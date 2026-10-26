@@ -213,7 +213,50 @@ function viewMap() {
   add(`<rect width="${W}" height="${H}" fill="url(#vig)"/>`);
 }
 
-({ niveles: () => viewInstrument(0), records: () => viewInstrument(2), sonido: viewSound, mapa: viewMap })[V]();
+function viewMap2() {
+  // graph paper on the bench: a plotted signal (carrier with a small modulation); levels are measurement points on it
+  wood();
+  const px0 = -6, py0 = 10, pw = 927, ph = 392;
+  add(`<g transform="rotate(.5 457 206)"><g filter="url(#soft)"><rect x="${px0}" y="${py0}" width="${pw}" height="${ph}" fill="#f7f2e3"/></g>`);
+  const g = (step, col, sw, op) => { let s = `<g stroke="${col}" stroke-width="${sw}" opacity="${op}">`; for (let x = px0 + 4; x < px0 + pw; x += step) s += `<line x1="${x}" y1="${py0}" x2="${x}" y2="${py0 + ph}"/>`; for (let y = py0 + 4; y < py0 + ph; y += step) s += `<line x1="${px0}" y1="${y}" x2="${px0 + pw}" y2="${y}"/>`; return s + '</g>'; };
+  add(g(4, '#e3a27a', .35, .55) + g(20, '#e3a27a', .6, .75) + g(40, '#d9824e', 1, .8));
+  // axes in ink
+  const ax = 44, ay = 206;
+  add(`<line x1="${ax}" y1="${py0 + 24}" x2="${ax}" y2="${py0 + ph - 20}" stroke="#2a2f45" stroke-width="1.4"/><line x1="${ax}" y1="${ay}" x2="${px0 + pw}" y2="${ay}" stroke="#2a2f45" stroke-width="1.2"/>`);
+  // the signal: carrier plus a small, faster modulation
+  // levels sit on the peaks and troughs: half a period per level, with a slow swell of the amplitude and a small ripple on top
+  const first = 6, cur = 12, last = 18, step = 74, x0 = 96;
+  const y = x => ay - (62 + 14 * Math.sin((x - ax) / 900 * Math.PI * 2)) * Math.cos((x - x0) / (2 * step) * Math.PI * 2) - 4 * Math.sin((x - ax) / 19 * Math.PI * 2);
+  const xOf = n => x0 + (n - first) * step;
+  const curX = xOf(cur);
+  let inked = '', pencil = '';
+  for (let x = ax; x <= px0 + pw; x += 1.5) { const pt = `${x.toFixed(1)},${y(x).toFixed(1)}`; if (x <= curX) inked += (inked ? 'L' : 'M') + pt; if (x >= curX) pencil += (pencil ? 'L' : 'M') + pt; }
+  add(`<path d="${inked}" stroke="#1d3a94" stroke-width="2.2" fill="none" stroke-linejoin="round"/>`);
+  add(`<path d="${pencil}" stroke="#6b6b6b" stroke-width="1.2" fill="none" stroke-dasharray="3 3" opacity=".7"/>`);
+  const stars = { 6: 3, 7: 2, 8: 3, 9: 1, 10: 2, 11: 3 };
+  // each label (number + stars) goes where it is farthest from the curve
+  const samples = []; for (let x = ax; x <= px0 + pw; x += 3) samples.push([x, y(x)]);
+  const clearance = (cx, cy, w, h) => { let m = 1e9; for (const [sx, sy] of samples) { const dx = Math.max(Math.abs(sx - cx) - w / 2, 0), dy = Math.max(Math.abs(sy - cy) - h / 2, 0); m = Math.min(m, Math.hypot(dx, dy)); } return m; };
+  for (let n = first; n <= last; n++) {
+    const x = xOf(n), yy = y(x), done = n < cur, now = n === cur;
+    const peak = (n - first) % 2 === 0;
+    const best = { ox: 0, oy: peak ? (done ? -46 : now ? -32 : -22) : (done ? 34 : 30) };
+    const gx = x + best.ox, gy = yy + best.oy;
+    if (now) add(`<circle cx="${x}" cy="${yy}" r="17" fill="none" stroke="#c8402c" stroke-width="2.4"/><circle cx="${x}" cy="${yy}" r="22" fill="#c8402c" opacity=".08"/>`);
+    add(`<circle cx="${x}" cy="${yy}" r="${done || now ? 7 : 5}" fill="${done ? '#1d3a94' : now ? '#c8402c' : '#f7f2e3'}" stroke="${done ? '#1d3a94' : now ? '#c8402c' : '#7a7a7a'}" stroke-width="1.6"/>`);
+    add(`<text x="${gx}" y="${gy + (done ? 0 : 9)}" text-anchor="middle" font-family="Caveat" font-weight="600" font-size="${now ? 30 : 26}" fill="${done ? '#1d3a94' : now ? '#c8402c' : '#8a8a8a'}">${n}</text>`);
+    if (done) for (let k = 0; k < 3; k++) { const on = k < stars[n]; add(`<path d="${star(gx - 15 + k * 15, gy + 15, 6)}" fill="${on ? '#c8402c' : 'none'}" stroke="#c8402c" stroke-width="1.2" opacity="${on ? 1 : .55}"/>`); }
+  }
+  // margin note: "tocá para jugar" next to the current point
+  add(`<text x="${curX + 24}" y="${y(curX) - 22}" font-family="Caveat" font-weight="600" font-size="20" fill="#c8402c" transform="rotate(-4 ${curX + 26} ${y(curX)})">← jugar</text>`);
+  add(`</g>`);
+  // labels stuck on the paper
+  add(dymo(18, 22, 124, '◀ FOGONAZO', -1.5));
+  add(`<g transform="rotate(1.5 ${W - 110} 36)"><rect x="${W - 196}" y="20" width="176" height="34" fill="#fbf8ef" stroke="#c9c4ba"/><path d="${star(W - 176, 37, 8)}" fill="#c8402c"/><text x="${W - 162}" y="45" font-family="Caveat" font-weight="600" font-size="24" fill="#1d3a94">27 · Normal</text></g>`);
+  lightAndVignette();
+}
+
+({ mapa2: viewMap2, niveles: () => viewInstrument(0), records: () => viewInstrument(2), sonido: viewSound, mapa: viewMap })[V]();
 document.getElementById('s').innerHTML = defs + out;
 document.fonts.ready.then(() => setTimeout(() => document.body.setAttribute('data-ready', '1'), 300));
 </script>

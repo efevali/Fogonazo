@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <style>
-@font-face { font-family: Fraunces; font-weight: 600; src: url(node_modules/@fontsource/fraunces/files/fraunces-latin-600-normal.woff2); }
-@font-face { font-family: Fraunces; font-weight: 900; src: url(node_modules/@fontsource/fraunces/files/fraunces-latin-900-normal.woff2); }
+@font-face { font-family: Fraunces; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/fraunces-latin-600-normal.woff2); }
+@font-face { font-family: Fraunces; font-weight: 900; src: url(../../docs/sala/maqueta-fogonazo/fuentes/fraunces-latin-900-normal.woff2); }
 @font-face { font-family: Barlow; font-weight: 500; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-500-normal.woff2); }
 @font-face { font-family: Barlow; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-600-normal.woff2); }
 @font-face { font-family: Barlow; font-weight: 700; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-700-normal.woff2); }
+@font-face { font-family: Caveat; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/caveat-latin-600-normal.woff2); }
 @font-face { font-family: Elite; src: url(../../docs/sala/maqueta-fogonazo/fuentes/special-elite-latin-400-normal.woff2); }
 html, body { margin: 0; background: #000; }
 svg { display: block; }
@@ -20,6 +21,7 @@ const V = new URLSearchParams(location.search).get('v') || 'a';
 const W = 915, H = 412;
 const IMG = new URLSearchParams(location.search).get('img');
 const BG = new URLSearchParams(location.search).get('bg') === '1';
+const A2 = V === 'a2';
 const pc = (t, x, y, w, h) => IMG
   ? `<image href="../../docs/sala/maqueta-fogonazo/piezas/pieza${t}.png" x="${x + w * .06}" y="${y + h * .06}" width="${w * .88}" height="${h * .88}" preserveAspectRatio="xMidYMid meet"/>`
   : `<use href="#pA${t}" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
@@ -263,7 +265,7 @@ function variantA() {
   for (const y of [96, 214, 331]) add(`<rect x="0" y="${y}" width="${W}" height="2" fill="#2e170a" opacity=".55"/><rect x="0" y="${y + 2}" width="${W}" height="1" fill="#c48552" opacity=".25"/>`);
   // stray parts on the bench (decor, out of the play area)
   // solder wire spool
-  add(`<g filter="url(#soft)"><circle cx="872" cy="372" r="30" fill="#4a4f57"/><circle cx="872" cy="372" r="24" fill="#c9ccd1"/><circle cx="872" cy="372" r="24" fill="none" stroke="#9ea2a8" stroke-width="1" stroke-dasharray="1.5 1.5"/><circle cx="872" cy="372" r="8" fill="#2a2d32"/></g><path d="M850,352 C820,330 812,350 790,338" stroke="#c9ccd1" stroke-width="1.6" fill="none"/>`);
+  if (!A2) add(`<g filter="url(#soft)"><circle cx="872" cy="372" r="30" fill="#4a4f57"/><circle cx="872" cy="372" r="24" fill="#c9ccd1"/><circle cx="872" cy="372" r="24" fill="none" stroke="#9ea2a8" stroke-width="1" stroke-dasharray="1.5 1.5"/><circle cx="872" cy="372" r="8" fill="#2a2d32"/></g><path d="M850,352 C820,330 812,350 790,338" stroke="#c9ccd1" stroke-width="1.6" fill="none"/>`);
 
   // protoboard
   add(`<g filter="url(#soft)"><rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="7" fill="url(#plate)"/></g>`);
@@ -300,21 +302,21 @@ function variantA() {
   const lx = 34, lw = px - lx - 14, cx = lx + lw / 2;
   const dymo = (x, y, w, txt, rot, col = '#1c1c1c') => `<g transform="rotate(${rot} ${x + w / 2} ${y + 11})" filter="url(#soft)"><path d="M${x},${y} h${w} l-3,11 l3,11 h-${w} l3,-11 z" fill="${col}"/><rect x="${x}" y="${y + 1.5}" width="${w}" height="2" fill="#fff" opacity=".08"/><text x="${x + w / 2}" y="${y + 16}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">${txt}</text></g>`;
   add(dymo(lx + 4, 16, lw - 8, 'NIVEL 27', -1.5));
-  add(dymo(lx - 2, 44, lw + 4, 'DISPLAY 7 SEG.', 1, '#2e2e2e'));
+  if (!A2) add(dymo(lx - 2, 44, lw + 4, 'DISPLAY 7 SEG.', 1, '#2e2e2e'));
   // aluminum panel
-  const ay = 80, ah = 300;
+  const ay = A2 ? 54 : 80, ah = A2 ? 334 : 300;
   add(`<g filter="url(#soft)"><rect x="${lx}" y="${ay}" width="${lw}" height="${ah}" rx="6" fill="url(#alu)"/></g>`);
   add(`<rect x="${lx}" y="${ay}" width="${lw}" height="${ah}" rx="6" filter="url(#brush)" opacity=".6"/>`);
   add(`<rect x="${lx + .5}" y="${ay + .5}" width="${lw - 1}" height="${ah - 1}" rx="6" fill="none" stroke="#fff" stroke-opacity=".5"/>`);
   for (const [sx, sy] of [[lx + 9, ay + 9], [lx + lw - 9, ay + 9], [lx + 9, ay + ah - 9], [lx + lw - 9, ay + ah - 9]]) add(`<circle cx="${sx}" cy="${sy}" r="4" fill="#8d887e"/><circle cx="${sx}" cy="${sy}" r="3.2" fill="#c9c4ba"/><line x1="${sx - 2.6}" y1="${sy}" x2="${sx + 2.6}" y2="${sy}" stroke="#6a655c" stroke-width="1.1" transform="rotate(35 ${sx} ${sy})"/>`);
   // LED display: moves
-  const dw = 92, dh = 58, dx = cx - dw / 2, dyy = ay + 24;
+  const dw = 92, dh = 58, dx = cx - dw / 2, dyy = ay + (A2 ? 32 : 24);
   add(`<rect x="${dx - 6}" y="${dyy - 6}" width="${dw + 12}" height="${dh + 12}" rx="5" fill="#2a2724"/><rect x="${dx}" y="${dyy}" width="${dw}" height="${dh}" rx="3" fill="#1d0705"/>`);
   add(BG ? seg7('88', dx + 14, dyy + 8, 28, 42, 10, '#3a0f0a', '#3a0f0a') : `<g filter="url(#glowR)">${seg7('18', dx + 14, dyy + 8, 28, 42, 10, '#ff3a26', '#3a0f0a')}</g>`);
   add(`<rect x="${dx}" y="${dyy}" width="${dw}" height="${dh / 2}" rx="3" fill="#fff" opacity=".05"/>`);
   add(`<text x="${cx}" y="${dyy + dh + 24}" text-anchor="middle" font-family="Barlow" font-weight="600" font-size="13" letter-spacing="2.4" fill="#4a463f">MOVIMIENTOS</text>`);
   // analog meter: score toward stars
-  const mw = lw - 28, mh = 92, mx = lx + 14, my = ay + 132;
+  const mw = lw - 28, mh = 92, mx = lx + 14, my = ay + (A2 ? 152 : 132);
   add(`<rect x="${mx - 4}" y="${my - 4}" width="${mw + 8}" height="${mh + 8}" rx="6" fill="#2a2724"/><rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="3" fill="url(#dial)"/>`);
   const pcx = cx, pcy = my + mh + 14, R = 78;
   const ang = d => (-90 + d) * Math.PI / 180;
@@ -327,27 +329,40 @@ function variantA() {
   const na = ang(26);
   if (!BG) add(`<line x1="${pcx}" y1="${pcy}" x2="${(pcx + (R + 2) * Math.cos(na)).toFixed(1)}" y2="${(pcy + (R + 2) * Math.sin(na)).toFixed(1)}" stroke="#1b1612" stroke-width="2" stroke-linecap="round"/>`);
   add(`</g><rect x="${mx}" y="${my}" width="${mw}" height="${mh * .45}" rx="3" fill="#fff" opacity=".18"/>`);
-  if (!BG) add(`<text x="${cx}" y="${my + mh + 28}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="22" letter-spacing="1" fill="#2c2924">12 450</text>`);
-  add(`<text x="${cx}" y="${my + mh + 44}" text-anchor="middle" font-family="Barlow" font-weight="600" font-size="12" letter-spacing="2.4" fill="#4a463f">PUNTOS</text>`);
+  if (!BG) add(`<text x="${cx}" y="${my + mh + (A2 ? 32 : 28)}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="22" letter-spacing="1" fill="#2c2924">12 450</text>`);
+  add(`<text x="${cx}" y="${my + mh + (A2 ? 50 : 44)}" text-anchor="middle" font-family="Barlow" font-weight="600" font-size="12" letter-spacing="2.4" fill="#4a463f">PUNTOS</text>`);
 
   // ---------- right: pause push-button + order card ----------
   const rx0 = px + pw + 14, rw = W - rx0 - 26, rcx = rx0 + rw / 2;
   add(`<g filter="url(#soft)"><circle cx="${rx0 + rw - 22}" cy="34" r="19" fill="#2a2724"/><circle cx="${rx0 + rw - 22}" cy="33" r="15" fill="url(#alu)"/></g><rect x="${rx0 + rw - 28}" y="26" width="4.5" height="14" rx="1" fill="#4a463f"/><rect x="${rx0 + rw - 20.5}" y="26" width="4.5" height="14" rx="1" fill="#4a463f"/>`);
-  const cy0 = 70, chh = 258;
+  const cy0 = A2 ? 64 : 70, chh = A2 ? 180 : 258;
   add(`<g transform="rotate(1.6 ${rcx} ${cy0 + chh / 2})"><g filter="url(#soft)"><rect x="${rx0}" y="${cy0}" width="${rw}" height="${chh}" rx="2" fill="#f6eedb"/></g>`);
-  for (let y = cy0 + 50; y < cy0 + chh - 8; y += 22) add(`<line x1="${rx0}" y1="${y}" x2="${rx0 + rw}" y2="${y}" stroke="#9bb8d8" stroke-width=".8"/>`);
+  for (let y = cy0 + 50; y < cy0 + chh - 8; y += A2 ? 21 : 22) add(`<line x1="${rx0}" y1="${y}" x2="${rx0 + rw}" y2="${y}" stroke="#9bb8d8" stroke-width=".8"/>`);
   add(`<line x1="${rx0}" y1="${cy0 + 36}" x2="${rx0 + rw}" y2="${cy0 + 36}" stroke="#d25a4a" stroke-width="1"/>`);
   add(`<text x="${rx0 + 14}" y="${cy0 + 27}" font-family="Elite" font-size="19" fill="#2c2620">Pedido</text>`);
   if (!BG) ORDERS.forEach(([t, n, of], i) => {
-    const y = cy0 + 54 + i * 66, done = n >= of;
-    add(`<g filter="url(#dropA)">${pc(t, rx0 + 10, y, 46, 46)}</g>`);
-    add(`<text x="${rx0 + 66}" y="${y + 31}" font-family="Elite" font-size="22" fill="${done ? '#7a7166' : '#2c2620'}">${n} / ${of}</text>`);
-    if (done) add(`<path d="M${rx0 + 62},${y + 23} C${rx0 + 90},${y + 21} ${rx0 + 120},${y + 25} ${rx0 + 140},${y + 22}" stroke="#2c2620" stroke-width="1.8" fill="none"/><path d="M${rx0 + 30},${y + 34} l8,9 l18,-26" stroke="#c8402c" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`);
+    const y = A2 ? cy0 + 46 + i * 42 : cy0 + 54 + i * 66, done = n >= of;
+    add(`<g filter="url(#dropA)">${A2 ? pc(t, rx0 + 14, y, 38, 38) : pc(t, rx0 + 10, y, 46, 46)}</g>`);
+    add(`<text x="${rx0 + (A2 ? 62 : 66)}" y="${y + (A2 ? 26 : 31)}" font-family="Elite" font-size="${A2 ? 20 : 22}" fill="${done ? '#7a7166' : '#2c2620'}">${n} / ${of}</text>`);
+    if (done && A2) add(`<path d="M${rx0 + 58},${y + 19} C${rx0 + 86},${y + 17} ${rx0 + 112},${y + 21} ${rx0 + 134},${y + 18}" stroke="#2c2620" stroke-width="1.6" fill="none"/><path d="M${rx0 + 26},${y + 28} l7,8 l15,-22" stroke="#c8402c" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`);
+    else if (done) add(`<path d="M${rx0 + 62},${y + 23} C${rx0 + 90},${y + 21} ${rx0 + 120},${y + 25} ${rx0 + 140},${y + 22}" stroke="#2c2620" stroke-width="1.8" fill="none"/><path d="M${rx0 + 30},${y + 34} l8,9 l18,-26" stroke="#c8402c" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`);
   });
   add(`</g>`);
   // masking tape holding the card
   add(`<g transform="rotate(-4 ${rcx} ${cy0})"><rect x="${rcx - 32}" y="${cy0 - 10}" width="64" height="20" fill="#e8dcb8" opacity=".85"/><rect x="${rcx - 32}" y="${cy0 - 10}" width="64" height="20" filter="url(#grain2)" opacity=".4"/></g>`);
 
+  if (A2) {
+    const nx = rx0 - 2, ny = 258, nw = rw + 8, nh = 132, ink = '#1d3a94';
+    let n = `<g transform="rotate(-3 ${nx + nw / 2} ${ny + nh / 2})"><g filter="url(#soft)"><path d="M${nx + 2},${ny + 3} L${nx + nw},${ny} L${nx + nw + 2},${ny + nh - 2} L${nx},${ny + nh} Z" fill="#fbf8ef"/></g>`;
+    for (let x = nx + 4; x < nx + nw; x += 8) n += `<line x1="${x}" y1="${ny + 2}" x2="${x}" y2="${ny + nh - 1}" stroke="#8fb3d9" stroke-width=".5"/>`;
+    for (let y = ny + 6; y < ny + nh; y += 8) n += `<line x1="${nx + 1}" y1="${y}" x2="${nx + nw}" y2="${y}" stroke="#8fb3d9" stroke-width=".5"/>`;
+    n += `<rect x="${nx + nw / 2 - 26}" y="${ny - 8}" width="52" height="16" fill="#e8dcb8" opacity=".85" transform="rotate(5 ${nx + nw / 2} ${ny})"/>`;
+    n += `<text x="${nx + 12}" y="${ny + 30}" font-family="Caveat" font-weight="600" font-size="21" fill="${ink}">4 en línea → RAYO</text>`;
+    for (let i = 0; i < 4; i++) n += `<rect x="${nx + 14 + i * 20}" y="${ny + 44}" width="15" height="15" rx="3" fill="none" stroke="${ink}" stroke-width="1.7"/>`;
+    n += `<path d="M${nx + 100},${ny + 52} h14 m-5,-5 l5,5 l-5,5" stroke="${ink}" stroke-width="1.7" fill="none" stroke-linecap="round"/><path d="M${nx + 128},${ny + 40} l-6,12 h8 l-6,12" stroke="${ink}" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M${nx + 138},${ny + 52} h${nw - 150}" stroke="${ink}" stroke-width="1.3" stroke-dasharray="4 3"/>`;
+    n += `<text x="${nx + 12}" y="${ny + 90}" font-family="Caveat" font-weight="600" font-size="19" fill="${ink}">Tocalo: barre la fila</text><text x="${nx + 12}" y="${ny + 112}" font-family="Caveat" font-weight="600" font-size="19" fill="${ink}">o la columna entera.</text></g>`;
+    add(n);
+  }
   // lamp light and vignette over everything
   if (!BG) {
   add(`<rect width="${W}" height="${H}" fill="url(#lamp)" style="mix-blend-mode:screen"/>`);
@@ -423,7 +438,7 @@ function variantB() {
   add(`<rect width="${W}" height="${H}" filter="url(#paper)" opacity=".35"/>`);
 }
 
-(V === 'a' ? variantA : variantB)();
+(V === 'b' ? variantB : variantA)();
 svg.innerHTML = out;
 document.querySelectorAll('#wind').forEach(g => g.innerHTML = windings('w', 22, 18, 42));
 document.querySelectorAll('#windB').forEach(g => g.innerHTML = windings('w', 12, 20, 41));
