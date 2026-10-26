@@ -38,6 +38,7 @@ Las referencias que se usaron para orientar el estilo (las ilustraciones isomét
 | S-03 | Encuadres en horizontal: [a · isométrica recortada](bocetos/S-03a-encuadre-isometrica-recortada.png), [b · vista frontal](bocetos/S-03b-encuadre-vista-frontal.png), [c · isométrica con arrastre](bocetos/S-03c-encuadre-isometrica-con-arrastre.png); y los juegos: [d · Fogonazo 10 × 8](bocetos/S-03d-fogonazo-horizontal.png), [e · mahjong «tortuga»](bocetos/S-03e-mahjong-horizontal.png) | Se eligió la b. La d y la e son la referencia para pasar los juegos a horizontal (ninguna se aprobó como diseño final) |
 | S-04 | Pruebas de estilo en vista frontal, del sector del equipo de audio: [a](bocetos/S-04a-prueba-frontal.jpg), [b · más detalle](bocetos/S-04b-prueba-frontal-detalle.jpg) | Superadas: se pasó a generar las imágenes con Gemini |
 | [S-05](bocetos/S-05-composicion-sala.jpg) | Composición de la sala completa en vista frontal | Vigente como guía de composición: es la que se le pasó a Gemini |
+| S-06 | Fogonazo en horizontal con estética de la colección (26/10): [a · banco](bocetos/S-06a-fogonazo-banco.png), componentes reales sobre una protoboard en el banco de nogal, con display de LED, instrumento de aguja, etiquetas Dymo y el pedido en una ficha; [b · kit](bocetos/S-06b-fogonazo-kit.png), piezas ilustradas planas en la bandeja de una caja de kit de los 70 | En discusión. El elegido es la base del pedido de piezas a Gemini |
 
 ## Cómo se trabaja la imagen
 
