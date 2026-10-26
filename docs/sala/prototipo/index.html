@@ -271,7 +271,7 @@ input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset:
     </g>
 
     <!-- tap zones -->
-    <path class="hit" id="hitBench" data-open="sheetBench" data-hl="hlBench" role="button" tabindex="0" aria-label="Abrir Fogonazo"
+    <path class="hit" id="hitBench" data-href="../maqueta-fogonazo/instrumento.html" data-hl="hlBench" role="button" tabindex="0" aria-label="Abrir Fogonazo"
       d="M160,490H606V1072H160Z M238,905H362V1148H238Z"/>
     <path class="hit" id="hitTable" data-open="sheetTable" data-hl="hlTable" role="button" tabindex="0" aria-label="Abrir Mahjong"
       d="M834,960H1102V878H1262V988H1358V1234H834Z"/>
@@ -291,20 +291,6 @@ input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset:
     </button>
   </div>
   <div class="rotate">Girá el teléfono para verlo en horizontal</div>
-
-  <!-- Fogonazo -->
-  <div class="sheet" id="sheetBench" hidden>
-    <div class="kit" role="dialog" aria-modal="true" aria-labelledby="tBench">
-      <div class="txt">
-        <span class="eyebrow">Kit de juego · Nº 1</span>
-        <h2 id="tBench">Fogonazo</h2>
-        <p>Juntá tres componentes iguales, armá especiales y completá los pedidos de cada placa.</p>
-        <span class="soon">Próximamente, en horizontal</span>
-        <button class="btn ghost" type="button" data-close>Volver</button>
-      </div>
-      <div class="stripes" aria-hidden="true"></div>
-    </div>
-  </div>
 
   <!-- Mahjong -->
   <div class="sheet" id="sheetTable" hidden>
@@ -401,10 +387,12 @@ input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset:
   flash.addEventListener('animationend', () => flash.classList.remove('flash'));
   let lastHit = null;
   const openSheet = (hit) => {
-    const hl = document.getElementById(hit.dataset.hl), sheet = document.getElementById(hit.dataset.open);
+    const hl = document.getElementById(hit.dataset.hl), sheet = document.getElementById(hit.dataset.open), href = hit.dataset.href;
     flash.setAttribute('mask', hl.getAttribute('mask'));
     flash.classList.remove('flash'); void flash.getBoundingClientRect(); flash.classList.add('flash');
     lastHit = hit;
+    // an object that leads to a game goes there once the flash has shown
+    if (href) { setTimeout(() => { location.href = href; }, 260); return; }
     setTimeout(() => { sheet.hidden = false; const f = sheet.querySelector('input, button'); if (f) f.focus({ preventScroll: true }); }, 260);
   };
   document.querySelectorAll('.hit').forEach(hit => {

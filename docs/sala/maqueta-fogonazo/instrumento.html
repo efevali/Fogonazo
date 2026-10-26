@@ -10,11 +10,14 @@
    The viewBox keeps the central 20:9 band and slices to fill the screen. */
 @font-face { font-family: Barlow; font-weight: 600; src: url(fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
 @font-face { font-family: Barlow; font-weight: 700; src: url(fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
-@font-face { font-family: Mono; src: url(fuentes/share-tech-mono-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: Plex; font-weight: 600; src: url(fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Serif; font-weight: 400; src: url(fuentes/pt-serif-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: Serif; font-weight: 400; font-style: italic; src: url(fuentes/pt-serif-latin-400-italic.woff2) format('woff2'); }
+@font-face { font-family: Serif; font-weight: 700; src: url(fuentes/pt-serif-latin-700-normal.woff2) format('woff2'); }
 :root { --amber: #ffb648; --ph: #9dffbf; }
 html, body { margin: 0; height: 100%; background: #2a1708; overflow: hidden; }
 body { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
-svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; touch-action: manipulation; }
+svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; touch-action: none; }
 .hit { fill: transparent; cursor: pointer; }
 .hit:focus-visible { outline: none; stroke: var(--amber); stroke-width: 3; }
 .lbl { cursor: pointer; }
@@ -23,6 +26,32 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 @keyframes scroll { to { transform: translateX(-200px); } }
 .sheet { display: none; } .sheet.open { display: inline; }
 .led { transition: opacity .12s; }
+/* the manual: a 70s hobby-magazine page; sizes in image units (26 ≈ 14 px on a phone) */
+.mag { box-sizing: border-box; width: 840px; height: 712px; padding: 28px 38px 22px; color: #2b241b; font: 400 24px/1.3 Serif, Georgia, serif; overflow: hidden;
+  background: radial-gradient(ellipse 120% 100% at 50% 40%, rgba(255,250,235,.55) 0%, rgba(255,250,235,0) 55%, rgba(110,72,22,.38) 100%),
+    radial-gradient(circle at 82% 88%, rgba(140,96,40,.16) 0 46px, rgba(140,96,40,0) 70px),
+    linear-gradient(90deg, rgba(0,0,0,0) 49.6%, rgba(90,60,20,.10) 50%, rgba(255,255,240,.18) 50.4%, rgba(0,0,0,0) 51.5%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .26 0 0 0 0 .12 0 0 0 .34 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E"),
+    #e6d8b6; }
+.mag-top { display: flex; justify-content: space-between; align-items: center; font: 700 19px/1 Barlow; letter-spacing: .14em; color: #5a4d3c;
+  border-bottom: 3px solid #2b241b; padding-bottom: 8px; }
+.mag-num { background: #b8321f; color: #f6ecd6; padding: 6px 10px 5px; }
+.mag h1 { font: 700 44px/1.02 Barlow; margin: 14px 0 6px; letter-spacing: -.005em; color: #1f1a14; }
+.mag-dek { font-style: italic; font-size: 23px; line-height: 1.25; margin: 0 0 14px; color: #463c2f; }
+.mag-cols { columns: 2; column-gap: 34px; column-rule: 1px solid rgba(43,36,27,.35); }
+.mag p { margin: 0 0 9px; break-inside: avoid; }
+.mag p.first::first-letter { float: left; font: 700 70px/.8 Barlow; margin: 6px 8px 0 0; color: #b8321f; }
+.mag figure { margin: 0 0 10px; break-inside: avoid; }
+.mag-photo { position: relative; height: 128px; border: 1px solid #3a3024; overflow: hidden;
+  background: url(fondo.webp) -620px -160px / 2100px auto; filter: grayscale(1) sepia(.4) contrast(1.2) brightness(.95); }
+.mag-photo::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle, rgba(30,22,12,.28) 1px, transparent 1.6px) 0 0 / 5px 5px; mix-blend-mode: multiply; }
+.mag-photo img { position: absolute; top: 18px; width: 92px; height: 92px; }
+.mag-photo img.dim { opacity: .9; }
+.mag figcaption { font-style: italic; font-size: 19px; line-height: 1.25; margin-top: 5px; color: #4d4234; }
+.mag h2 { font: 700 24px/1 Barlow; letter-spacing: .14em; text-transform: uppercase; margin: 12px 0 8px; color: #b8321f; break-after: avoid; }
+.mag p.sp { margin-bottom: 6px; }
+.mag b { font-weight: 700; }
+.mag-note { font: 600 19px/1.25 Barlow; color: #5a4d3c; border-top: 1px solid rgba(43,36,27,.4); padding-top: 7px; margin-top: 12px !important; }
 #rotate { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20, 10, 4, .85); color: #f3e6d0;
   font: 600 18px/1.4 Barlow, sans-serif; text-align: center; padding: 24px; z-index: 5; }
 @media (orientation: portrait) { #rotate { display: grid; } }
@@ -32,7 +61,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 <body>
 <svg id="scene" viewBox="0 91 1679 755" preserveAspectRatio="xMidYMid slice" role="application" aria-label="Fogonazo: osciloscopio de juego">
   <defs>
-    <filter id="glow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="glow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     <filter id="ledg" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="5"/></filter>
     <filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".5"/></filter>
     <clipPath id="scr"><rect x="718" y="307" width="492" height="346" rx="10"/></clipPath>
@@ -45,7 +74,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   <!-- screen -->
   <g clip-path="url(#scr)">
     <g id="grid" stroke="#3f8f5c" stroke-width=".8" opacity=".45"></g>
-    <g id="screen" filter="url(#glow)" font-family="Mono" fill="#9dffbf"></g>
+    <g id="screen" filter="url(#glow)" font-family="Plex" font-weight="600" fill="#a8ffc8"></g>
   </g>
   <rect class="hit" id="hitScreen" x="718" y="307" width="492" height="346" rx="10" tabindex="0" role="button" aria-label="Pantalla"/>
 
@@ -59,8 +88,8 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 
   <!-- back to the room -->
   <g id="back" class="lbl" transform="translate(28 112) rotate(-1.5)" tabindex="0" role="button" aria-label="Volver a la sala">
-    <path d="M0,0 h132 l-5,16 l5,16 h-132 l5,-16 z" fill="#1c1c1c"/>
-    <text x="66" y="22" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="17" letter-spacing="2.5" fill="#f4f1ea">◀ SALA</text>
+    <path d="M0,0 h150 l-6,20 l6,20 h-150 l6,-20 z" fill="#1c1c1c"/>
+    <text x="75" y="28" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="22" letter-spacing="2" fill="#f4f1ea">◀ SALA</text>
   </g>
 
   <!-- sound sheet -->
@@ -68,24 +97,46 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     <rect x="0" y="0" width="1679" height="937" fill="#120803" opacity=".62"/>
     <g filter="url(#sh)"><rect x="300" y="190" width="1080" height="560" rx="10" fill="url(#pert)"/></g>
     <rect x="300" y="190" width="1080" height="560" rx="10" fill="url(#perf)"/>
-    <text x="340" y="252" font-family="Barlow" font-weight="700" font-size="34" letter-spacing="7" fill="#f6e4c2">SONIDO</text>
-    <text x="340" y="282" font-family="Barlow" font-weight="600" font-size="17" letter-spacing="1.5" fill="#f6e4c2" opacity=".75">Tocá un LED o girá la perilla. Vale para toda la colección.</text>
+    <text x="340" y="252" font-family="Barlow" font-weight="700" font-size="40" letter-spacing="6" fill="#fff3dc">SONIDO</text>
+    <text x="340" y="290" font-family="Barlow" font-weight="600" font-size="25" fill="#fff3dc">Girá la perilla o pasá el dedo por los LEDs. Vale para toda la colección.</text>
     <g id="channels"></g>
     <g id="done" class="lbl" transform="translate(1210 678)" tabindex="0" role="button" aria-label="Listo">
-      <rect width="130" height="46" rx="5" fill="#2a2622"/><text x="65" y="30" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="19" letter-spacing="3" fill="#f1ebe0">LISTO</text>
+      <rect width="140" height="54" rx="5" fill="#2a2622"/><text x="70" y="36" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="24" letter-spacing="3" fill="#f1ebe0">LISTO</text>
     </g>
-    <text x="340" y="712" font-family="Barlow" font-weight="600" font-size="15" fill="#f6e4c2" opacity=".7">Maqueta: la música todavía no suena; los efectos, sí.</text>
+    <text x="340" y="716" font-family="Barlow" font-weight="600" font-size="22" fill="#fff3dc" opacity=".85">Maqueta: la música todavía no suena; los efectos, sí.</text>
   </g>
 
-  <!-- manual sheet: a magazine page -->
+  <!-- manual sheet: a magazine page taped to the wall -->
   <g id="manual" class="sheet">
     <rect x="0" y="0" width="1679" height="937" fill="#120803" opacity=".62"/>
-    <g filter="url(#sh)"><rect x="470" y="120" width="740" height="700" fill="#f3efe4"/></g>
-    <rect x="500" y="150" width="680" height="48" fill="#8f8a82"/>
-    <text x="520" y="186" font-family="Barlow" font-weight="700" font-size="30" letter-spacing="3" fill="#fbf8ef">CÓMO SE JUEGA</text>
-    <g id="manualText" font-family="Barlow" font-weight="600" font-size="19" fill="#2c2924"></g>
-    <g id="closeManual" class="lbl" transform="translate(1050 760)" tabindex="0" role="button" aria-label="Cerrar">
-      <rect width="130" height="42" rx="5" fill="#2a2622"/><text x="65" y="28" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="17" letter-spacing="3" fill="#f1ebe0">CERRAR</text>
+    <g transform="rotate(-1.2 840 470)">
+      <g filter="url(#sh)"><rect x="420" y="112" width="840" height="712" fill="#e6d8b6"/></g>
+      <foreignObject x="420" y="112" width="840" height="712">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="mag">
+          <div class="mag-top"><span class="mag-num">PROYECTO Nº 21</span><span>TÉCNICA DE AFICIONADO · 34</span></div>
+          <h1>Fogonazo: el juego de los componentes</h1>
+          <p class="mag-dek">Un pasatiempo para armar con lo que sobra en el banco. Cómo se juega y qué hacen las piezas especiales.</p>
+          <div class="mag-cols">
+            <figure>
+              <div class="mag-photo"><img src="piezas/pieza1.png" style="left:18%"/><img src="piezas/pieza1.png" style="left:40%"/><img src="piezas/pieza1.png" style="left:62%"/><img class="dim" src="piezas/pieza4.png" style="left:84%"/><img class="dim" src="piezas/pieza6.png" style="left:-4%"/></div>
+              <figcaption>Fig. 1. Tres iguales en línea se queman y caen otros nuevos.</figcaption>
+            </figure>
+            <p class="first">Deslizá un componente hacia su vecino, o tocá uno y después el otro. Si quedan tres o más iguales en línea, se queman.</p>
+            <p>Hay que cumplir el pedido de la ficha antes de quedarse sin movimientos. Las cascadas suman cada vez más; las estrellas dependen del puntaje.</p>
+            <h2>Especiales</h2>
+            <p class="sp"><b>Rayo.</b> Cuatro en línea: barre la fila o la columna.</p>
+            <p class="sp"><b>Sobrecarga.</b> Línea en L o en T: explota alrededor.</p>
+            <p class="sp"><b>Batería.</b> Cinco en línea: se lleva todos los de un tipo.</p>
+            <p class="sp"><b>Antena.</b> Cuadrado de 2 × 2: rompe sus vecinas y transmite.</p>
+            <p class="mag-note">En la maqueta todavía no hay especiales ni obstáculos.</p>
+          </div>
+        </div>
+      </foreignObject>
+      <rect x="390" y="100" width="120" height="34" fill="#efe6c8" opacity=".72" transform="rotate(-24 450 117)"/>
+      <rect x="1170" y="100" width="120" height="34" fill="#efe6c8" opacity=".72" transform="rotate(22 1230 117)"/>
+    </g>
+    <g id="closeManual" class="lbl" transform="translate(1300 770)" tabindex="0" role="button" aria-label="Cerrar">
+      <rect width="150" height="54" rx="5" fill="#2a2622"/><text x="75" y="36" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="24" letter-spacing="3" fill="#f1ebe0">CERRAR</text>
     </g>
   </g>
 
@@ -120,11 +171,11 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     let s = '';
     KNOBS.forEach(k => {
       k.labels.forEach((l, i) => {
-        const a = ang(i), x = k.cx + (k.r + 14) * Math.cos(a), y = k.cy + (k.r + 14) * Math.sin(a) + 5;
+        const a = ang(i), x = k.cx + (k.r + 10) * Math.cos(a), y = k.cy + (k.r + 10) * Math.sin(a) + 6;
         const anchor = Math.cos(a) < -.3 ? 'end' : Math.cos(a) > .3 ? 'start' : 'middle';
-        s += `<g class="lbl" data-knob="${k.id}" data-i="${i}" role="button" tabindex="0" aria-label="${k.title}: ${l}"><rect x="${anchor === 'end' ? x - 84 : anchor === 'start' ? x - 6 : x - 45}" y="${y - 26}" width="90" height="36" fill="transparent"/><text x="${x}" y="${y}" text-anchor="${anchor}" font-size="15" letter-spacing="1.4" fill="${i === value(k) ? '#ffb648' : '#e6dfd2'}">${l}</text></g>`;
+        s += `<g class="lbl" data-knob="${k.id}" data-i="${i}" role="button" tabindex="0" aria-label="${k.title}: ${l}"><rect x="${anchor === 'end' ? x - 100 : anchor === 'start' ? x - 6 : x - 53}" y="${y - 32}" width="106" height="44" fill="transparent"/><text x="${x}" y="${y}" text-anchor="${anchor}" font-size="19" letter-spacing=".5" fill="${i === value(k) ? '#ffb648' : '#e6dfd2'}">${l}</text></g>`;
       });
-      s += `<text x="${k.cx}" y="${k.cy + k.r + 26}" text-anchor="middle" font-size="12" letter-spacing="3.4" fill="#e6dfd2" opacity=".8">${k.title}</text>`;
+      s += `<text x="${k.cx}" y="${k.cy + k.r + 28}" text-anchor="middle" font-size="16" letter-spacing="2.2" fill="#e6dfd2" opacity=".9">${k.title}</text>`;
       const deg = -140 + 50 * value(k) + 90;
       s += `<g class="lbl" data-knob="${k.id}" data-i="next" role="button" tabindex="0" aria-label="Girar ${k.title}"><circle cx="${k.cx}" cy="${k.cy}" r="${k.r}" fill="transparent"/>
         <line class="knob-ptr" x1="${k.cx}" y1="${k.cy}" x2="${k.cx}" y2="${k.cy - k.r * .7}" stroke="#f4f1ea" stroke-width="5.5" stroke-linecap="round" style="transform-origin:${k.cx}px ${k.cy}px; transform: rotate(${deg}deg)"/></g>`;
@@ -147,30 +198,30 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     const x = S.x + 30, mn = M.MODES[M.modo].toUpperCase();
     let s = '';
     if (mode === 0) {
-      s += T(x, S.y + 44, 'NIVELES', 17, 'letter-spacing="4" opacity=".8"');
-      s += T(x, S.y + 128, `NIVEL ${M.next()}`, 72, 'letter-spacing="2"');
+      s += T(x, S.y + 46, 'NIVELES', 24, 'letter-spacing="3" opacity=".85"');
+      s += T(x, S.y + 130, `NIVEL ${M.next()}`, 72, 'letter-spacing="1"');
       s += wave(S.y + 196, 22, 100);
-      s += `<path d="${star(x + 12, S.y + 271, 10)}"/>` + T(x + 30, S.y + 279, `${M.total()} ESTRELLAS · ${mn}`, 22, 'letter-spacing="1.5"');
-      s += T(x, S.y + 318, 'TOCÁ LA PANTALLA PARA JUGAR ▶', 16, 'letter-spacing="2.5" opacity=".75"');
+      s += `<path d="${star(x + 13, S.y + 268, 12)}"/>` + T(x + 34, S.y + 278, `${M.total()} ESTRELLAS · ${mn}`, 28);
+      s += T(x, S.y + 322, 'TOCÁ PARA JUGAR ▶', 24, 'letter-spacing="1.5" opacity=".85"');
     } else if (mode === 1) {
-      s += T(x, S.y + 44, 'ZEN', 17, 'letter-spacing="4" opacity=".8"');
+      s += T(x, S.y + 46, 'ZEN', 24, 'letter-spacing="3" opacity=".85"');
       s += T(x, S.y + 120, 'SIN LÍMITE', 58, 'letter-spacing="2"');
       s += wave(S.y + 190, 10, 160);
-      s += T(x, S.y + 262, 'RÉCORD  —', 22, 'letter-spacing="2"');
-      s += T(x, S.y + 312, 'TODAVÍA NO ESTÁ EN LA MAQUETA', 16, 'letter-spacing="2.5" opacity=".75"');
+      s += T(x, S.y + 266, 'RÉCORD  —', 28);
+      s += T(x, S.y + 318, 'AÚN NO ESTÁ EN LA MAQUETA', 22, 'opacity=".85"');
     } else {
-      s += T(x, S.y + 40, 'RÉCORDS', 17, 'letter-spacing="4" opacity=".8"');
+      s += T(x, S.y + 42, 'RÉCORDS', 24, 'letter-spacing="3" opacity=".85"');
       M.MODES.forEach((m, i) => {
         const cx = S.x + 90 + i * 156, on = i === M.modo;
-        s += T(cx, S.y + 80, m.toUpperCase(), 15, `text-anchor="middle" letter-spacing="2" opacity="${on ? 1 : .7}"`);
-        s += T(cx, S.y + 128, String(M.maxLevel(i) || '—'), 44, 'text-anchor="middle"');
-        s += T(cx, S.y + 148, 'NIVEL', 11, 'text-anchor="middle" letter-spacing="2" opacity=".7"');
-        s += `<path d="${star(cx - 16, S.y + 174, 7)}"/>` + T(cx - 4, S.y + 181, String(M.total(i)), 19);
+        s += T(cx, S.y + 84, m.toUpperCase(), 22, `text-anchor="middle" opacity="${on ? 1 : .75}"`);
+        s += T(cx, S.y + 134, String(M.maxLevel(i) || '—'), 46, 'text-anchor="middle"');
+        s += T(cx, S.y + 158, 'NIVEL', 18, 'text-anchor="middle" opacity=".8"');
+        s += `<path d="${star(cx - 18, S.y + 184, 10)}"/>` + T(cx - 3, S.y + 193, String(M.total(i)), 26);
       });
-      s += `<line x1="${S.x + 22}" y1="${S.y + 202}" x2="${S.x + S.w - 22}" y2="${S.y + 202}" stroke="#9dffbf" stroke-opacity=".5"/>`;
-      s += T(x, S.y + 236, 'ZEN', 16, 'letter-spacing="3" opacity=".75"') + T(x + 80, S.y + 236, '—', 19);
-      s += T(x, S.y + 286, 'El avance se guarda solo en este teléfono, en Chrome.', 13.5, 'opacity=".75"');
-      s += T(x, S.y + 306, 'Si borrás los datos del sitio, se pierde.', 13.5, 'opacity=".75"');
+      s += `<line x1="${S.x + 22}" y1="${S.y + 212}" x2="${S.x + S.w - 22}" y2="${S.y + 212}" stroke="#9dffbf" stroke-opacity=".5"/>`;
+      s += T(x, S.y + 252, 'ZEN', 22, 'opacity=".85"') + T(x + 80, S.y + 252, '—', 26);
+      s += T(x, S.y + 292, 'Tu avance vive solo en este Chrome.', 20, 'opacity=".85"');
+      s += T(x, S.y + 318, 'Si borrás los datos, se pierde.', 20, 'opacity=".85"');
     }
     $('screen').innerHTML = s;
   }
@@ -193,11 +244,12 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     let s = '';
     CH.forEach(([k, lab, y]) => {
       const v = M.vol[k], px = 430, deg = -135 + 27 * v;
-      s += `<text x="${px}" y="${y - 70}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="17" letter-spacing="3" fill="#f6e4c2">${lab}</text>`;
+      s += `<text x="${px}" y="${y - 72}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="24" letter-spacing="3" fill="#fff3dc">${lab}</text>`;
       s += `<g class="lbl pot" data-ch="${k}" role="slider" tabindex="0" aria-label="${lab}" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${v}">
         <circle cx="${px}" cy="${y}" r="58" fill="#000" opacity=".3" transform="translate(0 6)"/><circle cx="${px}" cy="${y}" r="56" fill="url(#knob)"/>`;
       for (let t = 0; t < 30; t++) { const a = t / 30 * Math.PI * 2; s += `<line x1="${px + 51 * Math.cos(a)}" y1="${y + 51 * Math.sin(a)}" x2="${px + 56 * Math.cos(a)}" y2="${y + 56 * Math.sin(a)}" stroke="#55504a" stroke-width="2.5"/>`; }
       s += `<circle cx="${px}" cy="${y}" r="36" fill="#33302c"/><line x1="${px}" y1="${y}" x2="${px}" y2="${y - 46}" stroke="#f4f1ea" stroke-width="6" stroke-linecap="round" transform="rotate(${deg} ${px} ${y})"/></g>`;
+      s += `<rect data-row="${k}" x="518" y="${y - 48}" width="750" height="96" fill="transparent"/>`;
       for (let i = 0; i < 10; i++) {
         const lx = 560 + i * 74, on = i < v, c = LEDC(i);
         s += `<g class="lbl" data-ch="${k}" data-v="${i + 1}" role="button" tabindex="0" aria-label="${lab} ${i + 1}"><rect x="${lx - 30}" y="${y - 40}" width="66" height="80" fill="transparent"/>
@@ -211,23 +263,6 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     $('channels').innerHTML = s;
   }
   function setVol(k, v) { M.setVol(k, Math.max(0, Math.min(10, v))); drawChannels(); drawBoardLeds(); if (k === 'efectos') click(); }
-
-  // ---------- manual ----------
-  const MANUAL = [
-    'Deslizá un componente hacia su vecino, o tocá uno y después el otro.',
-    'Si quedan tres o más iguales en línea, se queman y caen otros nuevos.',
-    'Cumplí el pedido de la ficha antes de quedarte sin movimientos.',
-    'Las cascadas suman cada vez más puntos; las estrellas, según el puntaje.',
-    '',
-    'ESPECIALES',
-    'Rayo (4 en línea): barre la fila o la columna.',
-    'Sobrecarga (línea en L o en T): explota alrededor.',
-    'Batería (5 en línea): se lleva todos los de un tipo.',
-    'Antena (cuadrado de 2 × 2): rompe sus vecinas y transmite.',
-    '',
-    'En la maqueta todavía no hay especiales ni obstáculos.',
-  ];
-  $('manualText').innerHTML = MANUAL.map((l, i) => `<text x="520" y="${250 + i * 38}" ${l === 'ESPECIALES' ? 'font-weight="700" letter-spacing="3"' : ''}>${l}</text>`).join('');
 
   // ---------- sound effect for the controls ----------
   let actx = null;
@@ -261,19 +296,33 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   const svg = $('scene');
   // drag on a pot: up or right turns it up
   let drag = null;
+  // a LED row follows the finger: the volume is the last LED at or left of it
+  const toSvgX = e => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()).x; };
+  const ledAt = x => Math.max(0, Math.min(10, Math.floor((x - 523) / 74) + 1));
+  let ledDrag = null, skipClick = false;
   svg.addEventListener('pointerdown', e => {
     const pot = e.target.closest('.pot');
-    if (pot) { drag = { k: pot.dataset.ch, y: e.clientY, x: e.clientX, v: M.vol[pot.dataset.ch], moved: false }; svg.setPointerCapture(e.pointerId); }
+    if (pot) { drag = { k: pot.dataset.ch, y: e.clientY, x: e.clientX, v: M.vol[pot.dataset.ch], moved: false }; svg.setPointerCapture(e.pointerId); return; }
+    const row = e.target.closest('[data-row], [data-v]');
+    if (row && row.closest('#sound')) {
+      const k = row.dataset.row || row.dataset.ch, v = ledAt(toSvgX(e));
+      ledDrag = { k }; skipClick = true; svg.setPointerCapture(e.pointerId);
+      setVol(k, v === 1 && M.vol[k] === 1 ? 0 : v);   // tapping the first LED again turns it off
+    }
   });
   svg.addEventListener('pointermove', e => {
+    if (ledDrag) { const v = ledAt(toSvgX(e)); if (v !== M.vol[ledDrag.k]) setVol(ledDrag.k, v); return; }
     if (!drag) return;
     const d = (drag.y - e.clientY + e.clientX - drag.x) / 18;
-    if (Math.abs(d) >= 1) { drag.moved = true; setVol(drag.k, Math.round(drag.v + d)); }
+    if (Math.abs(d) >= 1) { drag.moved = true; const v = Math.max(0, Math.min(10, Math.round(drag.v + d))); if (v !== M.vol[drag.k]) setVol(drag.k, v); }
   });
-  svg.addEventListener('pointerup', () => { drag = null; });
+  const endDrag = () => { drag = null; ledDrag = null; };
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
   svg.addEventListener('click', e => {
     const el = e.target.closest('[data-knob], [data-v], #hitScreen, #hitSound, #hitManual, #done, #closeManual, #back');
     if (!el) return;
+    if (el.dataset.v && skipClick) { skipClick = false; return; }
     if (isOpen() && !el.closest('.sheet')) return;
     activate(el);
   });
