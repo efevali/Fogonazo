@@ -22,7 +22,7 @@ window.S10scene = (which) => {
     const holes = [[0, 0], [0, 1], [1, 0]];
     holes.forEach(([r, c]) => { hide(r, c); under += S10.cell('hueco', c * C, r * C, C); });
     under += S10.holeEdges(holes, C);
-    outside += S10.zocalo(232.5 + 4, 26 + 8 * C + 1, 10 * C - 8, C);
+    outside += S10.zocalo(232.5 + 4, 26 + 8 * C + 1, 10 * C - 8, C, 'piezas/');
   }
   const mk = (html, z, box) => {
     const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');

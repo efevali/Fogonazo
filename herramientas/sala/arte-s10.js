@@ -113,9 +113,20 @@ window.S10 = (() => {
   };
 
   // a 100 × 100 cell drawing; kinds: rayoH, rayoV, sobre, bateria, antena, pad1, pad2, padOk, quem1, quem2, kapton, valvula, hueco
+  // when S10.img maps a kind to a picture (the P-005 art), the picture replaces the code drawing
+  const IMGK = { bateria: 'bateria', pad1: 'pad1', pad2: 'pad2', padOk: 'padOk', quem1: 'quemado1', quem2: 'quemado2', valvula: 'valvula' };
+  const pic = (kind, base) => `<image href="${base}${IMGK[kind]}.png" x="${kind.startsWith('pad') ? 0 : 2}" y="${kind.startsWith('pad') ? 0 : 2}" width="${kind.startsWith('pad') ? 100 : 96}" height="${kind.startsWith('pad') ? 100 : 96}"/>`;
   function cell(kind, x, y, s, t, base = '') {
     const P = t === undefined ? '' : piece(t, base);
     let b = '';
+    if (api.img && IMGK[kind]) {
+      const I = pic(kind, base);
+      if (kind.startsWith('pad')) b = I + P;
+      else if (kind === 'quem1' || kind === 'quem2') b = `<circle cx="50" cy="56" r="50" fill="url(#s10scorch)"/>` + I;
+      else if (kind === 'valvula') b = `<circle cx="50" cy="52" r="34" fill="#ffa040" opacity=".35" filter="url(#s10soft)"/>` + I;
+      else b = I;
+      return g(x, y, s, b);
+    }
     switch (kind) {
       case 'rayoH': case 'rayoV': b = P + D[kind](); break;
       case 'sobre': b = D.sobreUnder() + P + `<rect x="6" y="6" width="88" height="88" fill="#ff7a20" opacity=".18" style="mix-blend-mode:color"/>` + D.sobreOver(); break;
@@ -143,10 +154,16 @@ window.S10 = (() => {
     return s;
   }
   // the socket for valves: a bakelite strip with octal sockets along the bottom edge of the board
-  function zocalo(x, y, w, C) {
+  function zocalo(x, y, w, C, base = '') {
+    if (api.img) {   // one octal socket from the P-005 art under each column, on a thin bakelite strip
+      let s = `<rect x="${x}" y="${y + C * .06}" width="${w}" height="${C * .14}" rx="2" fill="url(#s10bake)" filter="url(#s10drop)"/>`;
+      for (let i = 0; i < Math.round(w / C); i++) s += `<image href="${base}zocalo.png" x="${x + C * i + C * .18}" y="${y - C * .2}" width="${C * .64}" height="${C * .64}"/>`;
+      return s;
+    }
     let s = `<g filter="url(#s10drop)"><rect x="${x}" y="${y}" width="${w}" height="${C * .24}" rx="2" fill="url(#s10bake)"/>`;
     for (let i = 0; i < w / C; i++) { const cx = x + C * (i + .5), cy = y + C * .12; s += `<circle cx="${cx}" cy="${cy}" r="${C * .08}" fill="#120a06"/><circle cx="${cx}" cy="${cy}" r="${C * .08}" fill="none" stroke="#7a5a3a" stroke-width=".8"/>`; }
     return s + '</g>';
   }
-  return { defs, cell, holeEdges, zocalo, D };
+  const api = { defs, cell, holeEdges, zocalo, D, img: false };
+  return api;
 })();
