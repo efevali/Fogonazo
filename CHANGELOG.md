@@ -2,6 +2,11 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.3.1 — 27/10/2026
+
+- Fogonazo: en la partida, las piezas no se movían. Quedaba una llamada al sonido de la maqueta, que la 0.1.0 reemplazó por el de la colección, y cada toque en la placa se cortaba ahí. Venía desde la 0.1.0.
+- Fogonazo: al elegir un nivel en el mapa aparecía un recuadro negro alrededor de otro nivel (el foco de Chrome). Se quitó, también de los demás botones de la colección.
+
 ## 0.3.0 — 27/10/2026
 
 - Fogonazo: las aureolas de la placa del sonido y de la revista laten cada 2 segundos y se ven más.

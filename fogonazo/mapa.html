@@ -15,6 +15,8 @@ body { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user
 #stage { position: fixed; left: 0; top: 0; width: 915em; height: 412em; font-size: 1px; overflow: clip; touch-action: none; }
 svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
 .lvl { cursor: pointer; }
+/* the phone is touched, not tabbed: no focus ring on what is tapped (Chrome drew one around the next level) */
+.lvl:focus, .ui:focus, .lvl:focus-visible, .ui:focus-visible { outline: none; }
 .ui { position: absolute; cursor: pointer; }
 #rotate { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20, 10, 4, .85); color: #f3e6d0;
   font: 700 18px/1.4 Barlow, sans-serif; text-align: center; padding: 24px; z-index: 5; }

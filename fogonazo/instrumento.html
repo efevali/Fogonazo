@@ -19,7 +19,8 @@ html, body { margin: 0; height: 100%; background: #2a1708; overflow: hidden; }
 body { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; touch-action: none; }
 .hit { fill: transparent; cursor: pointer; }
-.hit:focus-visible { outline: none; stroke: var(--amber); stroke-width: 3; }
+/* the phone is touched, not tabbed: no focus ring on what is tapped */
+.hit:focus, .lbl:focus, .hit:focus-visible, .lbl:focus-visible { outline: none; }
 .lbl { cursor: pointer; }
 .knob-ptr { transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); transform-box: view-box; }
 .wave { animation: scroll 2.4s linear infinite; }

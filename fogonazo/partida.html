@@ -39,9 +39,9 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
 @keyframes spark { from { opacity: 1; transform: scale(.25); } to { opacity: 0; transform: scale(1.7); } }
 
 #pause { font-size: inherit; left: 848em; top: 14em; width: 38em; height: 38em; border-radius: 50%; border: 0; background: transparent; cursor: pointer; padding: 0; }
-#pause:focus-visible { outline: 2em solid var(--amber); outline-offset: 1em; }
+/* the phone is touched, not tabbed: no focus ring on what is tapped */
+#pause:focus, #volver:focus, #pause:focus-visible, #volver:focus-visible { outline: none; }
 #volver { cursor: pointer; }
-#volver:focus-visible { outline: 2em solid var(--amber); }
 
 /* overlays: an aluminum plate like the left panel */
 .sheet { left: 0; top: 0; width: 100%; height: 100%; display: grid; place-items: center; background: rgba(20, 10, 4, .55); }
@@ -383,7 +383,6 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     return (r >= 0 && r < ROWS && c >= 0 && c < COLS) ? [r, c] : null;
   }
   board.addEventListener('pointerdown', e => {
-    audio();
     if (busy || over) return;
     const cell = cellAt(e); if (!cell) return;
     board.setPointerCapture(e.pointerId);

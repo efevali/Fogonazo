@@ -81,7 +81,8 @@ body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hid
 
 .hit { fill: transparent; cursor: pointer; outline: none; }
 .zones .hit { fill: rgba(127, 227, 255, .10); stroke: var(--dial); stroke-width: 4; stroke-dasharray: 18 12; }
-.hit:focus-visible { stroke: var(--amber); stroke-width: 5; }
+/* the phone is touched, not tabbed: no focus ring on what is tapped */
+.hit:focus, .hit:focus-visible { outline: none; }
 .zone-label { display: none; font: 600 34px var(--label); fill: var(--dial); letter-spacing: .06em; }
 .zones .zone-label { display: block; }
 
@@ -93,7 +94,7 @@ body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hid
 .dymo { position: absolute; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   width: 132px; height: 34px; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .dymo svg { display: block; width: 100%; height: 100%; }
-.dymo:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.dymo:focus, .dymo:focus-visible { outline: none; }
 .aviso { position: absolute; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(54px + env(safe-area-inset-bottom, 0px));
   background: var(--chip); color: var(--chip-fg); padding: 8px 14px; border-radius: 999px; font-size: 15px; white-space: nowrap; }
 .rotate { position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
