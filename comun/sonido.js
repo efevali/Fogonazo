@@ -7,8 +7,9 @@
 const Sound = (() => {
   let ctx = null, master, sfxBus, musicBus, rainBus, noiseBuf;
   // volúmenes de 0 a 10; con los de entrada, los efectos y la música suenan como en el Fogonazo publicado (70 y 35 %)
+  // y la lluvia queda de fondo
   const CLAVE = 'coleccion.sonido';
-  const vol = { musica: 7, efectos: 8, lluvia: 5 };
+  const vol = { musica: 7, efectos: 8, lluvia: 7 };
   try { const v = JSON.parse(localStorage.getItem(CLAVE)); if (v) for (const k in vol) if (Number.isFinite(v[k])) vol[k] = Math.max(0, Math.min(10, Math.round(v[k]))); } catch (e) {}
   const set = { sfx: 0.7, music: 0.35, mute: false };
   const fromVol = () => { set.sfx = vol.efectos / 10 * 0.875; set.music = vol.musica / 10 * 0.5; };
@@ -346,7 +347,8 @@ const Sound = (() => {
       want(v) { on = v; this.apply(); },
       apply() {
         if (!ctx) return;
-        const g = on && !set.mute ? vol.lluvia / 10 * 0.54 : 0;
+        // 0.2.0: un cuarto de lo que era (0,54). Con música y efectos en 8, la lluvia en 2 recién sonaba de fondo
+        const g = on && !set.mute ? vol.lluvia / 10 * 0.135 : 0;
         if (g > 0 && !built) build();
         rainBus.gain.setTargetAtTime(g, ctx.currentTime, 0.4);
       },

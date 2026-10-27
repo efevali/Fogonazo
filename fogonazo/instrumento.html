@@ -23,6 +23,9 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 .lbl { cursor: pointer; }
 .knob-ptr { transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); transform-box: view-box; }
 .wave { animation: scroll 2.4s linear infinite; }
+/* the halos breathe in turn, like the active objects of the room */
+.aura { opacity: 0; animation: aura 5.1s ease-in-out infinite; }
+@keyframes aura { 0%, 100% { opacity: 0; } 22% { opacity: .85; } 44% { opacity: 0; } }
 @keyframes scroll { to { transform: translateX(-200px); } }
 .sheet { display: none; } .sheet.open { display: inline; }
 .led { transition: opacity .12s; }
@@ -55,7 +58,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 #rotate { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20, 10, 4, .85); color: #f3e6d0;
   font: 600 18px/1.4 Barlow, sans-serif; text-align: center; padding: 24px; z-index: 5; }
 @media (orientation: portrait) { #rotate { display: grid; } }
-@media (prefers-reduced-motion: reduce) { .wave { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .wave, .aura { animation: none; } }
 </style>
 </head>
 <body>
@@ -63,6 +66,10 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   <defs>
     <filter id="glow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     <filter id="ledg" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="aura" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="18"/></filter>
+    <filter id="bright" color-interpolation-filters="sRGB"><feColorMatrix values="1.4 0 0 0 .05  0 1.3 0 0 .03  0 0 1.1 0 0  0 0 0 1 0"/></filter>
+    <mask id="mSound" maskUnits="userSpaceOnUse" x="0" y="0" width="1679" height="937"><path fill="#fff" filter="url(#aura)" d="M34,470 C60,415 300,415 342,470 L322,594 L652,624 L560,846 L110,846 L112,786 L170,646 L34,566 Z"/></mask>
+    <mask id="mManual" maskUnits="userSpaceOnUse" x="0" y="0" width="1679" height="937"><path fill="#fff" filter="url(#aura)" d="M326,74 L586,66 L604,402 L354,408 Z"/></mask>
     <filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".5"/></filter>
     <clipPath id="scr"><rect x="718" y="307" width="492" height="346" rx="10"/></clipPath>
     <pattern id="perf" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="7" cy="7" r="1.6" fill="#5a3412" opacity=".55"/></pattern>
@@ -81,15 +88,22 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   <!-- selectors -->
   <g id="knobs" font-family="Barlow" font-weight="700"></g>
 
+  <!-- soft halos on what can be touched besides the scope, in turn, like the active objects of the room:
+       a warmer, brighter copy of the scene, seen through a blurred shape of the sound board and of the magazine page -->
+  <g pointer-events="none">
+    <image class="aura" href="instrumento.webp" width="1679" height="937" mask="url(#mSound)" filter="url(#bright)"/>
+    <image class="aura" href="instrumento.webp" width="1679" height="937" mask="url(#mManual)" filter="url(#bright)" style="animation-delay:2.55s"/>
+  </g>
+
   <!-- LEDs of the sound board -->
   <g id="boardLeds"></g>
   <path class="hit" id="hitSound" tabindex="0" role="button" aria-label="Sonido" d="M40,470 C60,420 300,420 340,470 L330,590 L655,615 L640,800 L130,800 L110,760 L160,640 L40,560 Z"/>
   <path class="hit" id="hitManual" tabindex="0" role="button" aria-label="Manual" d="M330,78 L582,70 L600,398 L358,404 Z"/>
 
   <!-- back to the room -->
-  <g id="back" class="lbl" transform="translate(28 112) rotate(-1.5)" tabindex="0" role="button" aria-label="Volver a la sala">
-    <path d="M0,0 h150 l-6,20 l6,20 h-150 l6,-20 z" fill="#1c1c1c"/>
-    <text x="75" y="28" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="22" letter-spacing="2" fill="#f4f1ea">◀ SALA</text>
+  <g id="back" class="lbl" transform="translate(1410 764) rotate(-1.5 121 31)" tabindex="0" role="button" aria-label="Volver a la sala">
+    <path d="M4,7 h232 l-7,24 l7,24 h-232 l7,-24 z" fill="#1c1c1c"/>
+    <text x="121" y="42" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="25.7" letter-spacing="4" fill="#f4f1ea">◀ VOLVER</text>
   </g>
 
   <!-- sound sheet -->
@@ -246,7 +260,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     CH.forEach(([k, lab, y]) => {
       const v = VOL(k), px = 430, deg = -135 + 27 * v;
       s += `<text x="${px}" y="${y - 72}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="24" letter-spacing="3" fill="#fff3dc">${lab}</text>`;
-      s += `<g class="lbl pot" data-ch="${k}" role="slider" tabindex="0" aria-label="${lab}" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${v}">
+      s += `<g class="lbl pot" data-ch="${k}" data-cy="${y}" role="slider" tabindex="0" aria-label="${lab}" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${v}">
         <circle cx="${px}" cy="${y}" r="58" fill="#000" opacity=".3" transform="translate(0 6)"/><circle cx="${px}" cy="${y}" r="56" fill="url(#knob)"/>`;
       for (let t = 0; t < 30; t++) { const a = t / 30 * Math.PI * 2; s += `<line x1="${px + 51 * Math.cos(a)}" y1="${y + 51 * Math.sin(a)}" x2="${px + 56 * Math.cos(a)}" y2="${y + 56 * Math.sin(a)}" stroke="#55504a" stroke-width="2.5"/>`; }
       s += `<circle cx="${px}" cy="${y}" r="36" fill="#33302c"/><line x1="${px}" y1="${y}" x2="${px}" y2="${y - 46}" stroke="#f4f1ea" stroke-width="6" stroke-linecap="round" transform="rotate(${deg} ${px} ${y})"/></g>`;
@@ -289,15 +303,20 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     }
   }
   const svg = $('scene');
-  // drag on a pot: up or right turns it up
+  // a pot turns with the finger around it: every 27° is one step, the same the pointer turns
   let drag = null;
+  const toSvg = e => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()); };
+  const angleAt = (e, d) => { const p = toSvg(e); return Math.atan2(p.y - d.cy, p.x - d.cx); };
   // a LED row follows the finger: the volume is the last LED at or left of it
-  const toSvgX = e => { const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()).x; };
+  const toSvgX = e => toSvg(e).x;
   const ledAt = x => Math.max(0, Math.min(10, Math.floor((x - 523) / 74) + 1));
   let ledDrag = null, skipClick = false;
   svg.addEventListener('pointerdown', e => {
     const pot = e.target.closest('.pot');
-    if (pot) { drag = { k: pot.dataset.ch, y: e.clientY, x: e.clientX, v: VOL(pot.dataset.ch), moved: false }; svg.setPointerCapture(e.pointerId); return; }
+    if (pot) {
+      drag = { k: pot.dataset.ch, cx: 430, cy: +pot.dataset.cy, v: VOL(pot.dataset.ch), turned: 0 };
+      drag.a = angleAt(e, drag); svg.setPointerCapture(e.pointerId); return;
+    }
     const row = e.target.closest('[data-row], [data-v]');
     if (row && row.closest('#sound')) {
       const k = row.dataset.row || row.dataset.ch, v = ledAt(toSvgX(e));
@@ -308,8 +327,14 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   svg.addEventListener('pointermove', e => {
     if (ledDrag) { const v = ledAt(toSvgX(e)); if (v !== VOL(ledDrag.k)) setVol(ledDrag.k, v); return; }
     if (!drag) return;
-    const d = (drag.y - e.clientY + e.clientX - drag.x) / 18;
-    if (Math.abs(d) >= 1) { drag.moved = true; const v = Math.max(0, Math.min(10, Math.round(drag.v + d))); if (v !== VOL(drag.k)) setVol(drag.k, v); }
+    const a = angleAt(e, drag);
+    let da = a - drag.a; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
+    drag.a = a; drag.turned += da * 180 / Math.PI;
+    // past the ends the turn does not pile up, so turning back answers at once
+    const raw = drag.v + drag.turned / 27;
+    if (raw > 10) drag.turned = (10 - drag.v) * 27; else if (raw < 0) drag.turned = -drag.v * 27;
+    const v = Math.max(0, Math.min(10, Math.round(drag.v + drag.turned / 27)));
+    if (v !== VOL(drag.k)) setVol(drag.k, v);
   });
   const endDrag = () => { drag = null; ledDrag = null; };
   svg.addEventListener('pointerup', endDrag);

@@ -124,6 +124,12 @@
     abrir() { empujar(); top().extra++; },
     // deshacer pasos, como el «atrás» del teléfono
     volver(n = 1) { if (n > 0) history.go(-n); },
+    // cerrar la app («Salir», en la sala). Chrome solo deja que una página se cierre sola en algunos casos;
+    // si no se cerró, devuelve false y la sala explica cómo salir
+    salir() {
+      try { window.close(); } catch (e) {}
+      return new Promise(r => setTimeout(() => r(!!window.closed), 350));
+    },
     // cuántas entradas tiene encima la pantalla actual
     get extra() { return top().extra; },
     sonido: {

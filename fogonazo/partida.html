@@ -40,6 +40,8 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
 
 #pause { font-size: inherit; left: 848em; top: 14em; width: 38em; height: 38em; border-radius: 50%; border: 0; background: transparent; cursor: pointer; padding: 0; }
 #pause:focus-visible { outline: 2em solid var(--amber); outline-offset: 1em; }
+#volver { cursor: pointer; }
+#volver:focus-visible { outline: 2em solid var(--amber); }
 
 /* overlays: an aluminum plate like the left panel */
 .sheet { left: 0; top: 0; width: 100%; height: 100%; display: grid; place-items: center; background: rgba(20, 10, 4, .55); }
@@ -81,6 +83,9 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   <div id="board" role="application" aria-label="Placa de 10 por 8 componentes"><div id="sel" hidden></div></div>
   <div id="light"></div>
   <button id="pause" type="button" aria-label="Pausa"></button>
+  <svg id="volver" style="left:765em;top:360em;width:132em;height:34em" viewBox="0 0 132 34" role="button" tabindex="0" aria-label="Volver al mapa">
+    <g transform="rotate(-1.5 66.0 17)"><path d="M2,4 h126 l-4,13 l4,13 h-126 l4,-13 z" fill="#1c1c1c"/><text x="66.0" y="23" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">◀ VOLVER</text></g>
+  </svg>
 
   <div class="sheet" id="menu" hidden>
     <div class="plate" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
@@ -425,6 +430,10 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     if (act === 'next') App.reemplazar('fogonazo/partida.html?nivel=' + (N + 1), 1);
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { menu.hidden = true; App.abrir(); } });
+  // «Volver», abajo a la derecha: sale al mapa sin pasar por la pausa (los controles de Android están escondidos)
+  const volver = () => { if (busy) return; fx('click'); App.volver(App.extra + 1); };
+  $('volver').addEventListener('click', volver);
+  $('volver').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); volver(); } });
 
   newGame();
   window.__maqueta = { state: () => ({ moves, score, have, over, busy, types: typesOf() }), trySwap, hasMove, runsIn, LEVEL };
