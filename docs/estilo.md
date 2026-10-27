@@ -1,0 +1,58 @@
+# Guía de estilo
+
+Las reglas vigentes de cómo se ve y cómo suena la colección. Por qué se decidió cada una y qué se descartó está en el [registro de decisiones](decisiones.md); cómo se piden y se montan las imágenes, en [imágenes](imagenes.md).
+
+## Para todos
+
+- **Ilustración pintada, no pixel art.** La referencia es la sala: un living de los 70 cálidos, con luz de atardecer y lámparas cálidas. Cada juego tiene su estilo, pero tiene que sentirse parte de ella.
+- **La IA pinta, el código dibuja encima** lo que cambia (números, textos, estados) y lo que se anima. Lo que se anima se hace chico y simple; si la imagen ya trae algo que se va a animar, se repinta encima.
+- **Letras legibles en el teléfono:** nada por debajo de unos 10 píxeles reales. Las escenas se ven achicadas (la del instrumento de Fogonazo, a un 55 %), así que los tamaños se miden en píxeles del teléfono, no de la imagen.
+- **Lo importante, en la franja central:** las imágenes son casi 16:9 y el teléfono en horizontal ronda 20:9, así que se recortan arriba y abajo. Lo que importa va en el 80 % central del alto.
+- **Sin texto, logos ni personas** en las imágenes. Los textos los pone el código.
+
+## La sala
+
+- **Vista frontal** de un living de los 70 en un departamento actual con ambientación de época, al atardecer con lluvia. Luz cálida pero no exagerada. Muebles con construcción lógica: los brazos del sillón van de punta a punta y los cajones abren hacia adelante.
+- **De izquierda a derecha:** el banco de electrónica de aficionado (osciloscopio, protoboard con LEDs, soldador, cajonera, lámpara articulada verde, tablero perforado, estante con manuales y una radio, banqueta); la ventana con lluvia y la ciudad, cortinas ocre, el sillón de corderoy color óxido con almohadones y una manta, la lámpara de arco sobre la mesa ratona de nogal con un mahjong en juego (estuche abierto, muro de fichas, fichas en mano, tetera y tazas) y la alfombra peluda; el equipo de audio (bafles, aparador con receiver, grabador de cinta, casetera y discos), el cuadro del arcoíris con su lámpara, la costilla de Adán, la lámpara de lava, la biblioteca con la lámpara hongo, y adelante, un puf de cuero.
+- **Objetos activos:** el banco, la mesa ratona y el equipo de audio. Sin carteles, círculos ni punteados: cada uno brilla apenas, de a uno por turno, cada unos 5 segundos. Al tocarlo, un destello en una capa propia, que no interrumpe el ciclo.
+- **Ambiente animado:** la lluvia afuera y las gotas que bajan por el vidrio (por detrás de la lámpara de arco), la traza del osciloscopio, los LEDs del banco, el vapor de la tetera, la cera de la lámpara de lava, el disco que gira, los vúmetros y las lámparas, que respiran apenas.
+- **Ajustes de sonido:** un panel con aspecto de frente de receiver.
+
+## Fogonazo
+
+- **La partida es el banco visto de cerca** (boceto S-06a, montado en la maqueta con la distribución de S-08c): componentes reales vistos desde arriba, clavados en una protoboard sobre el nogal, con la luz cálida de la lámpara.
+- **Las piezas** son las del pedido P-003, con sombra suave y las patas acortadas al montarlas, como clavadas en la protoboard. Cada componente conserva su color: resistencia (naranja), capacitor electrolítico (azul), LED (rojo), bobina (verde), chip (violeta), capacitor cerámico (amarillo) y cristal de cuarzo (plateado).
+- **El marcador, con objetos de época:** una etiqueta Dymo con el nivel y la dificultad, un display de LED para los movimientos, el puntaje, un instrumento de aguja con las estrellas y el pedido en una ficha escrita a máquina. Sin nombre de nivel, la columna izquierda tiene aire y el pedido es compacto.
+- **Especiales y obstáculos** (S-10, con las imágenes del P-005):
+  - **Rayo, sobrecarga y antena** son la pieza con una señal dibujada con código: flechas eléctricas en la dirección del barrido, un halo al rojo y un símbolo de wifi animado.
+  - **Batería:** una pila de 9 V parada, en dos colores (negro y turquesa), como la conocida pila de tope cobre pero con otro par de colores.
+  - **Pads de cobre**, con remaches si llevan dos pasadas, estañados al soldarse.
+  - **Quemados**, carbonizados; los de dos golpes, en una cápsula metálica TO-3, que se puede agrandar en código si queda chica en la casilla.
+  - **Cinta kapton**, ámbar y translúcida, dibujada con código.
+  - **Válvula** de vidrio ahumado y **zócalo** octal, sobre una tira de baquelita debajo de cada columna.
+  - **Huecos**, donde se ve la madera de la mesa.
+- **La nota de cuaderno:** la primera vez que aparece un componente, especial u obstáculo, junto a la placa hay una nota escrita con birome y pegada en la mesa, como un recordatorio que alguien se hizo (S-08c).
+- **La pantalla-instrumento** (imagen del P-004 sobre la composición S-08a): un osciloscopio real, voluminoso, en perspectiva, con la pantalla mirando hacia adelante y una luz cónica desde arriba. La pantalla, verde fósforo con retícula, muestra; las perillas eligen (Modo: Niveles, Zen y Récords; Dificultad: Fácil, Normal y Difícil), y se tocan la palabra o la perilla, que gira. Las palabras de las perillas no rozan el borde del frente.
+- **El sonido:** una placa de pertinax de proyecto de revista de hobbista, un poco girada respecto del borde de la mesa, con potenciómetros, LEDs y el parlante conectado con cables. En los ajustes, las perillas se giran arrastrando y una fila de diez LEDs verdes, amarillos y rojos sigue al dedo; tocar el primero cuando está solo apaga el canal. Los LEDs de la placa de la escena muestran los volúmenes.
+- **El manual:** una página de revista de hobbista pegada con cinta en la pared del banco, un poco torcida: papel envejecido, título, bajada, dos columnas en serif y una foto en sepia con trama (S-09c).
+- **El mapa:** una señal medida sobre hoja milimetrada, una onda con una pequeña modulación encima (S-08b). Los niveles son puntos medidos sobre ella: lo jugado en tinta, con sus estrellas; lo que viene, en lápiz. Se arrastra de costado.
+- **Tipografías** (S-09): IBM Plex Mono SemiBold en la pantalla del osciloscopio, con un brillo simple; Barlow Semi Condensed en perillas, sonido, botones y marcador; PT Serif en el manual; Special Elite en la ficha del pedido; Caveat en lo escrito a mano del mapa.
+
+## El mahjong
+
+Por ahora conserva la estética de Kasa; si se acerca a la de la sala está por decidir.
+
+- La paleta verde papel y tinta azul, bordes gruesos con sombra sólida, Zen Kaku Gothic New y Shippori Mincho. Solo tema claro.
+- Las fichas se dibujan con código, porque cada una pide una cantidad exacta de círculos o bambúes y su ideograma correcto: los círculos y los bambúes se dibujan (el uno de bambú es el pajarito tradicional); los caracteres, los vientos y los dragones llevan su ideograma; las flores y las estaciones, su ideograma y un dibujito.
+
+## Sonido
+
+Todo se sintetiza en el navegador, sin archivos de audio, con el motor de `codigo/audio.js`. Los volúmenes son los mismos para toda la colección (ver [la colección](coleccion.md#sonido)).
+
+- **La sala:** la lluvia, un ruido rosa filtrado que crece y baja despacio.
+- **Fogonazo:** el sonido de siempre, el mismo del juego publicado. Cuatro temas: **Placa**, el original, en los niveles por movimientos (la menor, Am F C G, 104 ppm); **Taller**, fuera de la partida (do mayor, C G Am F, arpegio a corcheas, 92 ppm); **Urgente**, en el contrarreloj (la menor con final en mi mayor, Am F Dm E, 144 ppm), y **Siesta**, en el zen (fa mayor, Fmaj7 Em7 Dm7 C, 104 ppm). Bajo cuadrado, arpegio triangular, hi-hats de ruido y una melodía cuadrada que entra cada dos vueltas en Placa y Taller. Siesta usa instrumentos suaves (bajo triangular, arpegio de pulso fino y melodía de pulso al 25 %) y va unos 2 dB por debajo de Placa. La música baja al terminar un nivel para que se escuche la fanfarria.
+- **El mahjong:** las canciones de Fogonazo como primas orientales, que se note que son de la misma familia: mismo tempo, ritmo, acordes y bajo, con la melodía en do pentatónica mayor (fa y si pasan a la nota vecina). Koto, flauta tipo dizi, bloque de madera y tamborcito de mano, con un glissando de koto al cerrar la vuelta sin melodía. Siesta en la partida, Taller en el inicio y Placa para elegir. Los efectos también son primos: el sonido de línea, tocado con koto, sube con la cadena igual que en Fogonazo.
+
+## Textos
+
+Amenos, en voseo rioplatense, sin errores ni redundancias. En Fogonazo, la electrónica es de verdad: componentes y explicaciones técnicamente correctos.

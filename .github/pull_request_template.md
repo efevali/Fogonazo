@@ -1,10 +1,11 @@
 ## Versión
 
-Número y nombre de la tanda (por ejemplo, 0.1.0 · Versión instalable).
+Número y nombre de la tanda (por ejemplo, 0.1.0 · La sala y Fogonazo).
 
-## Bocetos incluidos
+## Bocetos y pedidos de imágenes incluidos
 
-- B-01: …
+- S-…: …
+- P-…: …
 
 ## Dificultad
 
@@ -17,7 +18,7 @@ Closes #…
 ## Antes de unir
 
 - [ ] Lo que los bocetos no cubren está hecho según el texto de cada issue
-- [ ] `index.html` armado con `herramientas/armar.js` y `herramientas/probar.js` sin errores
-- [ ] Probado en la vista previa, nivel por nivel, en 8 y 16 bits, y comparado con los bocetos
-- [ ] Versión subida con `herramientas/version.js` y sumada a `CHANGELOG.md`
+- [ ] Las pruebas de cada juego que cambió pasan sin errores
+- [ ] Probado en el teléfono y comparado con los bocetos
+- [ ] Versión subida y sumada a `CHANGELOG.md`
 - [ ] Título del squash: «0.x.y: …»
