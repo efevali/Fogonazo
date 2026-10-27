@@ -1,11 +1,12 @@
-// Shared state of the Fogonazo mockup: difficulty, volumes and stars per level, kept in this browser only.
+// Fogonazo's progress in the mockup: difficulty and stars per level and difficulty, kept in this browser only.
+// The volumes are the collection's (comun/sonido.js).
 window.Maqueta = (() => {
   'use strict';
-  const KEY = 'fogonazo.maqueta.v1';
+  const KEY = 'coleccion.fogonazo';
   const MODES = ['Fácil', 'Normal', 'Difícil'];
-  const blank = () => ({ modo: 1, vol: { musica: 7, efectos: 8 }, niveles: [{}, {}, {}] });
+  const blank = () => ({ modo: 1, niveles: [{}, {}, {}] });
   let st = blank();
-  try { const raw = JSON.parse(localStorage.getItem(KEY)); if (raw && raw.vol && raw.niveles) st = raw; } catch (e) {}
+  try { const raw = JSON.parse(localStorage.getItem(KEY)); if (raw && raw.niveles) st = raw; } catch (e) {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
 
   // a level passed in any mode is open in all of them
@@ -27,7 +28,6 @@ window.Maqueta = (() => {
   return {
     MODES,
     get modo() { return st.modo; }, set modo(v) { st.modo = v; save(); },
-    get vol() { return st.vol; }, setVol(k, v) { st.vol[k] = v; save(); },
     stars: (n, modo = st.modo) => st.niveles[modo][n] || 0,
     total: (modo = st.modo) => Object.values(st.niveles[modo]).reduce((a, b) => a + b, 0),
     maxLevel: (modo = st.modo) => { let n = 0; for (const k in st.niveles[modo]) if (st.niveles[modo][k] > 0) n = Math.max(n, +k); return n; },

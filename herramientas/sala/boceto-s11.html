@@ -7,10 +7,10 @@
      ?estado=chrome | instalada | guia
      The icon in the install row is the provisional one: the rainy window cropped from the room. -->
 <style>
-@font-face { font-family: Fraunces; font-weight: 100 900; src: url(../../docs/sala/maqueta-fogonazo/fuentes/fraunces-latin-soft-normal.woff2) format('woff2'); }
-@font-face { font-family: Barlow; font-weight: 500; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-500-normal.woff2) format('woff2'); }
-@font-face { font-family: Barlow; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
-@font-face { font-family: Barlow; font-weight: 700; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Fraunces; font-weight: 100 900; src: url(../../comun/fuentes/fraunces-latin-soft-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 500; src: url(../../comun/fuentes/barlow-semi-condensed-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 600; src: url(../../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
 :root {
   --night: #120c0a; --walnut: #5a3520; --walnut-deep: #3a2214; --alu: #cfcac0; --alu-shade: #b3ada2; --ink: #2a211b;
   --amber: #ffb648; --dial: #7fe3ff; --green: #6dff9a;
@@ -41,7 +41,7 @@ html, body { margin: 0; height: 100%; background: var(--night); font-family: var
 .rule { height: 0; border-top: 1px solid rgba(0, 0, 0, .28); border-bottom: 1px solid rgba(255, 255, 255, .55); margin: 2px 0; }
 .inst { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; }
 .inst .ic { width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0, 0, 0, .4);
-  background: url(../../docs/sala/prototipo/sala.jpg) -63.9px -18.2px / 196.6px auto no-repeat; }
+  background: url(../../sala/sala.jpg) -63.9px -18.2px / 196.6px auto no-repeat; }
 .inst b { display: block; font-size: 16px; font-weight: 700; letter-spacing: .01em; }
 .inst small { display: block; font-size: 14px; font-weight: 500; opacity: .8; margin-top: 1px; }
 .btn { border-radius: 6px; padding: 7px 14px; font: 600 14px var(--label); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
@@ -60,7 +60,7 @@ ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622
 <body>
 <script>
 const estado = new URLSearchParams(location.search).get('estado') || 'chrome';
-const room = `<svg class="room" viewBox="0 120 2576 1200" preserveAspectRatio="xMidYMid slice"><image href="../../docs/sala/prototipo/sala.jpg" width="2576" height="1438"/></svg>`;
+const room = `<svg class="room" viewBox="0 120 2576 1200" preserveAspectRatio="xMidYMid slice"><image href="../../sala/sala.jpg" width="2576" height="1438"/></svg>`;
 const vol = (name, v) => `<div class="vrow"><label>${name}</label><div class="track">${
   Array.from({ length: 11 }, (_, i) => `<b style="left:${i * 10}%"></b>`).join('')}<i style="left:${v * 10}%"></i></div><output>${v}</output></div>`;
 const sound = vol('Música', 7) + vol('Efectos', 8) + vol('Lluvia', 5);

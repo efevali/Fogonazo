@@ -8,9 +8,9 @@
 <style>
 /* Mockup of a Fogonazo match in landscape (sketch S-06a), with Gemini's pieces (P-003).
    Design space: 915 x 412. The stage is sized to fit the screen; 1em = one design unit. */
-@font-face { font-family: Barlow; font-weight: 600; src: url(fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
-@font-face { font-family: Barlow; font-weight: 700; src: url(fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
-@font-face { font-family: Elite; src: url(fuentes/special-elite-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 600; src: url(../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Elite; src: url(../comun/fuentes/special-elite-latin-400-normal.woff2) format('woff2'); }
 :root { --wood: #4a2914; --ink: #2c2620; --amber: #ffb648; --alu: #d6d2c8; --alu-shade: #a9a49a; }
 html, body { margin: 0; height: 100%; background: var(--wood); overflow: hidden; }
 body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
@@ -91,7 +91,6 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
       </div>
       <div class="row">
         <button class="btn ghost" type="button" data-act="map">Volver al mapa</button>
-        <button class="btn ghost" type="button" data-act="full" id="fullBtn">Pantalla completa</button>
       </div>
       <p class="note">Maqueta: solo intercambios, cascadas y pedido. Sin especiales ni obstáculos todavía.</p>
     </div>
@@ -112,7 +111,8 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
 </div>
 <div id="rotate">Girá el teléfono para jugar en horizontal</div>
 
-<script src="comun.js"></script>
+<script src="../comun/pantalla.js"></script>
+<script src="estado.js"></script>
 <script>
 (() => {
   'use strict';
@@ -199,39 +199,14 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     });
   })();
 
-  // ---------- sound: a few short synthesized effects ----------
-  let actx = null, master = null;
-  const soundOn = M.vol.efectos > 0;
-  function audio() {
-    if (!soundOn) return null;
-    try {
-      if (!actx) { actx = new (window.AudioContext || window.webkitAudioContext)(); master = actx.createGain(); master.gain.value = .35 * M.vol.efectos / 8; master.connect(actx.destination); }
-      if (actx.state === 'suspended') actx.resume();
-    } catch (e) { return null; }
-    return actx;
-  }
-  function tone(f, t0, dur, type = 'triangle', vol = .25, f2) {
-    const a = audio(); if (!a) return;
-    const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + t0;
-    o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .005); g.gain.exponentialRampToValueAtTime(.001, t + dur);
-    o.connect(g).connect(master); o.start(t); o.stop(t + dur + .02);
-  }
-  function crackle(t0, dur, freq, vol) {
-    const a = audio(); if (!a) return;
-    const n = Math.floor(a.sampleRate * dur), buf = a.createBuffer(1, n, a.sampleRate), d = buf.getChannelData(0);
-    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (Math.random() < .3 ? 1 : .25);
-    const src = a.createBufferSource(), bp = a.createBiquadFilter(), g = a.createGain(), t = a.currentTime + t0;
-    src.buffer = buf; bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = 1.2;
-    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
-    src.connect(bp).connect(g).connect(master); src.start(t);
-  }
+  // ---------- sound: Fogonazo's effects, from the collection (comun/sonido.js) ----------
+  const fx = (n, a, gap) => App.sonido.fx(n, a, gap);
   const sfx = {
-    swap: () => tone(880, 0, .05, 'square', .06),
-    zap: chain => { const k = Math.pow(2, Math.min(chain - 1, 6) * 2 / 12); crackle(0, .16, 3200 * k, .35); tone(520 * k, 0, .14, 'triangle', .18, 1040 * k); },
-    nope: () => { tone(150, 0, .09, 'square', .07); tone(120, .1, .12, 'square', .07); },
-    win: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .1, .25, 'triangle', .16)),
-    lose: () => [392, 330, 262].forEach((f, i) => tone(f, i * .14, .3, 'triangle', .14)),
+    swap: () => fx('swap'),
+    zap: chain => fx('match', chain, 60),
+    nope: () => fx('bad'),
+    win: () => { App.sonido.duck(true); fx('win'); },
+    lose: () => { App.sonido.duck(true); fx('lose'); },
   };
 
   // ---------- game state ----------
@@ -430,27 +405,26 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   board.addEventListener('pointercancel', () => { drag = null; });
 
   // ---------- menus ----------
-  const menu = $('menu');
-  $('pause').addEventListener('click', () => { if (busy) return; menu.hidden = false; menu.querySelector('button').focus({ preventScroll: true }); });
-  const fullBtn = $('fullBtn');
-  if (!document.fullscreenEnabled) fullBtn.hidden = true;
-  document.addEventListener('click', async e => {
+  // «Atrás» in a match: the first one opens the pause (the match keeps one step of history for it);
+  // from the pause or from the end of the level, the next one goes to the map.
+  const menu = $('menu'), end = $('end');
+  function pause() { menu.hidden = false; menu.querySelector('button').focus({ preventScroll: true }); }
+  window.Pantalla.atras = () => {
+    if (over || !end.hidden) { App.volver(); return; }
+    pause();
+  };
+  // the pause button spends that step, like the phone's «atrás»; resuming gives it back
+  $('pause').addEventListener('click', () => { if (busy || over) return; fx('click'); if (App.extra > 0) App.volver(); else pause(); });
+  document.addEventListener('click', e => {
     const b = e.target.closest('[data-act]'); if (!b) return;
     const act = b.dataset.act;
-    if (act === 'resume') menu.hidden = true;
-    if (act === 'restart') { menu.hidden = true; newGame(); }
-    if (act === 'map') location.href = 'mapa.html';
-    if (act === 'next') location.href = 'index.html?nivel=' + (N + 1);
-    if (act === 'full') {
-      try {
-        if (document.fullscreenElement) await document.exitFullscreen();
-        else { await document.documentElement.requestFullscreen(); try { await screen.orientation.lock('landscape'); } catch (err) {} }
-        setTimeout(fit, 250);
-      } catch (err) { fullBtn.hidden = true; }
-      menu.hidden = true;
-    }
+    fx('click');
+    if (act === 'resume') { menu.hidden = true; App.abrir(); }
+    if (act === 'restart') { const wasPaused = !menu.hidden; menu.hidden = true; end.hidden = true; App.sonido.duck(false); if (wasPaused) App.abrir(); newGame(); }
+    if (act === 'map') App.volver(App.extra + 1);
+    if (act === 'next') App.reemplazar('fogonazo/partida.html?nivel=' + (N + 1), 1);
   });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) menu.hidden = true; });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { menu.hidden = true; App.abrir(); } });
 
   newGame();
   window.__maqueta = { state: () => ({ moves, score, have, over, busy, types: typesOf() }), trySwap, hasMove, runsIn, LEVEL };

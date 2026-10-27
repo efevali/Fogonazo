@@ -5,16 +5,17 @@ La pantalla de inicio de la colección: un living de los 70 ilustrado donde algu
 ## Estado
 
 - **Imagen base vigente:** [`arte/sala-v2.png`](arte/sala-v2.png), de 2752 × 1536, generada con Gemini. Vista frontal, al atardecer con lluvia.
-- **Prototipo:** [`prototipo/`](prototipo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/prototipo/. Producto lo probó en el teléfono: los objetos activos se ven bien, y «tiene aspecto de juego profesional».
+- **En la app** desde la 0.1.0: es la pantalla de inicio, en [`sala/`](../../sala/index.html) (fuera de `docs/`). Producto la probó en el teléfono como prototipo: los objetos activos se ven bien, y «tiene aspecto de juego profesional».
 
-## Qué hace el prototipo
+## Qué hace la sala
 
 - **Tres objetos activos**, que brillan apenas por turno:
-  - **El banco de electrónica** lleva a la [maqueta de Fogonazo](maqueta-fogonazo/instrumento.html), que vuelve con «◀ Sala».
+  - **El banco de electrónica** lleva a Fogonazo, a la pantalla-instrumento, que vuelve con «◀ Sala».
   - **La mesa ratona con el mahjong** abre una tarjeta «próximamente» con aspecto de estuche de paño rojo.
-  - **El equipo de audio** abre el sonido, un panel con aspecto de frente de receiver, con música, efectos y lluvia. La lluvia suena de verdad; música y efectos todavía no están conectados.
+  - **El equipo de audio** abre los ajustes de la colección (S-11), un panel con aspecto de frente de receiver: música, efectos y lluvia, de 0 a 10, y en Chrome sin instalar, «Instalar».
 - **El ambiente animado** de la [guía de estilo](../estilo.md#la-sala).
-- **Herramientas de prueba:** un botón muestra las zonas táctiles; otro pone pantalla completa y bloquea en horizontal donde el navegador lo permite. En vertical se ve la sala entera, achicada.
+- **La lluvia** suena mientras se está en la sala, con el volumen de los ajustes, y se apaga al entrar a un juego.
+- **Para revisar las zonas táctiles,** `sala/?zonas` las muestra. En vertical se ve la sala entera, achicada.
 
 ## Archivos
 
@@ -22,8 +23,7 @@ La pantalla de inicio de la colección: un living de los 70 ilustrado donde algu
 |---|---|
 | [`arte/`](arte/) | La imagen base vigente, en la resolución original. |
 | [`bocetos/`](bocetos/) | Los bocetos de la sala y de lo común de la colección (ver abajo). |
-| [`prototipo/`](prototipo/) | La página, la imagen base para la web, una copia aclarada para el brillo de los objetos activos y las máscaras de cada objeto activo y de la ventana. |
-| [`maqueta-fogonazo/`](maqueta-fogonazo/instrumento.html) | La maqueta de Fogonazo, que se cuenta en [su documentación](../fogonazo/README.md#la-maqueta). Vive acá para que la sala la abra directamente. |
+| [`sala/`](../../sala/) (en la app) | La página, la imagen base para la web, una copia aclarada para el brillo de los objetos activos y las máscaras de cada objeto activo y de la ventana. |
 
 ### Bocetos
 
@@ -36,7 +36,7 @@ Las referencias de estilo de terceros (ilustraciones isométricas, fotos de livi
 
 ## Notas técnicas
 
-- **Coordenadas:** las zonas táctiles y las animaciones están en el sistema de 2576 × 1438 de la primera descarga de la imagen; la imagen en alta se dibuja escalada en ese mismo recuadro y coincide sin corrimientos (se verificó).
+- **Coordenadas:** en `sala/index.html`, las zonas táctiles y las animaciones están en el sistema de 2576 × 1438 de la primera descarga de la imagen; la imagen en alta se dibuja escalada en ese mismo recuadro y coincide sin corrimientos (se verificó).
 - **Si la imagen cambia,** se pide un cambio puntual sobre ella (ver [imágenes](../imagenes.md#cómo-se-pide)), para no tener que volver a medir.
 - **El brillo de cada objeto activo** va en una capa propia, separada del destello del toque, para que el ciclo de aviso no se interrumpa.
 

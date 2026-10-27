@@ -8,8 +8,8 @@
 <style>
 /* The level map (S-08b): a measured signal on graph paper. Levels are points on the peaks and troughs;
    what is played is inked, what is next is in pencil. The paper scrolls sideways. */
-@font-face { font-family: Barlow; font-weight: 700; src: url(fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
-@font-face { font-family: Caveat; font-weight: 600; src: url(fuentes/caveat-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Caveat; font-weight: 600; src: url(../comun/fuentes/caveat-latin-600-normal.woff2) format('woff2'); }
 html, body { margin: 0; height: 100%; background: #f7f2e3; overflow: hidden; }
 body { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 #stage { position: fixed; left: 0; top: 0; width: 915em; height: 412em; font-size: 1px; overflow: clip; touch-action: none; }
@@ -44,7 +44,8 @@ svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
 </div>
 <div id="rotate">Girá el teléfono para jugar en horizontal</div>
 
-<script src="comun.js"></script>
+<script src="../comun/pantalla.js"></script>
+<script src="estado.js"></script>
 <script>
 (() => {
   'use strict';
@@ -104,10 +105,11 @@ svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
   addEventListener('pointerup', () => { drag = null; });
   stage.addEventListener('click', e => {
     if (moved) return;
-    const b = e.target.closest('#back'); if (b) { location.href = 'instrumento.html'; return; }
+    const b = e.target.closest('#back'); if (b) { App.sonido.fx('click'); App.volver(); return; }
     const l = e.target.closest('.lvl'); if (!l) return;
     const n = +l.dataset.n;
-    if (M.open(n)) location.href = 'index.html?nivel=' + n;
+    // the match keeps one step of its own for «atrás»: the first one opens the pause
+    if (M.open(n)) { App.sonido.fx('click'); App.ir('fogonazo/partida.html?nivel=' + n, 1); }
   });
   stage.addEventListener('keydown', e => { if (e.key === 'Enter') e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
   window.__mapa = { off: () => off, curX };

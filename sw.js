@@ -1,65 +1,97 @@
-/* Service worker de Fogonazo.
-   Guarda el juego entero en el teléfono para que funcione sin conexión, y maneja las versiones: cuando se
-   publica una versión nueva, el teléfono la baja en segundo plano y queda esperando hasta que se toca
-   «Actualizar» en Ajustes (o hasta que el juego se cierra del todo).
+/* Service worker de la colección.
+   Guarda la app entera en el teléfono para que funcione sin conexión. Cuando se publica una versión nueva, el
+   teléfono la baja en segundo plano y la deja esperando: entra sola al cerrar la app del todo y volver a abrirla.
 
-   VERSION tiene que coincidir con FOGONAZO_VERSION de codigo/game.js: herramientas/version.js sube las dos.
-   Cualquier cambio en este archivo es lo que le avisa al teléfono que hay algo nuevo: el teléfono no compara
-   números, toma lo último que se publica. El número (MAYOR.MENOR.PARCHE) es para ordenarnos.
+   Cualquier cambio en este archivo es lo que le avisa al teléfono que hay algo nuevo. La lista de archivos y el
+   número los escribe herramientas/version.js; el número (MAYOR.MENOR.PARCHE) es para ordenarnos.
 
-   Fogonazo comparte el origen efevali.github.io con Kasa: lo guardado lleva el prefijo «fogonazo-» y solo se
-   borra lo propio. */
-const VERSION = '0.6.1';
-const CACHE = 'fogonazo-v' + VERSION;
+   El sitio, efevali.github.io, es el mismo de Kasa: lo guardado lleva el prefijo «coleccion-» y solo se borra lo
+   propio, más lo que guardaba el Fogonazo publicado («fogonazo-»), al que esta versión reemplaza. */
+const VERSION = '0.1.0';
+const FECHA = '27/10/2026';
+const CACHE = 'coleccion-v' + VERSION;
 const ARCHIVOS = [
   './',
   'index.html',
   'manifest.webmanifest',
-  'fuentes/silkscreen-400.woff2',
-  'fuentes/silkscreen-700.woff2',
-  'fuentes/pixelify-sans-400.woff2',
-  'fuentes/pixelify-sans-600.woff2',
-  'fuentes/jersey-15-400.woff2',
-  'fuentes/jersey-25-400.woff2',
+  'comun/app.js',
+  'comun/fuentes/barlow-semi-condensed-latin-500-normal.woff2',
+  'comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2',
+  'comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2',
+  'comun/fuentes/caveat-latin-600-normal.woff2',
+  'comun/fuentes/fraunces-latin-soft-normal.woff2',
+  'comun/fuentes/ibm-plex-mono-latin-600-normal.woff2',
+  'comun/fuentes/pt-serif-latin-400-italic.woff2',
+  'comun/fuentes/pt-serif-latin-400-normal.woff2',
+  'comun/fuentes/pt-serif-latin-700-normal.woff2',
+  'comun/fuentes/special-elite-latin-400-normal.woff2',
+  'comun/pantalla.js',
+  'comun/sonido.js',
+  'sala/index.html',
+  'sala/mask-audio.png',
+  'sala/mask-bench.png',
+  'sala/mask-rain.png',
+  'sala/mask-table.png',
+  'sala/sala-luz.jpg',
+  'sala/sala.jpg',
+  'fogonazo/estado.js',
+  'fogonazo/fondo.webp',
+  'fogonazo/instrumento.html',
+  'fogonazo/instrumento.webp',
+  'fogonazo/mapa.html',
+  'fogonazo/partida.html',
+  'fogonazo/piezas/bateria.png',
+  'fogonazo/piezas/pad1.png',
+  'fogonazo/piezas/pad2.png',
+  'fogonazo/piezas/padOk.png',
+  'fogonazo/piezas/pieza0.png',
+  'fogonazo/piezas/pieza1.png',
+  'fogonazo/piezas/pieza2.png',
+  'fogonazo/piezas/pieza3.png',
+  'fogonazo/piezas/pieza4.png',
+  'fogonazo/piezas/pieza5.png',
+  'fogonazo/piezas/pieza6.png',
+  'fogonazo/piezas/quemado1.png',
+  'fogonazo/piezas/quemado2.png',
+  'fogonazo/piezas/valvula.png',
+  'fogonazo/piezas/zocalo.png',
+  'iconos/apple-touch-icon.png',
   'iconos/icono-192.png',
   'iconos/icono-512.png',
   'iconos/icono-maskable-192.png',
   'iconos/icono-maskable-512.png',
-  'iconos/apple-touch-icon.png'
 ];
 
 // Instalar: bajar todo de nuevo del servidor (sin copias viejas intermedias) y guardarlo junto
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS.map(u => new Request(u, {cache: 'reload'})))));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS.map(u => new Request(u, { cache: 'reload' })))));
 });
 
-// Activar: borrar lo guardado por versiones anteriores de Fogonazo (no lo de Kasa) y tomar el juego abierto
+// Activar: borrar lo guardado por versiones anteriores (no lo de Kasa) y tomar la app abierta
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(ks => Promise.all(ks.filter(k => k.startsWith('fogonazo-') && k !== CACHE).map(k => caches.delete(k))))
+      .then(ks => Promise.all(ks.filter(k => (k.startsWith('coleccion-') || k.startsWith('fogonazo-')) && k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
-// «Actualizar» en Ajustes: la versión que espera pasa a ser la activa
+// «Actualizar» del Fogonazo publicado (0.6.1): la versión que espera pasa a ser la activa
 self.addEventListener('message', e => { if (e.data === 'actualizar') self.skipWaiting(); });
 
-// Todo sale de lo guardado; la red solo si falta algo
+// Todo sale de lo guardado; la red solo si falta algo (por ejemplo, las páginas de docs/)
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  // Abrir el juego: la página guardada. Otras páginas del sitio (como docs/muestrario.html) van a la red.
   const base = new URL('./', self.registration.scope).pathname;
-  if (req.mode === 'navigate' && (url.pathname === base || url.pathname === base + 'index.html')){
-    e.respondWith(
-      caches.open(CACHE)
-        .then(c => c.match('index.html').then(r => r || c.match('./')))
-        .then(r => r || fetch(req))
-    );
-    return;
-  }
-  e.respondWith(caches.open(CACHE).then(c => c.match(req, {ignoreSearch: true})).then(r => r || fetch(req)));
+  e.respondWith(caches.open(CACHE).then(c => {
+    if (req.mode === 'navigate' && (url.pathname === base || url.pathname === base + 'index.html')) {
+      return c.match('index.html').then(r => r || c.match('./'));
+    }
+    // una carpeta (sala/) es su index.html
+    if (url.pathname.endsWith('/')) return c.match(url.pathname + 'index.html');
+    return c.match(req, { ignoreSearch: true });
+  }).then(r => r || fetch(req)));
 });

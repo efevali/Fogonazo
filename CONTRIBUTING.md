@@ -34,9 +34,9 @@ Criterios que valen siempre:
 - **Implementación integral**: no se publica nada aislado ni se dejan cabos sueltos.
 - **Sin duplicados**: lo que está en el juego o en este repositorio no se guarda aparte. Lo superado se borra, con la aprobación de Producto: queda en el historial de Git.
 
-## Mientras no hay versión de la colección
+## Qué va directo a `main`
 
-Hasta la 0.1.0, el diseño avanza en `docs/`: bocetos, pedidos de imágenes, prototipos y maquetas, con commits directos a `main` (GitHub Pages los publica, y así se prueban en el teléfono). Las decisiones se anotan en el [registro](docs/decisiones.md) y el estado, en el README de cada parte. Los cambios grandes de documentación van en una rama con su pull request, para revisarlos juntos. Desde la 0.1.0 vale el ciclo completo.
+La documentación, los bocetos, los pedidos de imágenes y el arte aprobado van con commits directos a `main`: no tocan la app. Los cambios grandes de documentación, en una rama con su pull request, para revisarlos juntos. El código de la app va siempre en la rama de su versión.
 
 ## El ciclo
 
@@ -90,7 +90,8 @@ Cada issue lleva título (el cambio, en una línea), **dónde** (la sala, el jue
 
 ## Pruebas
 
-- Se prueba en el teléfono, en Chrome, desde GitHub Pages, o en la computadora con un servidor local (ver el [README](README.md#herramientas)).
+- Antes de publicar, `node herramientas/capturas.js` recorre la app, verifica el «atrás» y el funcionamiento sin conexión, y deja una captura de cada pantalla para compararla con los bocetos. Desarrollo le pasa las capturas a Producto con el pedido de publicar.
+- En la computadora, con un servidor local (ver el [README](README.md#herramientas)). En el teléfono, después de publicar: si algo falla, se arregla con un parche.
 - Lo que cambia se juega completo antes de publicar.
 
 ## Idioma

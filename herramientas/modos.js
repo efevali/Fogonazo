@@ -7,7 +7,7 @@ const E = require('../codigo/engine.js');
 const { LEVELS, MODES, applyMode } = require('../codigo/levels.js');
 const CAL = require('../codigo/calibrated.json');
 
-function def(id, M) {   // igual que levelDef en codigo/game.js
+function def(id, M) {   // cómo se arma un nivel en un modo de dificultad, con los valores calibrados
   const b = LEVELS[id - 1], c = CAL[id] || {};
   const d = Object.assign({}, b);
   d.goals = b.goals.map(o => Object.assign({}, o));

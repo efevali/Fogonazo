@@ -1,4 +1,4 @@
-/* Abre Chromium sin interfaz para las herramientas que sacan capturas (iconos.js y boceto.js).
+/* Abre Chromium sin interfaz para las herramientas que sacan capturas (capturas.js).
    Usa el Chromium que instala Playwright (npx playwright install chromium); si no está, prueba con el de
    PLAYWRIGHT_CHROMIUM o con el preinstalado en /opt/pw-browsers. */
 const fs = require('fs');

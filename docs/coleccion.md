@@ -27,7 +27,8 @@ Sala ── banco de electrónica ──► Fogonazo
 - **Los objetos activos** no llevan carteles, círculos ni marcas: brillan apenas, de a uno por turno.
 - **Se entra directo a cada juego**, sin pantalla de título aparte. Cómo se pasa de la sala a un juego (la transición) está por definir.
 - **El «atrás» de Android** desanda el camino, pantalla por pantalla, hasta la sala; desde la sala sale de la app. Cada juego define sus escalones (el de Fogonazo, en [su documentación](fogonazo/README.md#recorrido)). Lección del Fogonazo publicado: el historial del navegador lleva una entrada por paso, sumada solo al tocar algo, porque Chrome saltea las que una página suma sin que la toquen.
-- **Pantalla completa y bloqueo en horizontal** donde el navegador lo permite.
+- **Instalada, abre a pantalla completa y en horizontal.** En el navegador, sin instalar, se ve con la barra de Chrome.
+- **Una página contenedora y una pantalla por vez.** La sala y cada pantalla de los juegos son páginas aparte que la contenedora (`index.html`) muestra de a una, con un fundido corto; así la música no se corta al pasar de una a otra.
 
 ## Sonido
 
@@ -44,8 +45,8 @@ Sala ── banco de electrónica ──► Fogonazo
 
 ## Publicación
 
-- **En GitHub Pages**, en https://efevali.github.io/fogonazo/, la dirección del Fogonazo publicado. La colección lo **reemplaza directamente**, sin publicarse antes en paralelo: es lo que menos trabajo de mantenimiento exige. Desde la primera publicación, la app instalada en el teléfono es la colección en desarrollo.
-- **Numeración nueva**, desde la 0.1.0 (ver [CHANGELOG](../CHANGELOG.md)).
+- **En GitHub Pages**, en https://efevali.github.io/fogonazo/, la dirección del Fogonazo publicado. La colección lo **reemplazó directamente** con su 0.1.0, sin publicarse antes en paralelo: es lo que menos trabajo de mantenimiento exige. La app instalada en el teléfono es la colección en desarrollo.
+- **Numeración nueva**, desde la 0.1.0 (ver [CHANGELOG](../CHANGELOG.md)). La versión nueva se baja sola y entra al cerrar la app del todo.
 - **Nombre e ícono provisorios:** «Minijuegos» y la ventana con lluvia de la sala. Los definitivos, cuando la colección tenga nombre.
 - **Ajustes de la colección:** en el panel del equipo de audio de la sala, el sonido y, en Chrome sin instalar, «Instalar» (boceto S-11). La versión nueva se aplica sola al cerrar la app del todo; dónde se muestra la versión está por definir.
 - **Un solo repositorio** para toda la colección. Se renombra cuando tenga nombre; la dirección de GitHub Pages no se redirige, y por eso conviene hacerlo mientras haya pocos jugadores.
@@ -53,10 +54,10 @@ Sala ── banco de electrónica ──► Fogonazo
 
 ## Lo que sigue
 
-1. **La estructura de la colección en el repositorio:** la sala como inicio de una sola app instalable, cada juego como módulo y lo común aparte (sonido, guardado, «atrás», instalación, pantalla completa). Al principio, Fogonazo es la maqueta actual enchufada a lo común. Reemplaza a la 0.6.1 y retira su código viejo.
-2. **Fogonazo, el motor a 10 × 8:** los 30 niveles transpuestos, sin nombres ni textos, y recalibrados.
-3. **Fogonazo, los niveles generados** del 31 en adelante.
-4. **Fogonazo, la partida real con la estética nueva:** especiales, obstáculos, la nota de cuaderno y el zen. Antes, los bocetos de lo que falta: pausa, fin de nivel y partida zen.
-5. **El mahjong en horizontal**, con el mismo tratamiento.
-6. **Los menús, y la sala como juego de buscar y encontrar.**
-7. **Los nombres** de la colección y de Fogonazo, y el del repositorio.
+1. **Fogonazo, el motor a 10 × 8:** los 30 niveles transpuestos, sin nombres ni textos, y recalibrados.
+2. **Fogonazo, los niveles generados** del 31 en adelante.
+3. **Fogonazo, la partida real con la estética nueva:** especiales, obstáculos, la nota de cuaderno y el zen, en lugar de la maqueta. Antes, los bocetos de lo que falta: pausa, fin de nivel y partida zen.
+4. **El mahjong en horizontal**, con el mismo tratamiento, dentro de la app.
+5. **Los menús, y la sala como juego de buscar y encontrar.**
+6. **Los nombres** de la colección y de Fogonazo, el ícono definitivo y el nombre del repositorio.
+7. **Dónde se muestra la versión** y el aviso de versión nueva.
