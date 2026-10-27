@@ -64,7 +64,16 @@
     ambiente(url);
     requestAnimationFrame(() => velo.classList.remove('on'));
   }
-  function desbloquear() { Sound.ensure(); }
+  function desbloquear() { Sound.ensure(); girar(); }
+
+  // En horizontal. La ficha de instalación lo pide, pero una app instalada antes (la 0.6.1, en vertical) conserva su
+  // orientación hasta que Chrome actualiza la ficha, y eso puede tardar días. Por eso se pide también desde acá; en
+  // el navegador, sin pantalla completa, Chrome no lo permite y no pasa nada.
+  let horizontal = false;
+  function girar() {
+    if (horizontal || !screen.orientation || !screen.orientation.lock) return;
+    screen.orientation.lock('landscape').then(() => { horizontal = true; }).catch(() => {});
+  }
 
   function empujar() { pos++; history.pushState({ i: pos }, ''); }
 
@@ -141,6 +150,7 @@
   // el avance del Fogonazo publicado y de la maqueta no se conservan: la colección arranca de cero
   try { localStorage.removeItem('chispazo.v1'); localStorage.removeItem('fogonazo.maqueta.v1'); } catch (e) {}
   Sound.ensure();   // instalada, Chrome deja sonar sin esperar un toque; si no, arranca con el primero
+  girar();
   cargar(INICIO, true);
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {

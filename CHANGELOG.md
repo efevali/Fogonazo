@@ -2,6 +2,10 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.1.1 — 27/10/2026
+
+- La app instalada desde la 0.6.1 seguía en vertical: conserva la orientación de su ficha de instalación hasta que Chrome la actualiza. Ahora la app pide el horizontal por su cuenta al abrir y con el primer toque.
+
 ## 0.1.0 — 27/10/2026
 
 La colección como app: reemplaza a Fogonazo como juego único en la misma dirección. El avance anterior no se conserva.
