@@ -21,9 +21,16 @@ La pantalla de inicio de la colección: un living de los 70 ilustrado donde algu
 | Carpeta | Qué hay |
 |---|---|
 | [`arte/`](arte/) | La imagen base vigente, en la resolución original. |
-| [`bocetos/`](bocetos/) | [S-05](bocetos/S-05-composicion-sala.jpg), la composición de la sala completa que se le pasó a la IA. Queda como guía para futuras ediciones de la imagen. |
+| [`bocetos/`](bocetos/) | Los bocetos de la sala y de lo común de la colección (ver abajo). |
 | [`prototipo/`](prototipo/) | La página, la imagen base para la web, una copia aclarada para el brillo de los objetos activos y las máscaras de cada objeto activo y de la ventana. |
 | [`maqueta-fogonazo/`](maqueta-fogonazo/instrumento.html) | La maqueta de Fogonazo, que se cuenta en [su documentación](../fogonazo/README.md#la-maqueta). Vive acá para que la sala la abra directamente. |
+
+### Bocetos
+
+| Boceto | Qué es | Estado |
+|---|---|---|
+| [S-05](bocetos/S-05-composicion-sala.jpg) | La composición de la sala completa que se le pasó a la IA | Vigente como guía para futuras ediciones de la imagen |
+| S-11 | El ícono y los ajustes de la colección, para la 0.1.0. a · el ícono, la ventana con lluvia y alguien de espaldas, en dos encuadres: [las opciones](bocetos/S-11a-iconos.jpg) y [en la pantalla de inicio](bocetos/S-11a-pantalla-de-inicio.jpg), con el nombre provisorio «Minijuegos». La figura está dibujada con código solo para fijar el encuadre; el dibujo final lo haría la IA. b · el panel del equipo de audio como ajustes de la colección (sonido, instalar y versión): [en Chrome, sin instalar](bocetos/S-11b-ajustes-en-chrome.jpg), [instalada, con una versión nueva](bocetos/S-11b-ajustes-version-nueva.jpg) y [los pasos para instalar](bocetos/S-11b-instalar-pasos.jpg). Se generan con [`herramientas/sala/boceto-s11.html`](../../herramientas/sala/boceto-s11.html) | En revisión |
 
 Las referencias de estilo de terceros (ilustraciones isométricas, fotos de livings de época, el recorte de revista) no se guardan en este repositorio, que es público.
 
