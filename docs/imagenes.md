@@ -20,7 +20,7 @@ Cómo se piden, se revisan y se montan las imágenes de la colección. Las regla
 
 - **Sobre fondo magenta**, parejo, sin sombras ni halos, para recortarlas. No verde croma, porque la bobina de Fogonazo es verde.
 - **En una grilla** (por ejemplo, de 4 × 2), en el orden de la lámina, con la misma luz y terminación entre sí.
-- **Se recortan con código:** `herramientas/sala/piezas.py` (piezas con patas, que acorta, y sombra suave) y `herramientas/sala/obstaculos.py` (objetos que ocupan la casilla entera o van debajo de una pieza), que exportan PNG de 256 × 256. Las que deben reemplazarse una por otra (los tres pads de Fogonazo) tienen que salir del mismo tamaño.
+- **Se recortan con código:** `herramientas/sala/piezas.py` (piezas con patas, que acorta, y sombra suave) y `herramientas/sala/obstaculos.py` (objetos que ocupan la casilla entera o van debajo de una pieza), que exportan PNG de 256 × 256 a `fogonazo/piezas/`. Las que deben reemplazarse una por otra (los tres pads de Fogonazo) tienen que salir del mismo tamaño.
 
 ## La entrega
 

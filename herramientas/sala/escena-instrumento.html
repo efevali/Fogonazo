@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <style>
-@font-face { font-family: Barlow; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-600-normal.woff2); }
-@font-face { font-family: Barlow; font-weight: 700; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-700-normal.woff2); }
-@font-face { font-family: Mono; src: url(../../docs/sala/maqueta-fogonazo/fuentes/share-tech-mono-latin-400-normal.woff2); }
-@font-face { font-family: Elite; src: url(../../docs/sala/maqueta-fogonazo/fuentes/special-elite-latin-400-normal.woff2); }
-@font-face { font-family: Caveat; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/caveat-latin-600-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 600; src: url(../../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2); }
+@font-face { font-family: Mono; src: url(../../comun/fuentes/ibm-plex-mono-latin-600-normal.woff2); }
+@font-face { font-family: Elite; src: url(../../comun/fuentes/special-elite-latin-400-normal.woff2); }
+@font-face { font-family: Caveat; font-weight: 600; src: url(../../comun/fuentes/caveat-latin-600-normal.woff2); }
 html, body { margin: 0; background: #000; }
 svg { display: block; }
 </style>
@@ -16,7 +16,7 @@ svg { display: block; }
 <svg id="s" width="915" height="412" viewBox="0 0 915 412" xmlns="http://www.w3.org/2000/svg"></svg>
 <script>
 const V = new URLSearchParams(location.search).get('v') || 'niveles';
-const W = 915, H = 412, P = '../../docs/sala/maqueta-fogonazo/piezas/';
+const W = 915, H = 412, P = '../../fogonazo/piezas/';
 let out = '';
 const add = s => out += s;
 const PH = '#9dffbf', PHD = '#3f8f5c';

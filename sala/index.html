@@ -3,12 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- Prototipo de la sala de la colección (trabajo en curso). Ver docs/sala/README.md. -->
-<title>Sala de los 70</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,500..900,100&family=Barlow+Semi+Condensed:wght@500;600&display=swap">
+<!-- La sala, la pantalla de inicio de la colección: un living de los 70 cuyos objetos activos llevan a los juegos.
+     Se muestra dentro de index.html. Ver docs/sala/README.md. Con ?zonas se ven las zonas táctiles. -->
+<title>La sala</title>
 <style>
-/* Layout: one full-bleed illustrated room (Gemini) with an SVG layer in image coordinates; three objects are doors: bench, coffee table, hi-fi. */
+@font-face { font-family: Fraunces; font-weight: 100 900; src: url(../comun/fuentes/fraunces-latin-soft-normal.woff2) format('woff2'); }
+@font-face { font-family: "Barlow Semi Condensed"; font-weight: 500; src: url(../comun/fuentes/barlow-semi-condensed-latin-500-normal.woff2) format('woff2'); }
+@font-face { font-family: "Barlow Semi Condensed"; font-weight: 600; src: url(../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: "Barlow Semi Condensed"; font-weight: 700; src: url(../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+/* Layout: one full-bleed illustrated room (Gemini) with an SVG layer in image coordinates; three active objects: bench, coffee table, hi-fi. */
 :root {
   --night: #120c0a;
   --walnut: #5a3520;
@@ -87,12 +90,6 @@ body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hid
 }
 
 /* ---------- chrome ---------- */
-.tools { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); right: calc(12px + env(safe-area-inset-right, 0px)); display: flex; gap: 8px; }
-.tool { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(243, 230, 208, .25); background: var(--chip); color: var(--chip-fg);
-  display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(4px); }
-.tool[aria-pressed="true"] { border-color: var(--dial); color: var(--dial); }
-.tool:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
-.tool svg { width: 20px; height: 20px; }
 .rotate { position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
   background: var(--chip); color: var(--chip-fg); padding: 8px 14px; border-radius: 999px; font-size: 15px; display: none; white-space: nowrap; }
 @media (orientation: portrait) { .rotate { display: block; } }
@@ -100,34 +97,48 @@ body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hid
 /* ---------- overlays ---------- */
 .sheet { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10, 6, 4, .5);
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px; }
+.sheet.under > * { visibility: hidden; }
 .btn { border-radius: 6px; padding: 8px 16px; font: 600 14px var(--label); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
 .btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
 /* sound: receiver faceplate */
-.plate { width: min(560px, 100%); display: grid; grid-template-columns: 16px 1fr 16px; border-radius: 10px; overflow: hidden;
+.plate { width: min(600px, 100%); display: grid; grid-template-columns: 16px 1fr 16px; border-radius: 10px; overflow: hidden;
   box-shadow: 0 18px 40px rgba(0, 0, 0, .55), 0 2px 0 rgba(255, 255, 255, .08) inset; }
 .cap { background: linear-gradient(90deg, var(--walnut-deep), var(--walnut) 45%, var(--walnut-deep)); }
 .face { background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .07) 0 1px, rgba(0, 0, 0, .03) 1px 2px), linear-gradient(180deg, var(--alu), var(--alu-shade));
-  color: var(--ink); padding: 18px 22px 16px; display: grid; gap: 12px; }
+  color: var(--ink); padding: 14px 22px 14px; display: grid; gap: 9px; }
 .head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.head h2 { margin: 0; font: 600 26px/1 var(--display); font-variation-settings: "SOFT" 100; }
-.head span { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
-.row { display: grid; grid-template-columns: 92px 1fr 44px; align-items: center; gap: 12px; }
+.head h2 { margin: 0; font: 600 25px/1 var(--display); font-variation-settings: "SOFT" 100; }
+.head span { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; opacity: .7; font-weight: 600; }
+.row { display: grid; grid-template-columns: 84px 1fr 26px; align-items: center; gap: 12px; }
 .row label { font-size: 14px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
-.row output { font-variant-numeric: tabular-nums; font-size: 15px; text-align: right; }
-input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 26px; background: transparent; cursor: pointer; }
+.row output { font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 600; text-align: right; }
+/* a tick for each step under the track, from 0 to 10 */
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 30px; cursor: pointer; margin: 0;
+  background: repeating-linear-gradient(90deg, #5a544c 0 1px, transparent 1px calc((100% - 22px) / 10)) 11px 24px / calc(100% - 21px) 4px no-repeat; }
 input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: #2a2622; box-shadow: 0 1px 0 rgba(255, 255, 255, .5); }
 input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: #2a2622; }
 input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -8px; border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #ffffff, #cfcbc2 45%, #8d887f); border: 1px solid #55504a; box-shadow: 0 2px 3px rgba(0, 0, 0, .4); }
 input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff, #cfcbc2 45%, #8d887f); border: 1px solid #55504a; }
 input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-.switch { display: flex; align-items: center; gap: 10px; background: #2a2622; color: #e9e2d6; border: 0; box-shadow: 0 2px 0 #11100e; }
-.switch:active { transform: translateY(1px); box-shadow: 0 1px 0 #11100e; }
-.lamp { width: 10px; height: 10px; border-radius: 50%; background: #4a3a26; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .6); }
-.switch[aria-pressed="true"] .lamp { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
-.foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.note { font-size: 13px; opacity: .75; max-width: 40ch; margin: 0; }
+.foot { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.rule { height: 0; border-top: 1px solid rgba(0, 0, 0, .28); border-bottom: 1px solid rgba(255, 255, 255, .55); margin: 2px 0 10px; }
+.inst { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; }
+.inst .ic { width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0, 0, 0, .4);
+  background: url(../iconos/icono-192.png) center / cover; }
+.inst b { display: block; font-size: 16px; font-weight: 700; }
+.inst small { display: block; font-size: 14px; font-weight: 500; opacity: .8; margin-top: 1px; }
+.btn.dark { display: flex; align-items: center; gap: 9px; background: #2a2622; color: #f3ead6; border: 0; box-shadow: 0 2px 0 #11100e; }
+.btn.dark:active { transform: translateY(1px); box-shadow: 0 1px 0 #11100e; }
+.btn.dark .lamp { width: 9px; height: 9px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+ol.steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+ol.steps li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; font-size: 16px; line-height: 1.3; font-weight: 500; }
+ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622; color: #f3ead6; display: grid; place-items: center; font-size: 14px; font-weight: 700; }
+.kebab { display: inline-block; width: 18px; height: 20px; border-radius: 4px; vertical-align: -4px; margin: 0 2px; box-sizing: border-box; padding: 1px 0;
+  background: #2a2622 radial-gradient(circle, #f3ead6 1.8px, transparent 2.2px) center / 18px 6px repeat-y; background-origin: content-box; }
+.hint { font-size: 14px; font-weight: 500; opacity: .8; margin: 0; }
+.face p.say { margin: 0; font-size: 16px; line-height: 1.35; font-weight: 500; }
 .ghost { background: none; border: 1px solid currentColor; color: inherit; }
 
 /* Fogonazo: lid of a 70s electronics kit box */
@@ -271,25 +282,17 @@ input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset:
     </g>
 
     <!-- tap zones -->
-    <path class="hit" id="hitBench" data-href="../maqueta-fogonazo/instrumento.html" data-hl="hlBench" role="button" tabindex="0" aria-label="Abrir Fogonazo"
+    <path class="hit" id="hitBench" data-href="fogonazo/instrumento.html" data-hl="hlBench" role="button" tabindex="0" aria-label="Abrir Fogonazo"
       d="M160,490H606V1072H160Z M238,905H362V1148H238Z"/>
     <path class="hit" id="hitTable" data-open="sheetTable" data-hl="hlTable" role="button" tabindex="0" aria-label="Abrir Mahjong"
       d="M834,960H1102V878H1262V988H1358V1234H834Z"/>
-    <path class="hit" id="hitAudio" data-open="sheetAudio" data-hl="hlAudio" role="button" tabindex="0" aria-label="Abrir ajustes de sonido"
+    <path class="hit" id="hitAudio" data-open="sheetAudio" data-hl="hlAudio" role="button" tabindex="0" aria-label="Abrir ajustes"
       d="M1495,652H2250V1052H1495Z"/>
     <text class="zone-label" x="383" y="470" text-anchor="middle">FOGONAZO</text>
     <text class="zone-label" x="1096" y="860" text-anchor="middle">MAHJONG</text>
-    <text class="zone-label" x="1872" y="630" text-anchor="middle">SONIDO</text>
+    <text class="zone-label" x="1872" y="630" text-anchor="middle">AJUSTES</text>
   </svg>
 
-  <div class="tools">
-    <button class="tool" id="zonesBtn" type="button" aria-pressed="false" title="Mostrar zonas táctiles" aria-label="Mostrar zonas táctiles">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2.4"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
-    </button>
-    <button class="tool" id="fsBtn" type="button" title="Pantalla completa" aria-label="Pantalla completa">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
-    </button>
-  </div>
   <div class="rotate">Girá el teléfono para verlo en horizontal</div>
 
   <!-- Mahjong -->
@@ -306,26 +309,44 @@ input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset:
     </div>
   </div>
 
-  <!-- Sound -->
+  <!-- Settings: sound and install (S-11) -->
   <div class="sheet" id="sheetAudio" hidden>
     <div class="plate" role="dialog" aria-modal="true" aria-labelledby="tAudio">
       <div class="cap"></div>
       <div class="face">
-        <div class="head"><h2 id="tAudio">Sonido</h2><span>Ajustes</span></div>
-        <div class="row"><label for="music">Música</label><input id="music" type="range" min="0" max="100" value="70"><output id="musicOut" for="music">70</output></div>
-        <div class="row"><label for="fx">Efectos</label><input id="fx" type="range" min="0" max="100" value="80"><output id="fxOut" for="fx">80</output></div>
-        <div class="row"><label for="rainVol">Lluvia</label><input id="rainVol" type="range" min="0" max="100" value="45"><output id="rainOut" for="rainVol">45</output></div>
-        <div class="foot">
-          <button class="btn switch" id="rainBtn" type="button" aria-pressed="false"><span class="lamp"></span>Lluvia de fondo</button>
-          <button class="btn ghost" type="button" data-close>Listo</button>
+        <div class="head"><h2 id="tAudio">Ajustes</h2><span>Minijuegos</span></div>
+        <div class="row"><label for="volMusica">Música</label><input id="volMusica" data-vol="musica" type="range" min="0" max="10" step="1"><output for="volMusica"></output></div>
+        <div class="row"><label for="volEfectos">Efectos</label><input id="volEfectos" data-vol="efectos" type="range" min="0" max="10" step="1"><output for="volEfectos"></output></div>
+        <div class="row"><label for="volLluvia">Lluvia</label><input id="volLluvia" data-vol="lluvia" type="range" min="0" max="10" step="1"><output for="volLluvia"></output></div>
+        <div id="instRow" hidden>
+          <div class="rule"></div>
+          <div class="inst">
+            <span class="ic" aria-hidden="true"></span>
+            <span><b>Instalá Minijuegos en tu teléfono</b><small>Queda entre tus apps y funciona sin conexión.</small></span>
+            <button class="btn dark" type="button" id="instBtn"><span class="lamp"></span>Instalar</button>
+          </div>
         </div>
-        <p class="note">Prototipo: la lluvia suena de verdad; música y efectos se conectan cuando se integre al juego.</p>
+        <div class="foot"><button class="btn ghost" type="button" data-close>Listo</button></div>
+      </div>
+      <div class="cap"></div>
+    </div>
+  </div>
+
+  <!-- How to install, when Chrome does not offer its own box -->
+  <div class="sheet" id="sheetSteps" hidden>
+    <div class="plate" role="dialog" aria-modal="true" aria-labelledby="tSteps">
+      <div class="cap"></div>
+      <div class="face">
+        <div class="head"><h2 id="tSteps">Instalar Minijuegos</h2><span>Ajustes</span></div>
+        <div id="stepsBody"></div>
+        <div class="foot"><button class="btn ghost" type="button" data-close>Entendido</button></div>
       </div>
       <div class="cap"></div>
     </div>
   </div>
 </div>
 
+<script src="../comun/pantalla.js"></script>
 <script>
 (function () {
   const NS = 'http://www.w3.org/2000/svg';
@@ -369,83 +390,80 @@ input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset:
   const fit = () => svg.setAttribute('preserveAspectRatio', mq.matches ? 'xMidYMid meet' : 'xMidYMid slice');
   fit(); mq.addEventListener ? mq.addEventListener('change', fit) : mq.addListener(fit);
 
-  // tools
-  const zonesBtn = document.getElementById('zonesBtn');
-  zonesBtn.addEventListener('click', () => { const on = svg.classList.toggle('zones'); zonesBtn.setAttribute('aria-pressed', String(on)); });
-  const fsBtn = document.getElementById('fsBtn');
-  if (!document.fullscreenEnabled) fsBtn.hidden = true;
-  fsBtn.addEventListener('click', async () => {
-    try {
-      if (document.fullscreenElement) { await document.exitFullscreen(); return; }
-      await document.documentElement.requestFullscreen();
-      try { await screen.orientation.lock('landscape'); } catch (e) {}
-    } catch (e) { fsBtn.hidden = true; }
-  });
+  // touch zones, to check them: sala/?zonas
+  if (new URLSearchParams(location.search).has('zonas')) svg.classList.add('zones');
 
-  // doors
+  // ---------- active objects ----------
   const flash = document.getElementById('flash');
   flash.addEventListener('animationend', () => flash.classList.remove('flash'));
+  const fx = n => App.sonido.fx(n);
+  const abiertos = [];          // open sheets, the last one on top; each one is a step that «atrás» undoes
   let lastHit = null;
-  const openSheet = (hit) => {
-    const hl = document.getElementById(hit.dataset.hl), sheet = document.getElementById(hit.dataset.open), href = hit.dataset.href;
+  function show(id) {
+    const sheet = document.getElementById(id);
+    if (id === 'sheetAudio') pintarAjustes();
+    // a sheet opened over another one (the install steps over the settings) hides the one below
+    if (abiertos.length) abiertos[abiertos.length - 1].classList.add('under');
+    sheet.hidden = false; abiertos.push(sheet);
+    App.abrir();
+    const f = sheet.querySelector('input, button'); if (f) f.focus({ preventScroll: true });
+  }
+  function hide() {
+    const sheet = abiertos.pop(); if (!sheet) return;
+    sheet.hidden = true;
+    if (abiertos.length) abiertos[abiertos.length - 1].classList.remove('under');
+    if (!abiertos.length && lastHit) lastHit.focus({ preventScroll: true });
+  }
+  window.Pantalla.atras = hide;
+  const activate = (hit) => {
+    const hl = document.getElementById(hit.dataset.hl), href = hit.dataset.href;
     flash.setAttribute('mask', hl.getAttribute('mask'));
     flash.classList.remove('flash'); void flash.getBoundingClientRect(); flash.classList.add('flash');
-    lastHit = hit;
+    lastHit = hit; fx('click');
     // an object that leads to a game goes there once the flash has shown
-    if (href) { setTimeout(() => { location.href = href; }, 260); return; }
-    setTimeout(() => { sheet.hidden = false; const f = sheet.querySelector('input, button'); if (f) f.focus({ preventScroll: true }); }, 260);
+    if (href) { setTimeout(() => App.ir(href), 260); return; }
+    setTimeout(() => show(hit.dataset.open), 260);
   };
   document.querySelectorAll('.hit').forEach(hit => {
-    hit.addEventListener('click', () => openSheet(hit));
-    hit.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSheet(hit); } });
+    hit.addEventListener('click', () => { if (!abiertos.length) activate(hit); });
+    hit.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (!abiertos.length) activate(hit); } });
   });
-  const closeAll = () => { document.querySelectorAll('.sheet').forEach(s => s.hidden = true); if (lastHit) lastHit.focus({ preventScroll: true }); };
-  document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeAll));
-  document.querySelectorAll('.sheet').forEach(s => s.addEventListener('click', (e) => { if (e.target === s) closeAll(); }));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
+  // closing a sheet goes through the history, like the phone's «atrás»
+  const close = () => { if (abiertos.length) { fx('click'); App.volver(); } };
+  document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', close));
+  document.querySelectorAll('.sheet').forEach(s => s.addEventListener('click', (e) => { if (e.target === s) close(); }));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 
-  for (const [id, out] of [['music', 'musicOut'], ['fx', 'fxOut'], ['rainVol', 'rainOut']]) {
-    const i = document.getElementById(id), o = document.getElementById(out);
-    i.addEventListener('input', () => { o.value = i.value; if (id === 'rainVol') setRain(); });
+  // ---------- settings: the collection's volumes, 0 to 10 ----------
+  const vols = [...document.querySelectorAll('input[data-vol]')];
+  function pintarAjustes() {
+    for (const i of vols) { i.value = App.sonido.volumen(i.dataset.vol); i.nextElementSibling.value = i.value; }
+    document.getElementById('instRow').hidden = !App.instalacion.disponible;
   }
+  for (const i of vols) i.addEventListener('input', () => {
+    i.nextElementSibling.value = i.value;
+    App.sonido.setVolumen(i.dataset.vol, +i.value);
+    if (i.dataset.vol === 'efectos') fx('click');
+  });
 
-  // rain sound: filtered pink noise with a slow swell
-  let ctx = null, gain = null, playing = false;
-  const rainBtn = document.getElementById('rainBtn');
-  function build() {
-    ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const len = ctx.sampleRate * 4, buf = ctx.createBuffer(2, len, ctx.sampleRate);
-    for (let c = 0; c < 2; c++) {
-      const dd = buf.getChannelData(c); let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-      for (let i = 0; i < len; i++) {
-        const w = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759; b2 = 0.96900 * b2 + w * 0.1538520;
-        b3 = 0.86650 * b3 + w * 0.3104856; b4 = 0.55000 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.0168980;
-        dd[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11; b6 = w * 0.115926;
-        if (Math.random() < 0.0009) dd[i] += rnd(-0.5, 0.5);
-      }
-    }
-    const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
-    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 260;
-    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600;
-    const swell = ctx.createGain(); swell.gain.value = 0.85;
-    const lfo = ctx.createOscillator(); lfo.frequency.value = 0.07;
-    const lfoAmt = ctx.createGain(); lfoAmt.gain.value = 0.15; lfo.connect(lfoAmt).connect(swell.gain);
-    gain = ctx.createGain(); gain.gain.value = 0;
-    src.connect(hp).connect(lp).connect(swell).connect(gain).connect(ctx.destination);
-    src.start(); lfo.start();
+  // ---------- install ----------
+  const K = '<span class="kebab" role="img" aria-label="el menú de tres puntos"></span>';
+  function pasos() {
+    const I = App.instalacion;
+    document.getElementById('stepsBody').innerHTML = I.samsung
+      ? '<p class="say">Desde este navegador, Android bloquea la instalación. Abrí Minijuegos en Chrome e instalalo desde ahí: es un toque.</p>'
+      : I.ios
+        ? '<ol class="steps"><li><span class="n">1</span><span>Tocá <b>Compartir</b>, en la barra de Safari.</span></li>' +
+          '<li><span class="n">2</span><span>Bajá y elegí <b>«Agregar a inicio»</b>.</span></li></ol>'
+        : `<ol class="steps"><li><span class="n">1</span><span>Tocá ${K} arriba a la derecha de Chrome.</span></li>` +
+          '<li><span class="n">2</span><span>Elegí <b>«Instalar app»</b>. Si dice «Agregar a la pantalla principal», tocá esa y después <b>«Instalar»</b>.</span></li></ol>' +
+          `<p class="hint">Si abriste el enlace desde otra app, como WhatsApp o Gmail, primero tocá ${K} y <b>«Abrir en Chrome»</b>.</p>`;
+    show('sheetSteps');
   }
-  function setRain() {
-    if (!ctx) return;
-    const v = playing ? document.getElementById('rainVol').value / 100 * 0.6 : 0;
-    gain.gain.setTargetAtTime(v, ctx.currentTime, 0.25);
-  }
-  rainBtn.addEventListener('click', async () => {
-    try {
-      if (!ctx) build();
-      if (ctx.state === 'suspended') await ctx.resume();
-      playing = !playing; rainBtn.setAttribute('aria-pressed', String(playing)); setRain();
-    } catch (e) { rainBtn.disabled = true; }
+  document.getElementById('instBtn').addEventListener('click', async () => {
+    fx('click');
+    if (App.instalacion.cuadro && !App.instalacion.samsung) { await App.instalacion.abrir(); pintarAjustes(); return; }
+    pasos();
   });
 })();
 </script>

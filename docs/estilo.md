@@ -16,7 +16,8 @@ Las reglas vigentes de cómo se ve y cómo suena la colección. Por qué se deci
 - **De izquierda a derecha:** el banco de electrónica de aficionado (osciloscopio, protoboard con LEDs, soldador, cajonera, lámpara articulada verde, tablero perforado, estante con manuales y una radio, banqueta); la ventana con lluvia y la ciudad, cortinas ocre, el sillón de corderoy color óxido con almohadones y una manta, la lámpara de arco sobre la mesa ratona de nogal con un mahjong en juego (estuche abierto, muro de fichas, fichas en mano, tetera y tazas) y la alfombra peluda; el equipo de audio (bafles, aparador con receiver, grabador de cinta, casetera y discos), el cuadro del arcoíris con su lámpara, la costilla de Adán, la lámpara de lava, la biblioteca con la lámpara hongo, y adelante, un puf de cuero.
 - **Objetos activos:** el banco, la mesa ratona y el equipo de audio. Sin carteles, círculos ni punteados: cada uno brilla apenas, de a uno por turno, cada unos 5 segundos. Al tocarlo, un destello en una capa propia, que no interrumpe el ciclo.
 - **Ambiente animado:** la lluvia afuera y las gotas que bajan por el vidrio (por detrás de la lámpara de arco), la traza del osciloscopio, los LEDs del banco, el vapor de la tetera, la cera de la lámpara de lava, el disco que gira, los vúmetros y las lámparas, que respiran apenas.
-- **Ajustes de sonido:** un panel con aspecto de frente de receiver.
+- **Los ajustes de la colección** (S-11): un panel con aspecto de frente de receiver, con tapas de nogal y frente de aluminio cepillado. Título en Fraunces; rótulos y textos en Barlow Semi Condensed. Música, efectos y lluvia con deslizadores de 0 a 10 con una marca por paso; en Chrome sin instalar, la fila «Instalar» con el ícono y un botón oscuro con una lámpara ámbar.
+- **El paso de la sala a un juego:** un fundido corto a negro, provisorio.
 
 ## Fogonazo
 
@@ -47,7 +48,7 @@ Por ahora conserva la estética de Kasa; si se acerca a la de la sala está por 
 
 ## Sonido
 
-Todo se sintetiza en el navegador, sin archivos de audio, con el motor de `codigo/audio.js`. Los volúmenes son los mismos para toda la colección (ver [la colección](coleccion.md#sonido)).
+Todo se sintetiza en el navegador, sin archivos de audio, con `comun/sonido.js`. Los volúmenes son los mismos para toda la colección (ver [la colección](coleccion.md#sonido)).
 
 - **La sala:** la lluvia, un ruido rosa filtrado que crece y baja despacio.
 - **Fogonazo:** el sonido de siempre, el mismo del juego publicado. Cuatro temas: **Placa**, el original, en los niveles por movimientos (la menor, Am F C G, 104 ppm); **Taller**, fuera de la partida (do mayor, C G Am F, arpegio a corcheas, 92 ppm); **Urgente**, en el contrarreloj (la menor con final en mi mayor, Am F Dm E, 144 ppm), y **Siesta**, en el zen (fa mayor, Fmaj7 Em7 Dm7 C, 104 ppm). Bajo cuadrado, arpegio triangular, hi-hats de ruido y una melodía cuadrada que entra cada dos vueltas en Placa y Taller. Siesta usa instrumentos suaves (bajo triangular, arpegio de pulso fino y melodía de pulso al 25 %) y va unos 2 dB por debajo de Placa. La música baja al terminar un nivel para que se escuche la fanfarria.

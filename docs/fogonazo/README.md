@@ -12,9 +12,9 @@ Lo que vale para todo el juego:
 
 ## Estado
 
-- **Maqueta navegable** (ver abajo): pantalla-instrumento, mapa y partida, con las imágenes vigentes y una lógica mínima propia. Producto la probó: «se ve genial».
-- **Arte vigente**, en [`arte/`](arte/): las siete piezas ([P-003](arte/P-003_piezas-fogonazo.jpg)), la escena de la pantalla-instrumento ([P-004](arte/P-004_escena-instrumento.png), de 1679 × 937; el teléfono la estira un 43 %, aceptable por el estilo pintado) y los especiales y obstáculos ([P-005](arte/P-005_especiales-obstaculos.jpg)). Los recortes listos para usar están en la maqueta, en `piezas/`.
-- **El código publicado** (`codigo/`, versión 0.6.1) es el del juego anterior, en vertical y con placa de 8 × 10. De ahí se conservan el motor, los niveles, la calibración y el sonido; los pasos que siguen están en [la colección](../coleccion.md#lo-que-sigue).
+- **En la app desde la 0.1.0, como maqueta navegable** (ver abajo): pantalla-instrumento, mapa y partida, con las imágenes vigentes, su música y sus efectos, y una lógica mínima propia. Producto la probó: «se ve genial».
+- **Arte vigente**, en [`arte/`](arte/): las siete piezas ([P-003](arte/P-003_piezas-fogonazo.jpg)), la escena de la pantalla-instrumento ([P-004](arte/P-004_escena-instrumento.png), de 1679 × 937; el teléfono la estira un 43 %, aceptable por el estilo pintado) y los especiales y obstáculos ([P-005](arte/P-005_especiales-obstaculos.jpg)). Los recortes listos para usar están en [`fogonazo/piezas/`](../../fogonazo/piezas/), en la app.
+- **El motor** (`codigo/`) es todavía el del juego anterior, con placa de 8 × 10 y los 30 niveles con sus nombres; la maqueta no lo usa. Los pasos que siguen están en [la colección](../coleccion.md#lo-que-sigue).
 
 ## Recorrido
 
@@ -129,13 +129,14 @@ Una placa libre, sin obstáculos, con los seis primeros componentes y todos los 
 
 ## La maqueta
 
-Un recorrido navegable para probar en el teléfono la estructura y las imágenes vigentes. No es el juego: tiene una lógica mínima propia, separada de `codigo/engine.js`. Vive en [`docs/sala/maqueta-fogonazo/`](../sala/maqueta-fogonazo/) y se entra desde la sala, por el banco, o directo en https://efevali.github.io/fogonazo/docs/sala/maqueta-fogonazo/instrumento.html.
+Un recorrido navegable para probar en el teléfono la estructura y las imágenes vigentes, hasta que esté la partida real. No es el juego: tiene una lógica mínima propia, separada de `codigo/engine.js`. Vive en [`fogonazo/`](../../fogonazo/), en la app, y se entra desde la sala por el banco.
 
-- **Pantalla-instrumento** (`instrumento.html`), sobre la escena del P-004: las perillas Modo y Dificultad, el mapa al tocar la pantalla en Niveles, los récords con el aviso de Chrome, el sonido (perillas que se giran arrastrando y diez LEDs que siguen al dedo) y el manual. El zen todavía no está, y la música no suena.
+- **Pantalla-instrumento** (`instrumento.html`), sobre la escena del P-004: las perillas Modo y Dificultad, el mapa al tocar la pantalla en Niveles, los récords con el aviso de Chrome, el sonido (perillas que se giran arrastrando y diez LEDs que siguen al dedo, con los volúmenes de toda la colección) y el manual. El zen todavía no está.
 - **Mapa** (`mapa.html`): la señal sobre hoja milimetrada, que se arrastra de costado.
-- **Partida** (`index.html`), con la distribución de S-08c: placa de 10 × 8, intercambio deslizando o tocando, líneas de tres o más, cascadas, pedido, estrellas y bonus por movimientos que sobran; al ganar, «Siguiente nivel». Sin especiales, obstáculos, nota ni música.
+- **Partida** (`partida.html`), con la distribución de S-08c: placa de 10 × 8, intercambio deslizando o tocando, líneas de tres o más, cascadas, pedido, estrellas y bonus por movimientos que sobran; al ganar, «Siguiente nivel». Pausa con «Seguir», «Empezar de nuevo» y «Volver al mapa». Sin especiales, obstáculos ni nota.
+- **Sonido:** Taller suena en el instrumento y el mapa, Placa en la partida; los efectos son los de siempre (intercambio, línea que sube con la cascada, jugada inválida, ganar y perder).
 - **Niveles de prueba:** cada número da una variación del mismo nivel (dos o tres pedidos de 8 a 15 piezas, de 19 a 26 movimientos), ajustada por la dificultad como en el juego.
-- **Guardado:** la dificultad, los volúmenes y las estrellas por nivel y dificultad, en Chrome (`comun.js`).
+- **Guardado:** la dificultad y las estrellas por nivel y dificultad, en Chrome (`estado.js`).
 - **Cómo está hecha:** cada pantalla dibuja encima de su imagen lo que cambia. El fondo de la partida sale de `herramientas/sala/escena-banco.html` con `?v=a2&bg=1`, capturado a 915 × 412 con densidad 2,625; las piezas, de la imagen del P-003 con `herramientas/sala/piezas.py`; los especiales y obstáculos, de la del P-005 con `herramientas/sala/obstaculos.py`; la pantalla-instrumento usa la imagen del P-004 tal cual, con las medidas de la pantalla, las perillas y los LEDs tomadas sobre ella.
 - **Detalle por revisar:** los rótulos «MOVIMIENTOS» y «PUNTOS» de la partida, pintados en el fondo, son legibles pero justos.
 

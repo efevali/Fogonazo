@@ -8,12 +8,12 @@
 <style>
 /* Fogonazo's own screen (P-004, ChatGPT) with the game's layer on top, in the image's coordinates (1679 × 937).
    The viewBox keeps the central 20:9 band and slices to fill the screen. */
-@font-face { font-family: Barlow; font-weight: 600; src: url(fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
-@font-face { font-family: Barlow; font-weight: 700; src: url(fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
-@font-face { font-family: Plex; font-weight: 600; src: url(fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); }
-@font-face { font-family: Serif; font-weight: 400; src: url(fuentes/pt-serif-latin-400-normal.woff2) format('woff2'); }
-@font-face { font-family: Serif; font-weight: 400; font-style: italic; src: url(fuentes/pt-serif-latin-400-italic.woff2) format('woff2'); }
-@font-face { font-family: Serif; font-weight: 700; src: url(fuentes/pt-serif-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 600; src: url(../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Plex; font-weight: 600; src: url(../comun/fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Serif; font-weight: 400; src: url(../comun/fuentes/pt-serif-latin-400-normal.woff2) format('woff2'); }
+@font-face { font-family: Serif; font-weight: 400; font-style: italic; src: url(../comun/fuentes/pt-serif-latin-400-italic.woff2) format('woff2'); }
+@font-face { font-family: Serif; font-weight: 700; src: url(../comun/fuentes/pt-serif-latin-700-normal.woff2) format('woff2'); }
 :root { --amber: #ffb648; --ph: #9dffbf; }
 html, body { margin: 0; height: 100%; background: #2a1708; overflow: hidden; }
 body { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
@@ -103,7 +103,6 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     <g id="done" class="lbl" transform="translate(1210 678)" tabindex="0" role="button" aria-label="Listo">
       <rect width="140" height="54" rx="5" fill="#2a2622"/><text x="70" y="36" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="24" letter-spacing="3" fill="#f1ebe0">LISTO</text>
     </g>
-    <text x="340" y="716" font-family="Barlow" font-weight="600" font-size="22" fill="#fff3dc" opacity=".85">Maqueta: la música todavía no suena; los efectos, sí.</text>
   </g>
 
   <!-- manual sheet: a magazine page taped to the wall -->
@@ -144,11 +143,13 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 </svg>
 <div id="rotate">Girá el teléfono para jugar en horizontal</div>
 
-<script src="comun.js"></script>
+<script src="../comun/pantalla.js"></script>
+<script src="estado.js"></script>
 <script>
 (() => {
   'use strict';
   const M = window.Maqueta, NS = 'http://www.w3.org/2000/svg', $ = id => document.getElementById(id);
+  const VOL = k => App.sonido.volumen(k);
   const S = { x: 718, y: 307, w: 492, h: 346 };
   const star = (cx, cy, r, ri = r * .45) => { let p = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? ri : r; p += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1); } return p + 'Z'; };
   const T = (x, y, txt, size, extra = '') => `<text x="${x}" y="${y}" font-size="${size}" ${extra}>${txt}</text>`;
@@ -234,7 +235,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   const LEDC = i => i < 6 ? '#7dff6a' : i < 8 ? '#ffe45a' : '#ff4a36';
   function drawBoardLeds() {
     let s = '';
-    for (const k in ROWS) ROWS[k].forEach(([x, y], i) => { if (i < M.vol[k]) s += `<circle cx="${x}" cy="${y}" r="13" fill="${LEDC(i)}" opacity=".75" filter="url(#ledg)" style="mix-blend-mode:screen"/><circle cx="${x}" cy="${y - 2}" r="4" fill="#fff" opacity=".55"/>`; });
+    for (const k in ROWS) ROWS[k].forEach(([x, y], i) => { if (i < VOL(k)) s += `<circle cx="${x}" cy="${y}" r="13" fill="${LEDC(i)}" opacity=".75" filter="url(#ledg)" style="mix-blend-mode:screen"/><circle cx="${x}" cy="${y - 2}" r="4" fill="#fff" opacity=".55"/>`; });
     $('boardLeds').innerHTML = s;
   }
 
@@ -243,7 +244,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   function drawChannels() {
     let s = '';
     CH.forEach(([k, lab, y]) => {
-      const v = M.vol[k], px = 430, deg = -135 + 27 * v;
+      const v = VOL(k), px = 430, deg = -135 + 27 * v;
       s += `<text x="${px}" y="${y - 72}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="24" letter-spacing="3" fill="#fff3dc">${lab}</text>`;
       s += `<g class="lbl pot" data-ch="${k}" role="slider" tabindex="0" aria-label="${lab}" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${v}">
         <circle cx="${px}" cy="${y}" r="58" fill="#000" opacity=".3" transform="translate(0 6)"/><circle cx="${px}" cy="${y}" r="56" fill="url(#knob)"/>`;
@@ -262,35 +263,29 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     });
     $('channels').innerHTML = s;
   }
-  function setVol(k, v) { M.setVol(k, Math.max(0, Math.min(10, v))); drawChannels(); drawBoardLeds(); if (k === 'efectos') click(); }
+  function setVol(k, v) { App.sonido.setVolumen(k, Math.max(0, Math.min(10, v))); drawChannels(); drawBoardLeds(); if (k === 'efectos') click(); }
 
   // ---------- sound effect for the controls ----------
-  let actx = null;
-  function click() {
-    const v = M.vol.efectos; if (!v) return;
-    try {
-      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-      if (actx.state === 'suspended') actx.resume();
-      const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
-      o.type = 'square'; o.frequency.value = 1400; g.gain.setValueAtTime(.05 * v / 8, t); g.gain.exponentialRampToValueAtTime(.0005, t + .03);
-      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + .04);
-    } catch (e) {}
-  }
+  const click = () => App.sonido.fx('click');
   const toast = msg => { const t = $('toast'); t.textContent = msg; t.style.opacity = 1; clearTimeout(toast.t); toast.t = setTimeout(() => t.style.opacity = 0, 1800); };
 
   // ---------- input ----------
+  // a sheet is a step that «atrás» undoes: opening it adds one, closing it goes back
   const open = id => { document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open')); if (id) $(id).classList.add('open'); };
   const isOpen = () => !!document.querySelector('.sheet.open');
+  const show = id => { if (isOpen()) return; open(id); App.abrir(); };
+  const close = () => { if (isOpen()) App.volver(); };
+  window.Pantalla.atras = () => open(null);
   function activate(el) {
     if (!el) return;
     if (el.dataset.knob) return setKnob(el.dataset.knob, el.dataset.i);
-    if (el.dataset.ch && el.dataset.v) { const k = el.dataset.ch, v = +el.dataset.v; return setVol(k, M.vol[k] === v && v === 1 ? 0 : v); }
+    if (el.dataset.ch && el.dataset.v) { const k = el.dataset.ch, v = +el.dataset.v; return setVol(k, VOL(k) === v && v === 1 ? 0 : v); }
     switch (el.id) {
-      case 'hitScreen': if (mode === 0) location.href = 'mapa.html'; else if (mode === 1) toast('El zen todavía no está en la maqueta'); break;
-      case 'hitSound': click(); open('sound'); drawChannels(); break;
-      case 'hitManual': click(); open('manual'); break;
-      case 'done': case 'closeManual': click(); open(null); break;
-      case 'back': location.href = '../prototipo/'; break;
+      case 'hitScreen': if (mode === 0) { click(); App.ir('fogonazo/mapa.html'); } else if (mode === 1) toast('El zen todavía no está en la maqueta'); break;
+      case 'hitSound': click(); drawChannels(); show('sound'); break;
+      case 'hitManual': click(); show('manual'); break;
+      case 'done': case 'closeManual': click(); close(); break;
+      case 'back': click(); App.volver(1 + App.extra); break;
     }
   }
   const svg = $('scene');
@@ -302,19 +297,19 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   let ledDrag = null, skipClick = false;
   svg.addEventListener('pointerdown', e => {
     const pot = e.target.closest('.pot');
-    if (pot) { drag = { k: pot.dataset.ch, y: e.clientY, x: e.clientX, v: M.vol[pot.dataset.ch], moved: false }; svg.setPointerCapture(e.pointerId); return; }
+    if (pot) { drag = { k: pot.dataset.ch, y: e.clientY, x: e.clientX, v: VOL(pot.dataset.ch), moved: false }; svg.setPointerCapture(e.pointerId); return; }
     const row = e.target.closest('[data-row], [data-v]');
     if (row && row.closest('#sound')) {
       const k = row.dataset.row || row.dataset.ch, v = ledAt(toSvgX(e));
       ledDrag = { k }; skipClick = true; svg.setPointerCapture(e.pointerId);
-      setVol(k, v === 1 && M.vol[k] === 1 ? 0 : v);   // tapping the first LED again turns it off
+      setVol(k, v === 1 && VOL(k) === 1 ? 0 : v);   // tapping the first LED again turns it off
     }
   });
   svg.addEventListener('pointermove', e => {
-    if (ledDrag) { const v = ledAt(toSvgX(e)); if (v !== M.vol[ledDrag.k]) setVol(ledDrag.k, v); return; }
+    if (ledDrag) { const v = ledAt(toSvgX(e)); if (v !== VOL(ledDrag.k)) setVol(ledDrag.k, v); return; }
     if (!drag) return;
     const d = (drag.y - e.clientY + e.clientX - drag.x) / 18;
-    if (Math.abs(d) >= 1) { drag.moved = true; const v = Math.max(0, Math.min(10, Math.round(drag.v + d))); if (v !== M.vol[drag.k]) setVol(drag.k, v); }
+    if (Math.abs(d) >= 1) { drag.moved = true; const v = Math.max(0, Math.min(10, Math.round(drag.v + d))); if (v !== VOL(drag.k)) setVol(drag.k, v); }
   });
   const endDrag = () => { drag = null; ledDrag = null; };
   svg.addEventListener('pointerup', endDrag);
@@ -328,10 +323,10 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   });
   svg.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(document.activeElement); }
-    if (e.key === 'Escape') open(null);
+    if (e.key === 'Escape') close();
   });
   // the sheet's dark backdrop closes it
-  document.querySelectorAll('.sheet > rect:first-child').forEach(r => r.addEventListener('click', () => open(null)));
+  document.querySelectorAll('.sheet > rect:first-child').forEach(r => r.addEventListener('click', close));
 
   drawKnobs(); drawScreen(); drawBoardLeds();
   window.__inst = { setKnob, setVol, open, M };

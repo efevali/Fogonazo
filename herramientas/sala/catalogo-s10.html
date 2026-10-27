@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <!-- Sketch S-10, close-up sheet: each special and obstacle on a protoboard cell, about 3.5 times the game size. -->
 <style>
-@font-face { font-family: Barlow; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-600-normal.woff2); }
-@font-face { font-family: Barlow; font-weight: 700; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-700-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 600; src: url(../../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2); }
 html, body { margin: 0; background: #2b1a0e; }
 svg { display: block; }
 </style>
@@ -14,7 +14,7 @@ svg { display: block; }
 <svg id="s" width="1400" height="1000" viewBox="0 0 1400 1000" xmlns="http://www.w3.org/2000/svg"></svg>
 <script src="arte-s10.js"></script>
 <script>
-const BASE = '../../docs/sala/maqueta-fogonazo/', T = 158, K = T / 45;
+const BASE = '../../fogonazo/', T = 158, K = T / 45;
 // a protoboard cell from the match background, as the tile's backdrop
 const cellBg = (x, y, r, c, dy = 0) => `<svg x="${x}" y="${y}" width="${T}" height="${T}" viewBox="0 0 ${T} ${T}"><image href="${BASE}fondo.webp" x="${-(232.5 + c * 45) * K}" y="${-(26 + r * 45 + dy) * K}" width="${915 * K}" height="${412 * K}"/></svg>`;
 const ITEMS = [

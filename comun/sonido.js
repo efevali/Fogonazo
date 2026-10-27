@@ -1,11 +1,19 @@
-/* Fogonazo — sonido sintetizado con WebAudio.
-   8 bits: canales tipo NES (pulso, triangular, ruido).
-   16 bits: síntesis FM tipo Genesis (bajo slap, bronces, campanas, batería) con eco. */
+/* El sonido de la colección, sintetizado con WebAudio: sin archivos de audio.
+   - Voces básicas (pulso, triangular, ruido y FM de dos operadores), con las que se arman los efectos y la música.
+   - Los efectos y los cuatro temas de Fogonazo (Placa, Taller, Urgente y Siesta), su sonido de siempre.
+   - La lluvia de la sala: ruido rosa filtrado que crece y baja despacio.
+   - Un solo juego de volúmenes para toda la colección (música, efectos y lluvia, de 0 a 10), guardado en Chrome.
+   Vive en la página contenedora (index.html), así que no se corta al pasar de una pantalla a otra. */
 const Sound = (() => {
-  let ctx = null, master, sfxBus, musicBus, noiseBuf, gritSfx, gritMusic, curDest = null;
+  let ctx = null, master, sfxBus, musicBus, rainBus, noiseBuf;
+  // volúmenes de 0 a 10; con los de entrada, los efectos y la música suenan como en el Fogonazo publicado (70 y 35 %)
+  const CLAVE = 'coleccion.sonido';
+  const vol = { musica: 7, efectos: 8, lluvia: 5 };
+  try { const v = JSON.parse(localStorage.getItem(CLAVE)); if (v) for (const k in vol) if (Number.isFinite(v[k])) vol[k] = Math.max(0, Math.min(10, Math.round(v[k]))); } catch (e) {}
   const set = { sfx: 0.7, music: 0.35, mute: false };
+  const fromVol = () => { set.sfx = vol.efectos / 10 * 0.875; set.music = vol.musica / 10 * 0.5; };
+  fromVol();
   const last = {};
-  const style = () => (typeof ART !== 'undefined' && ART.style === '16' ? '16' : '8');
   const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
   const NOTE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
   const N = s => { const m = /^([A-G])([#b]?)(-?\d)$/.exec(s); return 12 * (+m[3] + 1) + NOTE[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0); };
@@ -17,12 +25,11 @@ const Sound = (() => {
     master = ctx.createGain(); master.gain.value = 1.035;   // 0.3.0: +15 % (antes 0.9)
     const comp = ctx.createDynamicsCompressor();
     comp.threshold.value = -14; comp.ratio.value = 4;
-    sfxBus = ctx.createGain(); musicBus = ctx.createGain();
-    sfxBus.connect(master); musicBus.connect(master); master.connect(comp); comp.connect(ctx.destination);
+    sfxBus = ctx.createGain(); musicBus = ctx.createGain(); rainBus = ctx.createGain(); rainBus.gain.value = 0;
+    sfxBus.connect(master); musicBus.connect(master); master.connect(comp); comp.connect(ctx.destination); rainBus.connect(ctx.destination);
     noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
     const d = noiseBuf.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    gritSfx = grit(sfxBus, 1.3, 0.3); gritMusic = grit(musicBus);
     pulseWaves = {};
     for (const duty of [0.125, 0.25, 0.5]) {
       const n = 48, re = new Float32Array(n), im = new Float32Array(n);
@@ -38,19 +45,7 @@ const Sound = (() => {
     sfxBus.gain.setTargetAtTime(set.sfx * m, ctx.currentTime, 0.02);
     musicBus.gain.setTargetAtTime(set.music * 0.6 * m * (Music.ducked ? 0.3 : 1), ctx.currentTime, 0.05);
     if (set.music * m > 0) Music.resume(); else Music.halt();
-  }
-  function configure(s) { Object.assign(set, s); apply(); }
-  // 16 bits: saturación suave + profundidad reducida + paso bajo, como el DAC de la Genesis
-  function grit(dest, preG, postG) {
-    const pre = ctx.createGain(); pre.gain.value = preG || 2.2;
-    const sh = ctx.createWaveShaper(), n = 2048, c = new Float32Array(n), L = 36, d = 1.7;
-    for (let i = 0; i < n; i++) { const x = i / (n - 1) * 2 - 1; const y = Math.tanh(d * x) / Math.tanh(d); c[i] = Math.round(y * L) / L; }
-    sh.curve = c; sh.oversample = 'none';
-    const post = ctx.createGain(); post.gain.value = postG || 0.55;
-    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 9000; lp.Q.value = 0.4;
-    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 45;
-    pre.connect(sh); sh.connect(post); post.connect(lp); lp.connect(hp); hp.connect(dest);
-    return pre;
+    Rain.apply();
   }
   function throttle(name, ms) {
     const now = performance.now();
@@ -86,7 +81,7 @@ const Sound = (() => {
     const v = o.vol || 0.15;
     if (o.hold) env(g, t, o.attack || 0.004, v, o.dec || 0, o.sus || 1, t + o.dur, o.rel || 0.04);
     else { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + (o.attack || 0.004)); g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur); }
-    osc.connect(g); g.connect(out(o.dest || curDest || sfxBus, o.pan));
+    osc.connect(g); g.connect(out(o.dest || sfxBus, o.pan));
     osc.start(t); osc.stop(t + o.dur + (o.rel || 0.04) + 0.05);
   }
   function noise(o) {
@@ -100,7 +95,7 @@ const Sound = (() => {
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(o.vol || 0.15, t + (o.attack || 0.003));
     g.gain.exponentialRampToValueAtTime(0.0001, t + o.dur);
-    src.connect(f); f.connect(g); g.connect(out(o.dest || curDest || sfxBus, o.pan));
+    src.connect(f); f.connect(g); g.connect(out(o.dest || sfxBus, o.pan));
     src.start(t, Math.random() * 0.5); src.stop(t + o.dur + 0.03);
   }
   // FM de 2 operadores: modulador → frecuencia del portador. index = desvío / frecuencia del modulador.
@@ -121,7 +116,7 @@ const Sound = (() => {
     if (o.vib) { const l = ctx.createOscillator(), lg = ctx.createGain(); l.frequency.value = 5.2; lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.01, t + Math.min(0.3, o.dur * 0.6)); l.connect(lg); lg.connect(car.frequency); l.start(t); l.stop(t + o.dur + 0.2); }
     const rel = o.rel || 0.08;
     env(g, t, o.attack || 0.004, o.vol || 0.12, o.dec || 0, o.sus === undefined ? 1 : o.sus, t + o.dur, rel);
-    car.connect(g); g.connect(out(o.dest || curDest || sfxBus, o.pan));
+    car.connect(g); g.connect(out(o.dest || sfxBus, o.pan));
     if (o.send) g.connect(o.send);
     car.start(t); mod.start(t); car.stop(t + o.dur + rel + 0.05); mod.stop(t + o.dur + rel + 0.05);
   }
@@ -156,105 +151,18 @@ const Sound = (() => {
     bonus(i) { tone({ f: 660 * Math.pow(1.06, i || 0), dur: 0.06, vol: 0.05, duty: 0.125 }); },
     goal() { tone({ f: 1318.5, dur: 0.08, vol: 0.06, duty: 0.25 }); tone({ f: 1760, t: 0.08, dur: 0.12, vol: 0.06, duty: 0.25 }); },
   };
-  // Alternativas para el sonido de línea: cortas, sin cola de campana. c = nivel de cascada.
-  const SEMI = [0, 2, 4, 7, 9, 12, 14, 16, 19];
-  const step = c => Math.pow(2, SEMI[Math.min(SEMI.length - 1, (c || 1) - 1)] / 12);
-  Object.assign(FX8, {
-    matchA(c) { // Chispa: chasquido de ruido + bip que cae
-      const k = step(c);
-      noise({ dur: 0.05, vol: 0.05, filter: 'highpass', freq: 2500 * Math.min(1.6, k) });
-      tone({ f: 880 * k, f2: 440 * k, slide: 0.05, dur: 0.06, vol: 0.035, duty: 0.25 });
-    },
-    matchB(c) { // Bip: dos pulsos cortos, como los arcades
-      const k = step(c);
-      tone({ f: 660 * k, dur: 0.045, vol: 0.085, duty: 0.25 });
-      tone({ f: 990 * k, t: 0.045, dur: 0.05, vol: 0.075, duty: 0.25 });
-    },
-    matchC(c) { // Descarga: barrido corto hacia abajo
-      const k = step(c);
-      tone({ f: 1320 * k, f2: 330 * k, slide: 0.08, dur: 0.09, vol: 0.035, duty: 0.5 });
-      noise({ dur: 0.02, vol: 0.03, filter: 'bandpass', freq: 3000, q: 1.5 });
-    },
-  });
-  const FX16 = {
-    click() { fm({ f: 1200, ratio: 3, index: 2, dur: 0.04, vol: 0.06 }); },
-    swap() { fm({ f: 480, f2: 760, ratio: 2, index: 1.6, indexEnd: 0.4, dur: 0.09, vol: 0.08 }); },
-    bad() { fm({ f: 140, ratio: 1.41, index: 5, indexEnd: 3, dur: 0.22, vol: 0.1, car: 'triangle' }); },
-    match(c) { FX16.matchB(c); }, // elegido: B · Bip
-    matchA(c) {
-      const k = step(c);
-      noise({ dur: 0.05, vol: 0.05, filter: 'highpass', freq: 2500 * Math.min(1.6, k) });
-      fm({ f: 880 * k, f2: 440 * k, slide: 0.05, ratio: 1, mod: 'square', index: 2.5, indexEnd: 0.4, indexTime: 0.05, dur: 0.06, vol: 0.055 });
-    },
-    matchB(c) {
-      const k = step(c);
-      fm({ f: 660 * k, ratio: 1, mod: 'square', index: 1.2, indexEnd: 0.6, dur: 0.045, vol: 0.055 });
-      fm({ f: 990 * k, t: 0.045, ratio: 1, mod: 'square', index: 1.2, indexEnd: 0.6, dur: 0.05, vol: 0.05 });
-    },
-    matchC(c) {
-      const k = step(c);
-      fm({ f: 1320 * k, f2: 330 * k, slide: 0.08, ratio: 0.5, index: 3.5, indexEnd: 1, indexTime: 0.08, dur: 0.09, vol: 0.055 });
-      noise({ dur: 0.02, vol: 0.03, filter: 'bandpass', freq: 3000, q: 1.5 });
-    },
-    special() { [660, 990, 1320, 1980].forEach((f, i) => fm({ f, t: i * 0.045, ratio: 3.5, index: 2, indexEnd: 0.1, indexTime: 0.2, dur: 0.22, vol: 0.06, pan: (i - 1.5) * 0.25 })); },
-    beam() {
-      fm({ f: 1600, f2: 120, ratio: 1.5, index: 6, indexEnd: 2, indexTime: 0.3, dur: 0.32, vol: 0.07 });
-      noise({ dur: 0.28, vol: 0.08, filter: 'bandpass', freq: 4000, freq2: 500, q: 3 });
-    },
-    blast() {
-      noise({ dur: 0.7, vol: 0.24, filter: 'lowpass', freq: 2200, freq2: 90 });
-      fm({ f: 110, f2: 32, ratio: 0.5, index: 4, indexEnd: 0.5, indexTime: 0.2, dur: 0.5, vol: 0.2 });
-    },
-    zap() {
-      fm({ f: 200, f2: 3200, ratio: 7, index: 3, indexEnd: 6, indexTime: 0.4, dur: 0.42, vol: 0.06 });
-      for (let i = 0; i < 6; i++) noise({ t: i * 0.055, dur: 0.035, vol: 0.07, filter: 'highpass', freq: 3500, pan: (i % 2 ? 0.4 : -0.4) });
-    },
-    ant() {
-      [0, 0.07, 0.14].forEach((t, i) => fm({ f: 1568, f2: 2093, slide: 0.04, t, ratio: 2, index: 1.5, indexEnd: 0.3, dur: 0.06, vol: 0.05, pan: (i - 1) * 0.4 }));
-      fm({ f: 2400, f2: 500, t: 0.2, ratio: 3.5, index: 3, indexEnd: 0.5, indexTime: 0.2, dur: 0.2, vol: 0.04 });
-    },
-    nova() {
-      fm({ f: 60, f2: 1800, ratio: 2, index: 8, indexEnd: 1, indexTime: 0.7, dur: 0.75, vol: 0.08 });
-      noise({ dur: 1, vol: 0.2, filter: 'lowpass', freq: 3500, freq2: 80 });
-    },
-    solder() { noise({ dur: 0.25, vol: 0.05, filter: 'bandpass', freq: 6000, q: 4 }); fm({ f: 2400, ratio: 3.5, index: 1, indexEnd: 0.05, dur: 0.08, vol: 0.025 }); },
-    crack() { noise({ dur: 0.14, vol: 0.14, filter: 'lowpass', freq: 1200 }); fm({ f: 90, f2: 55, ratio: 0.5, index: 3, dur: 0.14, vol: 0.12 }); },
-    rip() { noise({ dur: 0.18, vol: 0.1, filter: 'highpass', freq: 500, freq2: 7000 }); },
-    tube() {
-      [220, 277.2, 329.6].forEach((f, i) => fm({ f, ratio: 1, index: 0.6, indexEnd: 0.3, dur: 0.55, vol: 0.05, attack: 0.05, pan: (i - 1) * 0.3 }));
-      fm({ f: 1318.5, t: 0.12, ratio: 3.5, index: 2, indexEnd: 0.05, indexTime: 0.4, dur: 0.45, vol: 0.05 });
-    },
-    shuffle() { noise({ dur: 0.5, vol: 0.07, filter: 'bandpass', freq: 400, freq2: 3200, q: 1.5 }); [523, 659, 784, 1047].forEach((f, i) => fm({ f, t: 0.05 + i * 0.07, ratio: 2, index: 1, dur: 0.09, vol: 0.04 })); },
-    star(i) {
-      const f = [1046.5, 1318.5, 1568][i] || 1046.5;
-      fm({ f, ratio: 3.5, index: 2.5, indexEnd: 0.05, indexTime: 0.4, dur: 0.5, vol: 0.08 });
-      fm({ f: f * 1.5, t: 0.07, ratio: 3.5, index: 2, indexEnd: 0.05, indexTime: 0.4, dur: 0.45, vol: 0.06 });
-    },
-    win() {
-      const seq = [[523.25, 0], [659.25, 0.12], [783.99, 0.24], [1046.5, 0.36]];
-      for (const [f, t] of seq) { fm({ f, t, ratio: 1, index: 2.2, indexEnd: 1.2, dur: 0.16, vol: 0.07, pan: -0.15 }); fm({ f: f / 2, t, ratio: 1, index: 4, indexEnd: 1, indexTime: 0.1, dur: 0.14, vol: 0.06 }); }
-      [1046.5, 1318.5, 1568].forEach(f => fm({ f, t: 0.5, ratio: 1, index: 2, indexEnd: 1.2, dur: 0.6, vol: 0.045, vib: true }));
-    },
-    lose() { [392, 349.2, 311.1, 233.1].forEach((f, i) => fm({ f, t: i * 0.17, ratio: 1, index: 2, indexEnd: 1, dur: 0.22, vol: 0.07 })); },
-    warn() { fm({ f: 1760, ratio: 2, index: 1, dur: 0.06, vol: 0.05 }); },
-    bonus(i) { fm({ f: 660 * Math.pow(1.06, i || 0), ratio: 3.5, index: 1.6, indexEnd: 0.05, dur: 0.12, vol: 0.05 }); },
-    goal() { fm({ f: 1318.5, ratio: 3.5, index: 2, indexEnd: 0.05, dur: 0.25, vol: 0.06 }); fm({ f: 1975.5, t: 0.09, ratio: 3.5, index: 2, indexEnd: 0.05, dur: 0.35, vol: 0.06 }); },
-  };
 
-  function play(name, arg, gap, forceStyle) {
+  function play(name, arg, gap) {
     if (!ctx || set.mute || set.sfx <= 0) return;
     if (!throttle(name, gap === undefined ? 35 : gap)) return;
-    const sixteen = (forceStyle || style()) === '16', bank = sixteen ? FX16 : FX8;
-    curDest = sixteen ? gritSfx : sfxBus;
-    try { (bank[name] || FX8[name])(arg); } catch (e) {}
-    curDest = null;
+    try { FX8[name](arg); } catch (e) {}
   }
 
   // ------------------------------------------------------------ música
   // Temas de 4 compases (64 semicorcheas). "Placa" es el tema original del juego;
   // "Taller" (mapa) y "Urgente" (contrarreloj) salen de la misma familia.
   // "Siesta" (modo zen) es más tranquilo: tonalidad mayor, acordes con séptima, sin hi-hats seguidos,
-  // bajo largo e instrumentos suaves (soft: true, ver ARR['8s'] y ARR['16s']).
+  // bajo largo e instrumentos suaves (soft: true, ver ARR['8s']).
   const SONGS = {
     map: {
       name: 'Taller', bpm: 92,
@@ -309,7 +217,7 @@ const Sound = (() => {
   }
   for (const [id, s] of Object.entries(SONGS)) defineSong(id, s);
 
-  // 8 bits: exactamente los instrumentos del tema original (pulsos percusivos, cuadrada, triangular, ruido)
+  // los instrumentos del tema original (pulsos percusivos, cuadrada, triangular, ruido)
   function pluck(f, t, dur, vol, type, dest, duty) {
     const osc = ctx.createOscillator(), g = ctx.createGain();
     if (duty) osc.setPeriodicWave(pulseWaves[duty]); else osc.type = type;
@@ -334,7 +242,7 @@ const Sound = (() => {
       snare(t, dest) { hiss(t, 0.08, dest, 0.11, 1500, 'bandpass'); },
       lead(f, t, d, dest) { pluck(f, t, d, 0.045, 'square', dest); },
     },
-    // 8 bits suave (modo zen): bajo triangular, arpegio de pulso fino tipo caja de música, melodía de pulso al 25 %
+    // suave (modo zen): bajo triangular, arpegio de pulso fino tipo caja de música, melodía de pulso al 25 %
     '8s': {
       bass(f, t, d, dest) { pluck(f, t, Math.min(d, 1.2), 0.13, 'triangle', dest); },
       arp(f, t, d, dest) { pluck(f, t, d * 1.6, 0.022, null, dest, 0.125); },
@@ -342,45 +250,22 @@ const Sound = (() => {
       kick() {}, snare() {},
       lead(f, t, d, dest) { pluck(f, t, d, 0.04, null, dest, 0.25); },
     },
-    '16': {
-      bass(f, t, d, dest) { fm({ at: t, f, ratio: 1, mod: 'square', index: 2.6, indexEnd: 0.8, indexTime: 0.14, dur: d, vol: 0.15, dec: d, sus: 0.08, rel: 0.03, dest }); },
-      arp(f, t, d, dest, k) { fm({ at: t, f, ratio: 2, mod: 'triangle', index: 1.7, indexEnd: 0.3, indexTime: 0.12, dur: d, vol: 0.04, dec: d, sus: 0.1, rel: 0.02, pan: k % 2 ? 0.28 : -0.28, dest }); },
-      hat(t, acc, dest) { fm({ at: t, f: 5400, ratio: 1.47, index: 5, indexEnd: 3, dur: acc ? 0.05 : 0.03, vol: acc ? 0.028 : 0.016, rel: 0.01, pan: 0.2, dest }); hiss(t, acc ? 0.02 : 0.01, dest, 0.03, 8000, 'highpass', 0.2); },
-      kick(t, dest) { const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(170, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.09); g.gain.setValueAtTime(0.3, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16); o.connect(g); g.connect(dest); o.start(t); o.stop(t + 0.18); hiss(t, 0.06, dest, 0.012, 3000); },
-      snare(t, dest) { hiss(t, 0.11, dest, 0.15, 1800, 'bandpass'); fm({ at: t, f: 190, f2: 150, slide: 0.08, ratio: 1.6, index: 2, dur: 0.09, vol: 0.08, dest }); },
-      lead(f, t, d, dest, k, send) {
-        fm({ at: t, f, ratio: 1, mod: 'sawtooth', index: 1.8, indexEnd: 1.2, indexTime: 0.1, dur: d, vol: 0.06, attack: 0.008, dec: 0.25, sus: 0.65, rel: 0.06, vib: d > 0.35, pan: -0.12, dest, send });
-        fm({ at: t, f, ratio: 1, mod: 'square', index: 0.9, indexEnd: 0.6, dur: d, vol: 0.022, detune: 10, attack: 0.012, dec: 0.3, sus: 0.6, rel: 0.06, pan: 0.15, dest });
-      },
-    },
-    // 16 bits suave (modo zen): bajo FM redondo, arpegio tipo marimba que alterna entre parlantes, piano eléctrico FM
-    '16s': {
-      bass(f, t, d, dest) { fm({ at: t, f, ratio: 1, index: 0.9, indexEnd: 0.2, indexTime: 0.25, dur: Math.min(d, 1.2), vol: 0.08, dec: Math.min(d, 1.2), sus: 0.12, rel: 0.08, dest }); },
-      arp(f, t, d, dest, k) { fm({ at: t, f, ratio: 4, index: 1.6, indexEnd: 0.02, indexTime: 0.12, dur: d * 1.5, vol: 0.032, dec: d, sus: 0.15, rel: 0.05, pan: k % 4 ? 0.3 : -0.3, dest }); },
-      hat(t, acc, dest) { hiss(t, 0.012, dest, 0.05, 7000, 'highpass', 0.25); },
-      kick() {}, snare() {},
-      lead(f, t, d, dest, k, send) {
-        fm({ at: t, f, ratio: 1, index: 1.5, indexEnd: 0.35, indexTime: 0.35, dur: d, vol: 0.045, attack: 0.01, dec: 0.7, sus: 0.45, rel: 0.12, vib: d > 0.35, pan: -0.1, dest, send });
-        fm({ at: t, f: f * 2, ratio: 3.5, index: 1, indexEnd: 0.02, indexTime: 0.2, dur: Math.min(d, 0.4), vol: 0.012, dec: 0.3, sus: 0.1, rel: 0.05, pan: 0.15, dest });
-      },
-    },
   };
 
   const Music = (() => {
     let timer = null, cur = null, step = 0, nextT = 0, want = null;
     const st = { ducked: false };
-    function makeBus(sty) {
-      const b = ctx.createGain(); b.gain.value = sty === '16' ? 0.6 : 1;
-      b.connect(sty === '16' ? gritMusic : musicBus);
+    function makeBus() {
+      const b = ctx.createGain(); b.gain.value = 1;
+      b.connect(musicBus);
       const d = ctx.createDelay(1), fb = ctx.createGain(), wet = ctx.createGain(), lp = ctx.createBiquadFilter();
       lp.type = 'lowpass'; lp.frequency.value = 2400; fb.gain.value = 0.22; wet.gain.value = 0.14;
       d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(wet); wet.connect(b);
       return { b, echoIn: d, delay: d };
     }
     function schedStep(c, t, S) {
-      const song = c.song, A = ARR[c.style + (song.soft ? 's' : '')], dest = c.bus.b, k = step % 64, bar = (k / 16) | 0, b = k % 16;
+      const song = c.song, A = ARR[song.soft ? '8s' : '8'], dest = c.bus.b, k = step % 64, bar = (k / 16) | 0, b = k % 16;
       const chord = song.chordsM[bar], root = song.rootsM[bar];
-      if (c.style === '16' && !c.bus.delay.delayTime.value) c.bus.delay.delayTime.value = S * 3;
       if (song.bass.includes(b)) A.bass(mtof(root + (song.octave.includes(b) ? 12 : 0)), t, S * song.bassLen, dest);
       if (b % song.arpEvery === 0) A.arp(mtof(chord[(b / song.arpEvery) % chord.length] + 12), t, S * song.arpEvery * 0.9, dest, b);
       if (song.hats.includes(b)) A.hat(t, song.hatAccent.includes(b), dest);
@@ -397,11 +282,11 @@ const Sound = (() => {
       const S = 60 / cur.song.bpm / 4;
       while (nextT < ctx.currentTime + 0.15) { schedStep(cur, nextT, S); step++; nextT += S; }
     }
-    function start(track, sty) {
+    function start(track) {
       if (!ctx) return;
-      if (cur && cur.track === track && cur.style === sty) return;
+      if (cur && cur.track === track) return;
       stopNow(0.25);
-      cur = { track, style: sty, song: SONGS[track], bus: makeBus(sty) };
+      cur = { track, song: SONGS[track], bus: makeBus() };
       step = 0; nextT = ctx.currentTime + 0.08;
       if (!timer) timer = setInterval(tick, 30);
     }
@@ -416,12 +301,12 @@ const Sound = (() => {
     }
     return {
       get ducked() { return st.ducked; },
-      want(track, sty) { want = { track, sty: sty || style() }; if (ctx && set.music > 0 && !set.mute && !document.hidden) start(want.track, want.sty); },
-      resume() { if (want && ctx && !document.hidden) start(want.track, want.sty); },
+      want(track) { want = { track }; if (ctx && set.music > 0 && !set.mute && !document.hidden) start(want.track); },
+      resume() { if (want && ctx && !document.hidden) start(want.track); },
       halt() { stopNow(0.2); },
       duck(on) { st.ducked = on; apply(); },
       stop() { want = null; stopNow(0.3); },
-      current() { return cur ? { track: cur.track, style: cur.style, name: cur.song.name } : null; },
+      current() { return cur ? { track: cur.track, name: cur.song.name } : null; },
       songs: SONGS,
     };
   })();
@@ -432,15 +317,56 @@ const Sound = (() => {
     else { ctx.resume().catch(() => {}); apply(); }
   });
 
+  // ------------------------------------------------------------ lluvia (la de la sala)
+  const Rain = (() => {
+    let built = false, on = false;
+    function build() {
+      const len = ctx.sampleRate * 4, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const dd = buf.getChannelData(c); let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        for (let i = 0; i < len; i++) {
+          const w = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759; b2 = 0.96900 * b2 + w * 0.1538520;
+          b3 = 0.86650 * b3 + w * 0.3104856; b4 = 0.55000 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.0168980;
+          dd[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11; b6 = w * 0.115926;
+          if (Math.random() < 0.0009) dd[i] += Math.random() - 0.5;
+        }
+      }
+      const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 260;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600;
+      const swell = ctx.createGain(); swell.gain.value = 0.85;
+      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.07;
+      const lfoAmt = ctx.createGain(); lfoAmt.gain.value = 0.15; lfo.connect(lfoAmt).connect(swell.gain);
+      src.connect(hp).connect(lp).connect(swell).connect(rainBus);
+      src.start(); lfo.start();
+      built = true;
+    }
+    return {
+      want(v) { on = v; this.apply(); },
+      apply() {
+        if (!ctx) return;
+        const g = on && !set.mute ? vol.lluvia / 10 * 0.54 : 0;
+        if (g > 0 && !built) build();
+        rainBus.gain.setTargetAtTime(g, ctx.currentTime, 0.4);
+      },
+    };
+  })();
+
+  function setVolume(k, v) {
+    if (!(k in vol)) return;
+    vol[k] = Math.max(0, Math.min(10, Math.round(v)));
+    fromVol(); apply();
+    try { localStorage.setItem(CLAVE, JSON.stringify(vol)); } catch (e) {}
+  }
+
   return {
-    ensure, configure, play, settings: set,
+    ensure, play,
+    volume: k => vol[k], setVolume,
     music(track) { Music.want(track); },
-    musicPreview(track, sty) { ensure(); Music.want(track, sty); },
-    song(id, def) { defineSong(id, def); },   // para la prueba de las opciones de música (bocetos)
     stopMusic() { Music.stop(); },
-    restyle() { const c = Music.current(); if (c) Music.want(c.track, style()); },
+    rain(on) { Rain.want(on); },
     duck(on) { Music.duck(on); },
-    preview(name, sty, arg) { ensure(); if (!ctx) return; const bank = sty === '16' ? FX16 : FX8; curDest = sty === '16' ? gritSfx : sfxBus; try { bank[name](arg); } catch (e) {} curDest = null; },
     nowPlaying() { return Music.current(); },
     FX: Object.keys(FX8),
     _tap() { return ctx ? { ctx, master } : null; },

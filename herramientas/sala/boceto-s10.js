@@ -1,4 +1,4 @@
-// Draws the S-10 sketch over the Fogonazo mockup match (docs/sala/maqueta-fogonazo/index.html).
+// Draws the S-10 sketch over the Fogonazo mockup match (fogonazo/index.html).
 // Load arte-s10.js first, then call S10scene('especiales' | 'obstaculos').
 window.S10scene = (which) => {
   'use strict';

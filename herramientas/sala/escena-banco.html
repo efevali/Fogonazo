@@ -3,13 +3,12 @@
 <head>
 <meta charset="utf-8">
 <style>
-@font-face { font-family: Fraunces; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/fraunces-latin-600-normal.woff2); }
-@font-face { font-family: Fraunces; font-weight: 900; src: url(../../docs/sala/maqueta-fogonazo/fuentes/fraunces-latin-900-normal.woff2); }
-@font-face { font-family: Barlow; font-weight: 500; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-500-normal.woff2); }
-@font-face { font-family: Barlow; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-600-normal.woff2); }
-@font-face { font-family: Barlow; font-weight: 700; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-700-normal.woff2); }
-@font-face { font-family: Caveat; font-weight: 600; src: url(../../docs/sala/maqueta-fogonazo/fuentes/caveat-latin-600-normal.woff2); }
-@font-face { font-family: Elite; src: url(../../docs/sala/maqueta-fogonazo/fuentes/special-elite-latin-400-normal.woff2); }
+@font-face { font-family: Fraunces; font-weight: 100 900; src: url(../../comun/fuentes/fraunces-latin-soft-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 500; src: url(../../comun/fuentes/barlow-semi-condensed-latin-500-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 600; src: url(../../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2); }
+@font-face { font-family: Caveat; font-weight: 600; src: url(../../comun/fuentes/caveat-latin-600-normal.woff2); }
+@font-face { font-family: Elite; src: url(../../comun/fuentes/special-elite-latin-400-normal.woff2); }
 html, body { margin: 0; background: #000; }
 svg { display: block; }
 </style>
@@ -23,7 +22,7 @@ const IMG = new URLSearchParams(location.search).get('img');
 const BG = new URLSearchParams(location.search).get('bg') === '1';
 const A2 = V === 'a2';
 const pc = (t, x, y, w, h) => IMG
-  ? `<image href="../../docs/sala/maqueta-fogonazo/piezas/pieza${t}.png" x="${x + w * .06}" y="${y + h * .06}" width="${w * .88}" height="${h * .88}" preserveAspectRatio="xMidYMid meet"/>`
+  ? `<image href="../../fogonazo/piezas/pieza${t}.png" x="${x + w * .06}" y="${y + h * .06}" width="${w * .88}" height="${h * .88}" preserveAspectRatio="xMidYMid meet"/>`
   : `<use href="#pA${t}" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
 const svg = document.getElementById('s');
 let out = '';

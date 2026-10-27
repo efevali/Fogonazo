@@ -29,6 +29,6 @@ El segundo juego de la colección: mahjong solitario. Por ahora es un prototipo 
 
 - Es una sola página autocontenida. Toma las tipografías de Google Fonts (Zen Kaku Gothic New y Shippori Mincho, las de Kasa).
 - Guarda ajustes y récords en el navegador con claves `mjzen.*`, que no se cruzan con las de Fogonazo ni las de Kasa en `efevali.github.io`.
-- El sonido usa el motor de `codigo/audio.js` de Fogonazo: las mismas voces básicas, más koto, flauta, bloque de madera, campana y tamborcito. Incluye los temas originales de Fogonazo sin cambios, solo para comparar.
+- El sonido usa una copia del motor de sonido de Fogonazo (hoy `comun/sonido.js`): las mismas voces básicas, más koto, flauta, bloque de madera, campana y tamborcito. Incluye los temas originales de Fogonazo sin cambios, solo para comparar.
 - Los tableros se definen por capas en medias fichas, y el reparto quita pares libres al azar desde el tablero lleno, así que el orden inverso siempre tiene solución.
 - El primer boceto, M-01, fue un dibujo en la conversación y lo reemplazó este prototipo.
