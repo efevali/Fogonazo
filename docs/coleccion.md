@@ -26,6 +26,7 @@ Sala ── banco de electrónica ──► Fogonazo
 
 - **Los objetos activos** no llevan carteles, círculos ni marcas: brillan apenas, de a uno por turno.
 - **Se entra directo a cada juego**, sin pantalla de título aparte. Cómo se pasa de la sala a un juego (la transición) está por definir.
+- **Los botones de volver van abajo a la derecha**, con una etiqueta Dymo: «◀ Volver» en los juegos y «Salir ▶» en la sala, con la flecha hacia afuera, como a una puerta. Hacen falta porque, a pantalla completa, los controles de Android quedan escondidos. Chrome solo deja que una página se cierre sola en algunos casos: si «Salir» no la cierra, avisa cómo salir con el gesto del teléfono.
 - **El «atrás» de Android** desanda el camino, pantalla por pantalla, hasta la sala; desde la sala sale de la app. Cada juego define sus escalones (el de Fogonazo, en [su documentación](fogonazo/README.md#recorrido)). Lección del Fogonazo publicado: el historial del navegador lleva una entrada por paso, sumada solo al tocar algo, porque Chrome saltea las que una página suma sin que la toquen.
 - **Instalada, abre a pantalla completa y en horizontal.** En el navegador, sin instalar, se ve con la barra de Chrome.
 - **Una página contenedora y una pantalla por vez.** La sala y cada pantalla de los juegos son páginas aparte que la contenedora (`index.html`) muestra de a una, con un fundido corto; así la música no se corta al pasar de una a otra.
