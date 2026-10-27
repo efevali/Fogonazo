@@ -1,8 +1,8 @@
-/* Chispazo — motor de juego (sin DOM). Corre igual en el navegador y en Node. */
+/* Fogonazo — motor de juego (sin DOM). Corre igual en el navegador y en Node. */
 (function (root) {
 'use strict';
 
-const W = 8, H = 10, N = W * H;
+const W = 10, H = 8, N = W * H;   // la placa: 10 columnas por 8 filas, en horizontal
 // Tipos de pieza
 const K = { N: 0, LH: 1, LV: 2, BOMB: 3, BAT: 4, TUBE: 5, BURNT: 6, ANT: 7 };
 // Aparición de válvulas (#25): jugadas de separación, probabilidad por jugada y tope en la placa

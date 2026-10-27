@@ -14,7 +14,7 @@ Lo que vale para todo el juego:
 
 - **En la app desde la 0.1.0, como maqueta navegable** (ver abajo): pantalla-instrumento, mapa y partida, con las imágenes vigentes, su música y sus efectos, y una lógica mínima propia. Producto la probó: «se ve genial».
 - **Arte vigente**, en [`arte/`](arte/): las siete piezas ([P-003](arte/P-003_piezas-fogonazo.jpg)), la escena de la pantalla-instrumento ([P-004](arte/P-004_escena-instrumento.png), de 1679 × 937; el teléfono la estira un 43 %, aceptable por el estilo pintado) y los especiales y obstáculos ([P-005](arte/P-005_especiales-obstaculos.jpg)). Los recortes listos para usar están en [`fogonazo/piezas/`](../../fogonazo/piezas/), en la app.
-- **El motor** (`codigo/`) es todavía el del juego anterior, con placa de 8 × 10 y los 30 niveles con sus nombres; la maqueta no lo usa. Los pasos que siguen están en [la colección](../coleccion.md#lo-que-sigue).
+- **El motor** (`codigo/`) ya está en la placa de 10 × 8, con los 30 niveles hechos a mano pasados a horizontal, sin nombres ni textos, y recalibrados (0.3.0). La maqueta todavía no lo usa: llega con la partida real. Los pasos que siguen están en [la colección](../coleccion.md#lo-que-sigue).
 
 ## Recorrido
 
@@ -46,17 +46,17 @@ La portada del juego y su lugar de ajustes: un osciloscopio del banco visto de c
 
 Una sola secuencia numerada, sin capítulos, nombres ni textos por nivel, como en Candy Crush.
 
-- **Del 1 al 30, hechos a mano.** Son los 30 niveles del juego publicado, transpuestos de 8 × 10 a 10 × 8 y recalibrados. Conservan su progresión: enseñan cada componente, especial y obstáculo en orden, con las oleadas de dificultad (ver la tabla).
+- **Del 1 al 30, hechos a mano.** Son los 30 niveles del Fogonazo publicado, pasados de 8 × 10 a 10 × 8 y recalibrados (ver «Cómo se pasaron a horizontal»). Conservan su progresión: enseñan cada componente, especial y obstáculo en orden, con las oleadas de dificultad (ver la tabla).
 - **Del 31 en adelante, generados.** Cada nivel sale de su número, que fija una semilla y su lugar en la curva de dificultad: el nivel 57 es siempre el mismo para cualquiera, y reintentarlo es jugar el mismo nivel. No hay último nivel. No traen mecánicas nuevas: combinan lo que ya existe (tipo de pedido, obstáculos, forma de la placa y huecos, movimientos o contrarreloj).
 - **La curva** sigue en oleadas y crece de a poco hasta una meseta cercana a la dificultad de los niveles 26 a 30, para que nunca se vuelva imposible.
 - **Contrarreloj:** uno de cada cinco, también en los generados.
 - **Calibración:** las reglas del generador se ajustan con el bot en la computadora, hasta que los generados ganen en una proporción parecida a los hechos a mano. El teléfono no simula nada.
 - **Agregar un nivel a mano** más adelante es insertarlo en la lista; los generados se corren detrás.
-- **Novedades:** cada componente, especial u obstáculo aparece por primera vez en un nivel puntual. Esa primera vez, junto a la placa hay una nota de cuaderno que explica el movimiento de la forma más simple. La antena todavía no tiene su nivel de presentación: se elige al transponer los niveles.
+- **Novedades:** cada componente, especial u obstáculo aparece por primera vez en un nivel puntual. Esa primera vez, junto a la placa hay una nota de cuaderno que explica el movimiento de la forma más simple. Lo que presenta cada nivel está en `tip`, en `codigo/levels.js`.
 
 | Niveles | Qué suma | Contrarreloj | Cierre |
 |---|---|---|---|
-| 1 a 5 | Lo básico: el intercambio (1), el rayo (2), la sobrecarga (4) y la batería (5) | 5 | — |
+| 1 a 5 | Lo básico: el intercambio (1), el rayo (2), la antena (3), la sobrecarga (4) y la batería (5) | 5 | — |
 | 6 a 10 | El capacitor cerámico, sexto componente (6) | 9 | 10: tres pedidos a la vez |
 | 11 a 15 | Pads de cobre (11), con dos pasadas (13) | 14 | 15: pads chicos de doble pasada |
 | 16 a 20 | Quemados (16), cinta kapton (17), quemados de dos golpes y huecos (18) | 19 | 20: quemados, cinta y pads |
@@ -64,6 +64,13 @@ Una sola secuencia numerada, sin capítulos, nombres ni textos por nivel, como e
 | 26 a 30 | El cristal de cuarzo, séptimo componente (26), y todo junto | 28 | 30: pads, quemados y válvulas |
 
 Hay 24 niveles por movimientos y 6 contrarreloj. Los de puntaje son el 1, 2, 5, 8, 24 y 28; el resto pide piezas, pads, quemados, cinta o válvulas. La lista vigente vive en el código (`codigo/levels.js` y `codigo/calibrated.json`); si no coincide con esta tabla, manda el código.
+
+### Cómo se pasaron a horizontal
+
+- **Las filas siguen siendo filas.** La placa no se giró: las piezas caen igual y la fila de abajo sigue siendo el zócalo de las válvulas, así que los diseños pensados contra el borde inferior se conservan.
+- **Ocho filas en lugar de diez.** Las dos filas que se habían sumado arriba para la placa de 8 × 10 se sacan; los diseños más altos se reacomodaron en ocho filas.
+- **Diez columnas en lugar de ocho.** Los diseños se centran con una columna libre de cada lado, o se estiran para conservar la cantidad de pads, quemados o cintas. Piden lo mismo que antes, salvo el 16 (de 16 a 22 golpes de quemado, porque en horizontal bajaba a 9 movimientos) y el 27 (el ocho del display queda más ancho: de 44 a 46 pasadas de estaño).
+- **Recalibrados con el bot**, con las mismas tasas de victoria buscadas. Los movimientos quedaron parecidos a los de antes: la mayoría igual o con uno a tres más, y los niveles más cortos siguen entre 11 y 15.
 
 ### El mapa
 
@@ -73,7 +80,7 @@ Un camino continuo en horizontal que se recorre deslizando, con el nivel siguien
 
 - **Tres modos:** Fácil, Normal (el de entrada) y Difícil, que se eligen en la pantalla-instrumento.
 - **La calibración es la de Difícil.** Un bot imperfecto juega 400 partidas por nivel y se eligen los movimientos, el tiempo o la meta de puntos para la tasa de victoria que pide cada nivel (`target` en `codigo/levels.js`), que baja en oleadas: de 97 % en el nivel 1 a 34 % en el 30. El bot elige la mejor jugada el 62 % de las veces, la segunda el 20 % y cualquiera el 18 %; en contrarreloj piensa entre 1,7 y 3,1 segundos por jugada.
-- **Normal y Fácil** multiplican los movimientos (o el tiempo) y los puntos de cada estrella, y en los niveles de puntaje también la meta: Normal da 12 % más de movimientos y pide 10 % menos de puntos; Fácil, 30 % más y 20 % menos (`MODES` en `codigo/levels.js`).
+- **Normal y Fácil** multiplican los movimientos (o el tiempo) y los puntos de cada estrella, y en los niveles de puntaje también la meta: Normal da 12 % más de movimientos y pide 10 % menos de puntos; Fácil, 30 % más y 20 % menos (`MODES` en `codigo/levels.js`). Con 100 partidas por nivel y modo (`herramientas/modos.js`), en la placa de 10 × 8 el bot gana en promedio el 70 % de las partidas en Difícil, el 82 % en Normal y el 92 % en Fácil, y llega a dos estrellas o más en el 35 %, el 55 % y el 78 %: casi lo mismo que en la placa de 8 × 10.
 - **Estrellas:** una por cumplir el pedido; dos y tres según el puntaje. Valen lo mismo en cualquier modo, pero cada modo guarda las suyas, y un nivel pasado en cualquier modo queda abierto en todos.
 - **Récords por modo:** el nivel más alto alcanzado, que es el récord principal, y las estrellas sumadas.
 - **Cómo se recalibra**, cuando cambia una regla del motor o el diseño de un nivel: `herramientas/probar.js` tiene que pasar sin errores; `herramientas/medir.js <niveles>` muestra cuánto cambió la tasa de victoria; si se apartó de lo buscado, `herramientas/calibrar.js 400 0.62 <niveles>` recalibra y actualiza `codigo/calibrated.json`, y `herramientas/modos.js 100 <niveles>` muestra cómo quedan Normal y Fácil. Los cambios se cuentan en el pull request y, si importan, en el registro de decisiones.
