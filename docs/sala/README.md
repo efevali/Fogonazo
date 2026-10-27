@@ -31,6 +31,7 @@ La pantalla de inicio de la colección: un living de los 70 ilustrado donde algu
 |---|---|---|
 | [S-05](bocetos/S-05-composicion-sala.jpg) | La composición de la sala completa que se le pasó a la IA | Vigente como guía para futuras ediciones de la imagen |
 | S-11 | Los ajustes de la colección en el panel del equipo de audio, para la 0.1.0: sonido (música, efectos y lluvia, de 0 a 10) e instalar. [En Chrome, sin instalar](bocetos/S-11-ajustes-en-chrome.jpg), [instalada](bocetos/S-11-ajustes-instalada.jpg) y [los pasos para instalar](bocetos/S-11-instalar-pasos.jpg). El ícono de la fila «Instalar» es el provisorio. Se genera con [`herramientas/sala/boceto-s11.html`](../../herramientas/sala/boceto-s11.html) | Aprobado (27/10) |
+| S-12 | Los botones de volver, abajo a la derecha, en toda la colección: en la sala, [«◀ Salir»](bocetos/S-12a-sala-salir.jpg); en Fogonazo, «◀ Volver» (ver [sus bocetos](../fogonazo/README.md#bocetos)). Capturas de la app con los cambios, de la rama de la 0.2.0 | En revisión |
 
 Las referencias de estilo de terceros (ilustraciones isométricas, fotos de livings de época, el recorte de revista) no se guardan en este repositorio, que es público.
 

@@ -149,6 +149,8 @@ Un recorrido navegable para probar en el teléfono la estructura y las imágenes
 | S-09 | Las letras al tamaño del teléfono: [a · instrumento, antes y después](bocetos/S-09a-tipografias-instrumento.jpg), [b · récords](bocetos/S-09b-tipografias-records.jpg), [c · sonido y manual como página de revista](bocetos/S-09c-sonido-y-manual.jpg). Las palabras de las perillas, un poco más chicas que en la propuesta |
 | S-10 | Especiales y obstáculos en el estilo del banco: [a · especiales en la partida](bocetos/S-10a-especiales-partida.jpg), [b · obstáculos](bocetos/S-10b-obstaculos-partida.jpg), [c · lámina de detalle](bocetos/S-10c-catalogo.jpg). Después se corrigieron la batería (parada, en negro y turquesa) y la antena (sin varilla, con wifi animado) |
 
+| S-12 | «◀ Volver» abajo a la derecha y aureolas: [el instrumento](bocetos/S-12b-instrumento-volver-aureolas.jpg), con las aureolas del parlante y de la revista en su punto más alto (en la app respiran por turno); [el mapa](bocetos/S-12c-mapa-volver.jpg); [la partida](bocetos/S-12d-partida-volver.jpg), donde «Volver» sale al mapa sin pasar por la pausa. En revisión |
+
 Montajes de los pedidos de imágenes: [las piezas con patas cortas](bocetos/P-002-montaje-cortas.png) (con su [lámina de referencia](bocetos/P-002-referencia-piezas.png)), [la escena del instrumento en el teléfono](bocetos/P-004-montaje-telefono-chatgpt.png), y [los especiales](bocetos/P-005-montaje-especiales.jpg) y [los obstáculos](bocetos/P-005-montaje-obstaculos.jpg) en la partida (con su [lámina](bocetos/P-005-referencia.png)).
 
 ## Por definir
