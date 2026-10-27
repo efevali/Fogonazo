@@ -1,7 +1,7 @@
 // Mide la tasa de victoria de los niveles de pedido de piezas con y sin la ayuda de piezas del pedido.
 // node herramientas/ayuda_piezas.js 3,4,6
 const E = require('../codigo/engine.js');
-const { LEVELS } = require('../codigo/levels.js');
+const { LEVELS, resumen } = require('../codigo/levels.js');
 const fs = require('fs');
 const CAL = JSON.parse(fs.readFileSync(__dirname + '/../codigo/calibrated.json', 'utf8'));
 const skill = { best: 0.62, second: 0.2 };
@@ -29,5 +29,5 @@ for (const id of ids) {
     res[tag] = { win: w / n, s2: r100(q(wins, 0.5)), s3: Math.max(r100(q(wins, 0.5)) + 100, r100(q(wins, 0.86))) };
   }
   out[id] = res;
-  console.log(`L${String(id).padStart(2)} ${LEVELS[id - 1].name.padEnd(22)} ${(base.moves ? base.moves + ' mov' : base.time + ' s').padEnd(7)} antes ${(res.antes.win * 100).toFixed(0).padStart(3)}%  →  ahora ${(res.ahora.win * 100).toFixed(0).padStart(3)}%   ★ 0/${res.ahora.s2}/${res.ahora.s3}`);
+  console.log(`L${String(id).padStart(2)} ${resumen(LEVELS[id - 1]).padEnd(22)} ${(base.moves ? base.moves + ' mov' : base.time + ' s').padEnd(7)} antes ${(res.antes.win * 100).toFixed(0).padStart(3)}%  →  ahora ${(res.ahora.win * 100).toFixed(0).padStart(3)}%   ★ 0/${res.ahora.s2}/${res.ahora.s3}`);
 }

@@ -2,6 +2,11 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.3.0 — 27/10/2026
+
+- Fogonazo: las aureolas de la placa del sonido y de la revista laten cada 2 segundos y se ven más.
+- Fogonazo, por dentro: el motor pasa a la placa de 10 × 8 y los 30 niveles hechos a mano, a horizontal, sin nombres ni textos y recalibrados. La antena se presenta en el nivel 3. Todavía no se juegan: la partida sigue siendo la maqueta hasta que llegue la partida real.
+
 ## 0.2.0 — 27/10/2026
 
 Observaciones de la 0.1.0 en el teléfono ([milestone](https://github.com/efevali/fogonazo/milestone/7)).

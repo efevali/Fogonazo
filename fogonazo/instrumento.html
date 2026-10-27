@@ -23,9 +23,9 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 .lbl { cursor: pointer; }
 .knob-ptr { transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); transform-box: view-box; }
 .wave { animation: scroll 2.4s linear infinite; }
-/* the halos breathe in turn, like the active objects of the room */
-.aura { opacity: 0; animation: aura 5.1s ease-in-out infinite; }
-@keyframes aura { 0%, 100% { opacity: 0; } 22% { opacity: .85; } 44% { opacity: 0; } }
+/* the halos beat every 2 s, one after the other (0.3.0: stronger and faster than the room's) */
+.aura { opacity: 0; animation: aura 2s ease-in-out infinite; }
+@keyframes aura { 0%, 100% { opacity: 0; } 30% { opacity: 1; } 65% { opacity: 0; } }
 @keyframes scroll { to { transform: translateX(-200px); } }
 .sheet { display: none; } .sheet.open { display: inline; }
 .led { transition: opacity .12s; }
@@ -67,7 +67,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     <filter id="glow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     <filter id="ledg" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="5"/></filter>
     <filter id="aura" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="18"/></filter>
-    <filter id="bright" color-interpolation-filters="sRGB"><feColorMatrix values="1.4 0 0 0 .05  0 1.3 0 0 .03  0 0 1.1 0 0  0 0 0 1 0"/></filter>
+    <filter id="bright" color-interpolation-filters="sRGB"><feColorMatrix values="1.7 0 0 0 .08  0 1.5 0 0 .05  0 0 1.2 0 0  0 0 0 1 0"/></filter>
     <mask id="mSound" maskUnits="userSpaceOnUse" x="0" y="0" width="1679" height="937"><path fill="#fff" filter="url(#aura)" d="M34,470 C60,415 300,415 342,470 L322,594 L652,624 L560,846 L110,846 L112,786 L170,646 L34,566 Z"/></mask>
     <mask id="mManual" maskUnits="userSpaceOnUse" x="0" y="0" width="1679" height="937"><path fill="#fff" filter="url(#aura)" d="M326,74 L586,66 L604,402 L354,408 Z"/></mask>
     <filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".5"/></filter>
@@ -92,7 +92,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
        a warmer, brighter copy of the scene, seen through a blurred shape of the sound board and of the magazine page -->
   <g pointer-events="none">
     <image class="aura" href="instrumento.webp" width="1679" height="937" mask="url(#mSound)" filter="url(#bright)"/>
-    <image class="aura" href="instrumento.webp" width="1679" height="937" mask="url(#mManual)" filter="url(#bright)" style="animation-delay:2.55s"/>
+    <image class="aura" href="instrumento.webp" width="1679" height="937" mask="url(#mManual)" filter="url(#bright)" style="animation-delay:1s"/>
   </g>
 
   <!-- LEDs of the sound board -->

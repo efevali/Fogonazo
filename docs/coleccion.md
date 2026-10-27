@@ -55,10 +55,9 @@ Sala ── banco de electrónica ──► Fogonazo
 
 ## Lo que sigue
 
-1. **Fogonazo, el motor a 10 × 8:** los 30 niveles transpuestos, sin nombres ni textos, y recalibrados.
-2. **Fogonazo, los niveles generados** del 31 en adelante.
-3. **Fogonazo, la partida real con la estética nueva:** especiales, obstáculos, la nota de cuaderno y el zen, en lugar de la maqueta. Antes, los bocetos de lo que falta: pausa, fin de nivel y partida zen.
-4. **El mahjong en horizontal**, con el mismo tratamiento, dentro de la app.
-5. **Los menús, y la sala como juego de buscar y encontrar.**
-6. **Los nombres** de la colección y de Fogonazo, el ícono definitivo y el nombre del repositorio.
-7. **Dónde se muestra la versión** y el aviso de versión nueva.
+1. **Fogonazo, los niveles generados** del 31 en adelante.
+2. **Fogonazo, la partida real con la estética nueva:** especiales, obstáculos, la nota de cuaderno y el zen, en lugar de la maqueta. Antes, los bocetos de lo que falta: pausa, fin de nivel y partida zen.
+3. **El mahjong en horizontal**, con el mismo tratamiento, dentro de la app.
+4. **Los menús, y la sala como juego de buscar y encontrar.**
+5. **Los nombres** de la colección y de Fogonazo, el ícono definitivo y el nombre del repositorio.
+6. **Dónde se muestra la versión** y el aviso de versión nueva.

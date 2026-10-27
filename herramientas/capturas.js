@@ -73,7 +73,7 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   await tocar('#hitBench'); await listo();
   ok(ruta() === 'fogonazo/instrumento.html', 'el banco lleva al instrumento');
   // las aureolas respiran por turno; para la captura se muestran las dos en su punto más alto
-  await pantalla().evaluate(() => document.querySelectorAll('.aura').forEach(a => { a.style.animation = 'none'; a.style.opacity = '.85'; }));
+  await pantalla().evaluate(() => document.querySelectorAll('.aura').forEach(a => { a.style.animation = 'none'; a.style.opacity = '1'; }));
   await foto('05-fogonazo-instrumento');
   await pantalla().evaluate(() => document.querySelectorAll('.aura').forEach(a => { a.style.animation = ''; a.style.opacity = ''; }));
   const tema = () => page.evaluate(() => (Sound.nowPlaying() || {}).name || null);

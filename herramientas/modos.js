@@ -4,7 +4,7 @@
    node herramientas/modos.js [partidas] [niveles]    Ejemplo: node herramientas/modos.js 150 1,2,3 */
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const E = require('../codigo/engine.js');
-const { LEVELS, MODES, applyMode } = require('../codigo/levels.js');
+const { LEVELS, MODES, applyMode, resumen } = require('../codigo/levels.js');
 const CAL = require('../codigo/calibrated.json');
 
 function def(id, M) {   // cómo se arma un nivel en un modo de dificultad, con los valores calibrados
@@ -50,7 +50,7 @@ if (isMainThread) {
       console.log(' '.repeat(28) + MODES.map(() => 'gana  ≥2★   3★'.padEnd(22)).join(''));
       const tot = MODES.map(() => [0, 0, 0, 0]);
       for (const id of ids) {
-        console.log(`L${String(id).padStart(2)} ${LEVELS[id - 1].name.padEnd(24)}` + MODES.map((M, k) => {
+        console.log(`L${String(id).padStart(2)} ${resumen(LEVELS[id - 1]).padEnd(24)}` + MODES.map((M, k) => {
           const h = res[id][M.id], t = n;
           const r = [(h[1] + h[2] + h[3]) / t, (h[2] + h[3]) / t, h[3] / t];
           tot[k][0] += r[0]; tot[k][1] += r[1]; tot[k][2] += r[2]; tot[k][3] += (h[1] + 2 * h[2] + 3 * h[3]) / t;

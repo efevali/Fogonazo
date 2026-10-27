@@ -3,7 +3,7 @@
 // node herramientas/medir.js 16,17,18 [partidas]
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const E = require('../codigo/engine.js');
-const { LEVELS } = require('../codigo/levels.js');
+const { LEVELS, resumen } = require('../codigo/levels.js');
 const CAL = require('../codigo/calibrated.json');
 function def(id) {
   const b = LEVELS[id - 1], c = CAL[id]; const d = Object.assign({}, b);
@@ -29,7 +29,7 @@ if (isMainThread) {
   for (let k = 0; k < nW; k++) {
     const w = new Worker(__filename, { workerData: { ids: ids.filter((_, j) => j % nW === k), n } });
     w.on('message', m => { res[m.id] = m.r; });
-    w.on('exit', () => { if (++done === nW) for (const id of ids) console.log(`L${String(id).padStart(2)} ${LEVELS[id - 1].name.padEnd(22)} ${(CAL[id].moves ? CAL[id].moves + ' mov' : CAL[id].time + ' s').padEnd(7)} gana ${(res[id] * 100).toFixed(0).padStart(3)}%   (calibrado: ${(CAL[id].winRate * 100).toFixed(0)}%)`); });
+    w.on('exit', () => { if (++done === nW) for (const id of ids) console.log(`L${String(id).padStart(2)} ${resumen(LEVELS[id - 1]).padEnd(22)} ${(CAL[id].moves ? CAL[id].moves + ' mov' : CAL[id].time + ' s').padEnd(7)} gana ${(res[id] * 100).toFixed(0).padStart(3)}%   (calibrado: ${(CAL[id].winRate * 100).toFixed(0)}%)`); });
   }
 } else {
   for (const id of workerData.ids) { const L = def(id); let w = 0; for (let s = 0; s < workerData.n; s++) if (play(L, 90000 + s)) w++; parentPort.postMessage({ id, r: w / workerData.n }); }

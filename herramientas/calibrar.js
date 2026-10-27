@@ -4,7 +4,7 @@
    Ejemplo: node herramientas/calibrar.js 400 0.62 16,17,18  (sin lista de niveles, recalibra los 30) */
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const E = require('../codigo/engine.js');
-const { LEVELS } = require('../codigo/levels.js');
+const { LEVELS, resumen } = require('../codigo/levels.js');
 
 const SKILL = { best: 0.62, second: 0.2 };   // 62% la mejor, 20% la segunda, 18% cualquiera
 
@@ -37,7 +37,7 @@ const roundTo = (v, s) => Math.max(s, Math.round(v / s) * s);
 
 function calibrate(li, n, skill) {
   const base = LEVELS[li];
-  const out = { id: li + 1, name: base.name, tune: base.tune, target: base.target };
+  const out = { id: li + 1, name: resumen(base), tune: base.tune, target: base.target };
   if (base.tune === 'score') {
     const L = Object.assign({}, base);
     const scores = [];
