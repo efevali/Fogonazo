@@ -57,7 +57,8 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
 
   console.log('Sala');
   await page.goto(URL0); await listo();
-  ok(ruta().startsWith('sala/'), 'arranca en la sala'); await foto('01-sala');
+  ok(ruta().startsWith('sala/'), 'arranca en la sala');
+  ok(await abierto('#salir'), 'la sala tiene «Salir», abajo a la derecha'); await foto('01-sala');
   await tocar('#hitAudio'); await espera(300);
   ok(await abierto('#sheetAudio'), 'el equipo de audio abre los ajustes');
   ok(await abierto('#instRow'), 'en el navegador, los ajustes ofrecen instalar'); await foto('02-sala-ajustes');
@@ -70,7 +71,11 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
 
   console.log('Fogonazo');
   await tocar('#hitBench'); await listo();
-  ok(ruta() === 'fogonazo/instrumento.html', 'el banco lleva al instrumento'); await foto('05-fogonazo-instrumento');
+  ok(ruta() === 'fogonazo/instrumento.html', 'el banco lleva al instrumento');
+  // las aureolas respiran por turno; para la captura se muestran las dos en su punto más alto
+  await pantalla().evaluate(() => document.querySelectorAll('.aura').forEach(a => { a.style.animation = 'none'; a.style.opacity = '.85'; }));
+  await foto('05-fogonazo-instrumento');
+  await pantalla().evaluate(() => document.querySelectorAll('.aura').forEach(a => { a.style.animation = ''; a.style.opacity = ''; }));
   const tema = () => page.evaluate(() => (Sound.nowPlaying() || {}).name || null);
   ok(await tema() === 'Taller', 'en el instrumento suena Taller');
   await tocar('#hitSound'); ok(await abierto('#sound'), 'la placa abre el sonido'); await foto('06-fogonazo-sonido');
@@ -89,6 +94,8 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   await tocar('.lvl[data-n="1"]'); await listo();
   await tocar('#pause'); ok(await abierto('#menu'), 'el botón de pausa abre la pausa');
   await tocar('#menu [data-act="map"]'); await listo(); ok(ruta() === 'fogonazo/mapa.html', '«Volver al mapa» va al mapa');
+  await tocar('.lvl[data-n="1"]'); await listo();
+  await tocar('#volver'); await listo(); ok(ruta() === 'fogonazo/mapa.html', 'en la partida, «Volver» va al mapa sin pasar por la pausa');
   await atras(); await listo(); ok(ruta() === 'fogonazo/instrumento.html', 'desde el mapa, «atrás» va al instrumento');
   await atras(); await listo(); ok(ruta().startsWith('sala/'), 'desde el instrumento, «atrás» va a la sala');
   ok(await tema() === null, 'en la sala no hay música');

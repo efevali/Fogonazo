@@ -2,6 +2,15 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.2.0 — 27/10/2026
+
+Observaciones de la 0.1.0 en el teléfono ([milestone](https://github.com/efevali/fogonazo/milestone/7)).
+
+- Botones de volver abajo a la derecha, en toda la colección (S-12). En la sala, «Salir ▶», que cierra la app; si Chrome no la deja cerrarse sola, avisa cómo salir con el gesto del teléfono. En la pantalla-instrumento, el mapa y la partida, «◀ Volver»; en la partida va directo al mapa, sin pasar por la pausa ([#33](https://github.com/efevali/fogonazo/issues/33)).
+- Fogonazo: la revista del manual y la placa del sonido se iluminan suave, por turno, para que se note que se pueden tocar ([#35](https://github.com/efevali/fogonazo/issues/35)).
+- Fogonazo: las perillas del sonido giran con el dedo en círculo; antes respondían a gestos rectos y se trababan después del primer cuarto del giro ([#34](https://github.com/efevali/fogonazo/issues/34)).
+- La lluvia suena a un cuarto de lo que sonaba con el mismo número, para que quede de fondo; la de entrada pasa de 5 a 7. Quien la había bajado tiene que volver a subirla ([#32](https://github.com/efevali/fogonazo/issues/32)).
+
 ## 0.1.1 — 27/10/2026
 
 - La app instalada desde la 0.6.1 seguía en vertical: conserva la orientación de su ficha de instalación hasta que Chrome la actualiza. Ahora la app pide el horizontal por su cuenta al abrir y con el primer toque.

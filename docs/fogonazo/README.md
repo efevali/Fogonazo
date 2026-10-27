@@ -29,6 +29,7 @@ Sala ── banco de electrónica ──► pantalla-instrumento
 
 - **Se entra directo** a la pantalla-instrumento: no hay pantalla de título aparte.
 - **El «atrás» de Android:** de la partida a la pausa; de la pausa al mapa (o a la pantalla-instrumento, si era zen); del mapa a la pantalla-instrumento, y de ahí a la sala.
+- **«◀ Volver»**, abajo a la derecha en cada pantalla: en la partida va directo al mapa, sin pasar por la pausa.
 
 ## La pantalla-instrumento
 
@@ -39,7 +40,7 @@ La portada del juego y su lugar de ajustes: un osciloscopio del banco visto de c
 - **Récords**, por dificultad: el nivel más alto y las estrellas sumadas, con el aviso de que el avance vive en Chrome. También los récords del zen.
 - **Sonido:** la placa con el parlante abre los ajustes de música y efectos, los mismos de toda la colección.
 - **Manual:** la revista pegada en la pared, «Proyecto Nº 21», con cómo se juega y los especiales.
-- **«◀ Sala»** vuelve a la sala.
+- **«◀ Volver»**, abajo a la derecha, vuelve a la sala.
 
 ## Niveles: un camino continuo
 
@@ -131,9 +132,9 @@ Una placa libre, sin obstáculos, con los seis primeros componentes y todos los 
 
 Un recorrido navegable para probar en el teléfono la estructura y las imágenes vigentes, hasta que esté la partida real. No es el juego: tiene una lógica mínima propia, separada de `codigo/engine.js`. Vive en [`fogonazo/`](../../fogonazo/), en la app, y se entra desde la sala por el banco.
 
-- **Pantalla-instrumento** (`instrumento.html`), sobre la escena del P-004: las perillas Modo y Dificultad, el mapa al tocar la pantalla en Niveles, los récords con el aviso de Chrome, el sonido (perillas que se giran arrastrando y diez LEDs que siguen al dedo, con los volúmenes de toda la colección) y el manual. El zen todavía no está.
+- **Pantalla-instrumento** (`instrumento.html`), sobre la escena del P-004: las perillas Modo y Dificultad, el mapa al tocar la pantalla en Niveles, los récords con el aviso de Chrome, el sonido (perillas que giran con el dedo en círculo y diez LEDs que siguen al dedo, con los volúmenes de toda la colección) y el manual. La placa del sonido y la revista tienen aureolas que respiran por turno. El zen todavía no está.
 - **Mapa** (`mapa.html`): la señal sobre hoja milimetrada, que se arrastra de costado.
-- **Partida** (`partida.html`), con la distribución de S-08c: placa de 10 × 8, intercambio deslizando o tocando, líneas de tres o más, cascadas, pedido, estrellas y bonus por movimientos que sobran; al ganar, «Siguiente nivel». Pausa con «Seguir», «Empezar de nuevo» y «Volver al mapa». Sin especiales, obstáculos ni nota.
+- **Partida** (`partida.html`), con la distribución de S-08c: placa de 10 × 8, intercambio deslizando o tocando, líneas de tres o más, cascadas, pedido, estrellas y bonus por movimientos que sobran; al ganar, «Siguiente nivel». «◀ Volver» sale al mapa. Pausa con «Seguir», «Empezar de nuevo» y «Volver al mapa». Sin especiales, obstáculos ni nota.
 - **Sonido:** Taller suena en el instrumento y el mapa, Placa en la partida; los efectos son los de siempre (intercambio, línea que sube con la cascada, jugada inválida, ganar y perder).
 - **Niveles de prueba:** cada número da una variación del mismo nivel (dos o tres pedidos de 8 a 15 piezas, de 19 a 26 movimientos), ajustada por la dificultad como en el juego.
 - **Guardado:** la dificultad y las estrellas por nivel y dificultad, en Chrome (`estado.js`).
@@ -149,7 +150,7 @@ Un recorrido navegable para probar en el teléfono la estructura y las imágenes
 | S-09 | Las letras al tamaño del teléfono: [a · instrumento, antes y después](bocetos/S-09a-tipografias-instrumento.jpg), [b · récords](bocetos/S-09b-tipografias-records.jpg), [c · sonido y manual como página de revista](bocetos/S-09c-sonido-y-manual.jpg). Las palabras de las perillas, un poco más chicas que en la propuesta |
 | S-10 | Especiales y obstáculos en el estilo del banco: [a · especiales en la partida](bocetos/S-10a-especiales-partida.jpg), [b · obstáculos](bocetos/S-10b-obstaculos-partida.jpg), [c · lámina de detalle](bocetos/S-10c-catalogo.jpg). Después se corrigieron la batería (parada, en negro y turquesa) y la antena (sin varilla, con wifi animado) |
 
-| S-12 | «◀ Volver» abajo a la derecha y aureolas: [el instrumento](bocetos/S-12b-instrumento-volver-aureolas.jpg), con las aureolas del parlante y de la revista en su punto más alto (en la app respiran por turno); [el mapa](bocetos/S-12c-mapa-volver.jpg); [la partida](bocetos/S-12d-partida-volver.jpg), donde «Volver» sale al mapa sin pasar por la pausa. En revisión |
+| S-12 | «◀ Volver» abajo a la derecha y aureolas: [el instrumento](bocetos/S-12b-instrumento-volver-aureolas.jpg), con las aureolas del parlante y de la revista en su punto más alto (en la app respiran por turno); [el mapa](bocetos/S-12c-mapa-volver.jpg); [la partida](bocetos/S-12d-partida-volver.jpg), donde «Volver» sale al mapa sin pasar por la pausa. Aprobado (27/10) |
 
 Montajes de los pedidos de imágenes: [las piezas con patas cortas](bocetos/P-002-montaje-cortas.png) (con su [lámina de referencia](bocetos/P-002-referencia-piezas.png)), [la escena del instrumento en el teléfono](bocetos/P-004-montaje-telefono-chatgpt.png), y [los especiales](bocetos/P-005-montaje-especiales.jpg) y [los obstáculos](bocetos/P-005-montaje-obstaculos.jpg) en la partida (con su [lámina](bocetos/P-005-referencia.png)).
 

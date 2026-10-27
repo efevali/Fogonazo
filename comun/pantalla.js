@@ -13,6 +13,7 @@ window.App = (() => {
     reemplazar(url) { location.replace(new URL(url, raiz).href); },
     abrir() {},
     volver() { if (window.Pantalla.atras) window.Pantalla.atras(); },
+    salir: async () => false,
     extra: 0,
     sonido: { fx() {}, volumen: () => 7, setVolumen() {}, duck() {} },
     instalacion: { disponible: true, cuadro: false, abrir: async () => false, samsung: false, ios: false },
