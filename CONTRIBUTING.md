@@ -1,60 +1,57 @@
-# Cómo se trabaja en Fogonazo
+# Cómo se trabaja en la colección
 
-Fogonazo se desarrolla con el flujo habitual de GitHub: **issues** para lo que hay que cambiar, **milestones** para agrupar cada versión, **pull requests** para el código y un **registro de cambios** para lo publicado. Es el mismo método de [Kasa](https://github.com/efevali/kasa). Este repositorio es la única fuente de verdad del proyecto: lo que no está acá no está acordado.
+La colección se desarrolla con el flujo habitual de GitHub, el mismo de [Kasa](https://github.com/efevali/kasa): **issues** para lo que hay que cambiar, **milestones** para agrupar cada versión, **pull requests** para el código y un **registro de cambios** para lo publicado. Este repositorio es la única fuente de verdad: lo que no está acá no está acordado.
 
-Este archivo explica el método. Qué es el juego, qué hay en cada archivo y cómo se publica están en el [README](README.md).
+Qué hay en cada carpeta está en el [README](README.md); qué es la colección, en [`docs/coleccion.md`](docs/coleccion.md).
 
 ## Dónde está cada cosa
 
 | Qué | Dónde |
 |---|---|
-| Lo que falta cambiar (errores, mejoras, textos, niveles, dificultad, ideas) | [Issues](https://github.com/efevali/fogonazo/issues) |
-| Qué entra en cada versión | [Milestones](https://github.com/efevali/fogonazo/milestones): uno por versión |
-| Lo que todavía no tiene versión asignada (el *backlog*) | Issues abiertos sin milestone |
+| Lo que falta cambiar (errores, mejoras, contenido, dificultad, ideas) | [Issues](https://github.com/efevali/fogonazo/issues) |
+| Qué entra en cada versión | [Milestones](https://github.com/efevali/fogonazo/milestones), uno por versión |
+| Lo que todavía no tiene versión asignada | Issues abiertos sin milestone |
 | El código de la versión en preparación | El [pull request](https://github.com/efevali/fogonazo/pulls) en borrador de su rama |
-| Bocetos aprobados | [`docs/bocetos/`](docs/bocetos/) |
-| Qué salió en cada versión | [`CHANGELOG.md`](CHANGELOG.md) |
-| Qué es Fogonazo, sus reglas y sus niveles | [`docs/manifiesto.md`](docs/manifiesto.md) |
+| Lo común a todos los juegos y lo que sigue | [`docs/coleccion.md`](docs/coleccion.md) |
+| Reglas de dibujo, interfaz, letras y sonido | [`docs/estilo.md`](docs/estilo.md) |
+| Cómo se piden las imágenes a una IA | [`docs/imagenes.md`](docs/imagenes.md) |
 | Por qué se decidió cada cosa y qué se descartó | [`docs/decisiones.md`](docs/decisiones.md) |
-| Reglas de interfaz, dibujos, sonido y música | La **guía de estilo**, al principio del CSS de `codigo/page.html` |
+| Cada parte: estado, reglas, bocetos y arte | [`docs/sala/`](docs/sala/README.md), [`docs/fogonazo/`](docs/fogonazo/README.md), [`docs/mahjong/`](docs/mahjong/README.md) |
+| Qué salió en cada versión | [`CHANGELOG.md`](CHANGELOG.md) |
 
 ## Roles
 
-- **Producto** (la cuenta efevali): decide qué se cambia, juega en el teléfono (Android, con Chrome) y aprueba los bocetos y la vista previa. Revisa sobre el juego, no sobre el código. Los textos también se revisan en el juego, no en un documento aparte.
-- **Desarrollo**: propone, revisa cada pantalla y cada nivel por su cuenta además de las observaciones que recibe, prepara los bocetos e implementa. Las inconsistencias de código que encuentra las corrige directamente, sin informe previo; consulta solo si implican un cambio grande en la estructura del juego. Ante cualquier duda de producto, pregunta.
+- **Producto** (la cuenta efevali): decide qué se cambia, juega en el teléfono (Android, con Chrome) y aprueba bocetos, pedidos de imágenes y versiones. Revisa sobre el juego, no sobre el código. Hace los pedidos a la IA de imágenes y trae las entregas.
+- **Desarrollo**: propone, revisa cada pantalla por su cuenta además de las observaciones que recibe, prepara los bocetos, arma la lámina y el texto de cada pedido de imágenes, revisa las entregas e implementa. Las inconsistencias de código las corrige directamente; consulta si implican un cambio grande de estructura. Ante cualquier duda de producto, pregunta.
+- **La IA de imágenes** (Gemini o ChatGPT, la que tenga cupo) es una herramienta: dibuja lo que se le pide, sin rol en las decisiones. Ver [`docs/imagenes.md`](docs/imagenes.md).
 
 Criterios que valen siempre:
 
 - **Primero se conversa y se acuerda, después se implementa.** Nada se cambia en el código en el momento de la revisión.
 - **Primero boceto, siempre.** Antes de cambiar diseño, interfaz o sonido se muestra un boceto para aprobar. Los arreglos de errores y los ajustes ya acordados se aplican directo, y también lo que Producto pida implementar sin boceto.
-- **Lo visual se aprueba viéndolo**: bocetos en PNG de tamaño real, para comparar en la galería del teléfono. **El sonido, escuchándolo**: una página de prueba con las opciones, como el [muestrario](docs/muestrario.html).
-- **8 bits es el estilo por defecto y no se saca.** Todo cambio visual o de sonido se resuelve en los dos estilos. *Vale para el Fogonazo publicado; en la colección se reemplaza: Fogonazo deja el pixel art (ver el [registro de decisiones](docs/decisiones.md#colección-y-mahjong-en-curso), 26/10).*
+- **De lo general a lo particular.** La estructura se define antes que las pantallas, y las pantallas antes que los detalles.
+- **Lo visual se aprueba viéndolo, al tamaño del teléfono; el sonido, escuchándolo**, en una página de prueba con las opciones.
 - **Implementación integral**: no se publica nada aislado ni se dejan cabos sueltos.
-- **Sin duplicados**: lo que está en el juego o en este repositorio no se guarda aparte.
+- **Sin duplicados**: lo que está en el juego o en este repositorio no se guarda aparte. Lo superado se borra, con la aprobación de Producto: queda en el historial de Git.
+
+## Mientras no hay versión de la colección
+
+Hasta la 0.1.0, el diseño avanza en `docs/`: bocetos, pedidos de imágenes, prototipos y maquetas, con commits directos a `main` (GitHub Pages los publica, y así se prueban en el teléfono). Las decisiones se anotan en el [registro](docs/decisiones.md) y el estado, en el README de cada parte. Los cambios grandes de documentación van en una rama con su pull request, para revisarlos juntos. Desde la 0.1.0 vale el ciclo completo.
 
 ## El ciclo
 
-1. **Revisión.** Se juega en el teléfono, nivel por nivel y pantalla por pantalla. Cada observación (una captura con un comentario) se discute antes de registrarla.
-2. **Issue.** Lo acordado se carga como issue con la plantilla «Observación». Se redacta para que alguien pueda implementarlo sin haber visto la conversación ni la captura.
-3. **Boceto.** Si el cambio es visual o de sonido, se aprueba sobre un boceto (ver «Bocetos») y su código entra en la rama de la versión.
-4. **Tanda.** Los issues acordados se agrupan en el milestone de la versión en preparación, para probar en el teléfono pocos cambios por vez.
-5. **Implementación.** Al cerrar la revisión de la tanda se completa el pull request: lo que los bocetos no cubren se hace según el texto de cada issue. Si cambian las reglas o los niveles, se corre `herramientas/probar.js` y se recalibran los niveles afectados (ver «Dificultad»). Se prueba en la vista previa y se compara con los bocetos.
+1. **Revisión.** Se juega en el teléfono, pantalla por pantalla. Cada observación (una captura con un comentario) se discute antes de registrarla.
+2. **Issue.** Lo acordado se carga como issue con la plantilla «Observación», redactado para que alguien pueda implementarlo sin haber visto la conversación ni la captura.
+3. **Boceto.** Si el cambio es visual o de sonido, se aprueba sobre un boceto (ver «Bocetos»).
+4. **Tanda.** Los issues acordados se agrupan en el milestone de la versión en preparación, para probar pocos cambios por vez.
+5. **Implementación.** Lo que los bocetos no cubren se hace según el texto de cada issue. Si cambian las reglas o los niveles de un juego, se corren sus pruebas y se recalibra (ver la documentación de cada juego).
 6. **Publicación.** Con el ok, se sube la versión, se une el pull request a `main`, se borra la rama y se suma la versión a `CHANGELOG.md`. Los issues de la tanda se cierran solos.
 
-**Excepción:** lo que traba el juego (un nivel que no se puede terminar, un error que lo cuelga o que borra el avance) no espera la tanda. Se arregla en una rama propia y se publica enseguida como parche (0.x.**y**); después, la rama de la tanda se actualiza sobre `main`.
+**Excepción:** lo que traba un juego (algo que no se puede terminar, un error que lo cuelga o que borra el avance) no espera la tanda: se arregla en una rama propia y se publica enseguida como parche.
 
 ## Issues
 
-Cada issue lleva:
-
-- **Título:** el cambio, en una línea.
-- **Dónde:** nivel, pantalla y estilo (8 bits, 16 bits o los dos).
-- **Qué se observó.**
-- **Cambio acordado:** concreto, sin depender de la conversación.
-- **Cómo se verifica:** qué mirar en la vista previa para darlo por bueno.
-- **Boceto**, si tiene: la imagen, qué fija y qué es solo un ejemplo.
-
-### Etiquetas
+Cada issue lleva título (el cambio, en una línea), **dónde** (la sala, el juego y la pantalla), qué se observó, el cambio acordado, cómo se verifica y, si tiene, el boceto: qué fija y qué es solo ejemplo.
 
 | Etiqueta | Cuándo |
 |---|---|
@@ -63,13 +60,11 @@ Cada issue lleva:
 | `tipo: contenido` | Textos y niveles |
 | `tipo: dificultad` | Calibración: movimientos, tiempos, metas y estrellas |
 | `tipo: idea` | Algo nuevo, todavía sin forma |
-| `prioridad: alta` | Traba o arruina el juego |
+| `prioridad: alta` | Traba o arruina un juego |
 | `prioridad: media` | Conviene resolverlo en la tanda |
 | `prioridad: baja` | Detalle |
 | `por discutir` | Falta acordar el cambio |
 | `boceto` | Tiene boceto aprobado |
-
-### Estados
 
 | Estado del issue | Significa |
 |---|---|
@@ -80,40 +75,24 @@ Cada issue lleva:
 
 ## Bocetos
 
-Un boceto no se dibuja: es el juego real con los cambios propuestos, capturado a 360 × 780 px con escala 3 (1080 px de ancho, como el teléfono de referencia) con `herramientas/boceto.js`. Lo que muestra es lo que va a quedar.
-
-- Hay boceto cuando el cambio es visual (disposición, tamaños, dibujos, elementos que aparecen o desaparecen) o de sonido. Si es solo texto o comportamiento, alcanza con el issue.
-- Se numeran B-01, B-02… Un boceto puede tener varias imágenes (B-01a, B-01b…), una por estado de la pantalla o por estilo. Van en `docs/bocetos/` y se listan en su [índice](docs/bocetos/README.md), con los issues que cubren.
-- Si el cambio se ve distinto en 8 y en 16 bits, el boceto muestra los dos.
-- En el issue, cada boceto dice **qué fija** y **qué es solo ejemplo** (el avance simulado, el nivel elegido, una cantidad).
-- Su código entra en la rama de la versión como un commit propio, «B-01: …». Cada boceto se hace sobre los anteriores de la misma tanda, para que los cambios se sumen en orden.
-- Si el texto del issue y el boceto no coinciden, manda el texto. Si un cambio posterior toca una pantalla con boceto, se hace uno nuevo y el anterior se marca como superado en el índice.
-
-## Dificultad
-
-La dificultad se calibra con un bot que juega imperfecto (ver el [manifiesto](docs/manifiesto.md#dificultad)). Cuando una regla del motor o el diseño de un nivel cambian:
-
-1. `node herramientas/probar.js` tiene que terminar sin errores.
-2. `node herramientas/medir.js <niveles>` muestra cuánto cambió la tasa de victoria con los valores actuales.
-3. Si se apartó de lo buscado, `node herramientas/calibrar.js 400 0.62 <niveles>` recalibra esos niveles y actualiza `codigo/calibrated.json`. Esa es la dificultad del modo Difícil; `node herramientas/modos.js 100 <niveles>` muestra cómo quedan Normal y Fácil.
-4. Los cambios de movimientos, tiempos o colores que salgan de ahí se cuentan en el pull request y se anotan en el [registro de decisiones](docs/decisiones.md).
-
-La tasa del bot es una guía, no la última palabra: manda cómo se siente el nivel en el teléfono.
+- **Qué se boceta:** todo cambio visual (disposición, tamaños, dibujos, lo que aparece o desaparece) o de sonido. Si es solo texto o comportamiento, alcanza con el issue.
+- **Cómo:** capturas de tamaño real del teléfono en horizontal (915 × 412 a densidad 2,625, unos 2400 × 1080 píxeles), dibujadas con código o montadas sobre las imágenes vigentes; el sonido, en una página de prueba.
+- **Numeración única para toda la colección:** S-01, S-02… para los bocetos, con una letra por imagen (S-10a, S-10b…), y P-001, P-002… para los pedidos de imágenes. Cada boceto va en la carpeta `bocetos/` de su parte (`docs/sala/`, `docs/fogonazo/`, `docs/mahjong/`) y se lista en el README de esa parte, con su estado.
+- Cada boceto dice **qué fija** y **qué es solo ejemplo**. Si el texto acordado y el boceto no coinciden, manda el texto.
+- Cuando un boceto queda superado o descartado, se borra; su motivo, si importa, queda en el registro de decisiones.
 
 ## Ramas, commits y pull requests
 
-- **`main`** es lo publicado: GitHub Pages publica lo que está ahí. Solo recibe cambios de documentación y versiones terminadas.
-- **Una rama por versión**, `tanda/0.2.0`, con su pull request en borrador desde el primer boceto. Vive mientras dura la tanda y se borra al unirse a `main`.
-- **`index.html` se arma**, no se edita: cada commit que toca `codigo/` lleva también el `index.html` armado con `herramientas/armar.js`.
-- **Commits**, en español: «B-01: …» para el código de un boceto, «#12: …» para lo que implementa un issue y «0.2.0: …» para el que sube la versión.
-- **Al unir**, el pull request se aplasta en un solo commit (*squash*) cuyo título empieza con el número de versión, como pide el [README](README.md#cómo-se-publica-una-versión-nueva). Su descripción lleva «Closes #n» por cada issue, para que se cierren solos.
+- **`main`** es lo publicado: GitHub Pages publica lo que está ahí.
+- **Una rama por versión**, `tanda/0.2.0`, con su pull request en borrador desde el primer boceto. Se borra al unirse a `main`.
+- **Commits** en español: «S-10: …» para un boceto, «P-005: …» para un pedido de imágenes, «#12: …» para lo que implementa un issue y «0.2.0: …» para el que sube la versión.
+- **Al unir**, el pull request se aplasta en un solo commit (*squash*) cuyo título empieza con el número de versión. Su descripción lleva «Closes #n» por cada issue.
 
-## Vista previa y pruebas
+## Pruebas
 
-- La vista previa de cada cambio es el artefacto «Fogonazo» en claude.ai, armado con `node herramientas/vista_previa.js` y abierto en el teléfono.
-- Sin claude.ai, sirve cualquier servidor local: `python3 -m http.server` en la carpeta del repositorio y abrir `http://localhost:8000` en Chrome con la vista de teléfono de las herramientas de desarrollo.
-- Cada nivel que cambia se juega completo antes de publicar, en los dos estilos si el cambio es visual.
+- Se prueba en el teléfono, en Chrome, desde GitHub Pages, o en la computadora con un servidor local (ver el [README](README.md#herramientas)).
+- Lo que cambia se juega completo antes de publicar.
 
 ## Idioma
 
-El juego, los issues, los commits y la documentación van en español rioplatense, con voseo, como en el juego. Los textos del juego son amenos, sin errores ni redundancias, y técnicamente correctos: hablan de electrónica de verdad.
+Los juegos, los issues, los commits y la documentación van en español rioplatense, con voseo. Los textos de los juegos son amenos, sin errores ni redundancias.

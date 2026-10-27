@@ -1,0 +1,38 @@
+# Imágenes hechas con IA
+
+Cómo se piden, se revisan y se montan las imágenes de la colección. Las reglas de cómo tienen que verse están en la [guía de estilo](estilo.md).
+
+## Quién hace qué
+
+- **La IA de imágenes pinta:** fondos, escenas y piezas. Se usa la que tenga cupo: Gemini (que Producto paga) o ChatGPT (gratuito, con cupo limitado; conviene guardarlo para las imágenes grandes, con el pedido bien armado desde el boceto).
+- **Desarrollo hace todo lo demás:** el boceto de composición, la lámina de referencia, el texto del pedido, la revisión de la entrega, los recortes, las zonas táctiles, los brillos, las animaciones y el código.
+- **Producto** aprueba el pedido, lo hace en la IA y trae la entrega.
+
+## Cómo se pide
+
+- **En una conversación común con la IA**, sin herramientas intermedias (ni Gems ni documentos compartidos).
+- **Dos imágenes, en este orden:** primero el resultado esperado (por ejemplo, una entrega ya aprobada sobre magenta, para que copie la terminación), después el boceto o la lámina de Desarrollo. ChatGPT acepta solo dos imágenes por pedido.
+- **El texto, autocontenido:** todo lo que la IA necesita para el trabajo, y nada que no pueda ver ni usar (rutas, historial, enlaces de este repositorio).
+- **Cambios puntuales sobre la misma base.** Para corregir algo, se le pide que cambie una sola cosa y deje todo lo demás «exactamente igual». Funciona: al corregir el mahjong de la sala cambió alrededor del 1 % de la imagen y el resto quedó idéntico píxel por píxel. Importa porque las zonas táctiles y las animaciones se miden sobre la imagen: si algo se mueve, hay que volver a medir.
+- **Se numeran** P-001, P-002…, una numeración única para toda la colección.
+
+## Piezas sueltas
+
+- **Sobre fondo magenta**, parejo, sin sombras ni halos, para recortarlas. No verde croma, porque la bobina de Fogonazo es verde.
+- **En una grilla** (por ejemplo, de 4 × 2), en el orden de la lámina, con la misma luz y terminación entre sí.
+- **Se recortan con código:** `herramientas/sala/piezas.py` (piezas con patas, que acorta, y sombra suave) y `herramientas/sala/obstaculos.py` (objetos que ocupan la casilla entera o van debajo de una pieza), que exportan PNG de 256 × 256. Las que deben reemplazarse una por otra (los tres pads de Fogonazo) tienen que salir del mismo tamaño.
+
+## La entrega
+
+- **En PNG, bajada con la opción de descarga de la IA.** Copiarla, compartirla o capturarla da una vista previa de baja resolución; de Gemini, la descarga dio 2752 × 1536. Que la IA la suba a otro lado también la achica.
+- **Se revisa antes de aprobar:** que respete la composición, el orden y los colores pedidos; la lógica de los objetos; que lo importante quede en la franja central; y, en las piezas, que el fondo sea parejo y el recorte salga limpio.
+- **Lo aprobado se guarda en la carpeta `arte/` de su parte**, y se cuenta en su README. Lo que reemplaza a otra imagen la reemplaza en el repositorio: la anterior queda en el historial de Git.
+
+## Pedidos cerrados
+
+| Pedido | Qué | Con qué IA | Vigente |
+|---|---|---|---|
+| P-001 | Corrección del mahjong de la sala | Gemini | [`sala/arte/sala-v2.png`](sala/arte/sala-v2.png) |
+| P-002 y P-003 | Las siete piezas de Fogonazo; el P-003 rehízo la resistencia | Gemini | [`fogonazo/arte/P-003_piezas-fogonazo.jpg`](fogonazo/arte/P-003_piezas-fogonazo.jpg) |
+| P-004 | La escena de la pantalla-instrumento de Fogonazo | ChatGPT (con Gemini se apartó del boceto) | [`fogonazo/arte/P-004_escena-instrumento.png`](fogonazo/arte/P-004_escena-instrumento.png) |
+| P-005 | Especiales y obstáculos de Fogonazo | Gemini, ya en una conversación común | [`fogonazo/arte/P-005_especiales-obstaculos.jpg`](fogonazo/arte/P-005_especiales-obstaculos.jpg) |

@@ -2,13 +2,12 @@
 
 | Documento | Qué es |
 |---|---|
-| [manifiesto.md](manifiesto.md) | Qué es Fogonazo, lo que se acordó al empezar, las reglas del juego, los niveles y cómo se calibra la dificultad. Se consulta ante cualquier duda de diseño. |
-| [decisiones.md](decisiones.md) | Registro de decisiones por tema, con fecha, motivo y lo descartado. |
-| [bocetos/](bocetos/) | Bocetos aprobados, con su índice. |
-| [sala/](sala/README.md) | Trabajo en curso: la pantalla de inicio de la colección, un living de los 70 cuyos objetos son las puertas a los juegos. Imagen base, bocetos, prototipo, pedidos a Gemini y lo que sigue. |
-| [mahjong/](mahjong/README.md) | Trabajo en curso: el mahjong, primer juego nuevo de la colección. Estado, prototipo jugable y lo que sigue. |
-| [muestrario.html](muestrario.html) | Las pantallas de 16 bits, las tres tipografías que se probaron y la prueba de sonido: los tres temas y los efectos en 8 y 16 bits, y las alternativas del sonido de línea. Se abre en Chrome: https://efevali.github.io/fogonazo/docs/muestrario.html |
+| [coleccion.md](coleccion.md) | Qué es la colección, lo común a todos los juegos (recorrido, sonido, guardado, publicación) y lo que sigue. Se lee primero. |
+| [estilo.md](estilo.md) | La guía de estilo: cómo se ve y cómo suena cada parte. |
+| [imagenes.md](imagenes.md) | Cómo se piden, se revisan y se montan las imágenes hechas con IA, y los pedidos cerrados. |
+| [decisiones.md](decisiones.md) | Por qué se decidió cada cosa y qué se descartó, para no volver a discutirlo. |
+| [sala/](sala/README.md) | La sala, la pantalla de inicio: estado, imagen, objetos activos y prototipo. |
+| [fogonazo/](fogonazo/README.md) | Fogonazo: estructura, reglas, niveles, dificultad, maqueta, bocetos y arte. |
+| [mahjong/](mahjong/README.md) | El mahjong: estado, prototipo y lo que sigue. |
 
-El método de trabajo está en [CONTRIBUTING.md](../CONTRIBUTING.md); las reglas de interfaz, dibujos, sonido y música, en la guía de estilo al principio del CSS de `codigo/page.html`.
-
-El muestrario es una página fija: tiene adentro sus capturas y una copia del sonido del juego del 4/10/2026. Si el sonido cambia, la prueba de las opciones nuevas se arma como boceto aparte.
+El método de trabajo está en [CONTRIBUTING.md](../CONTRIBUTING.md).

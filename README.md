@@ -1,92 +1,58 @@
-# Fogonazo
+# Colección de minijuegos
 
-Juego de juntar tres con componentes electrónicos para el celular: 30 circuitos para armar sobre una placa de 8 × 10 y un modo zen para jugar sin límite, en 8 o 16 bits.
+Una colección de minijuegos para el celular, en horizontal, que se instala desde Chrome como una sola app. Se entra por la sala, un living de los 70 ilustrado, y algunos de sus objetos llevan a los juegos. Todavía no tiene nombre: el repositorio conserva el de `fogonazo` hasta que lo tenga (ver [decisiones](docs/decisiones.md#la-colección)).
 
-- **Juego:** https://efevali.github.io/fogonazo/ (se abre en Chrome y se instala con el botón «Instalar» del mapa, o desde el menú ⋮ → «Instalar app»). Funciona sin conexión.
-- **Vista previa:** el artefacto «Fogonazo» en claude.ai, donde se prueba cada cambio antes de publicarlo acá.
-- **Cómo se trabaja:** issues, milestones, bocetos y pull requests, en [CONTRIBUTING.md](CONTRIBUTING.md). Lo publicado, en [CHANGELOG.md](CHANGELOG.md). Qué es el juego y por qué es como es, en [`docs/`](docs/README.md).
+| Juego | Qué es | Estado |
+|---|---|---|
+| [Fogonazo](docs/fogonazo/README.md) | Juntar tres con componentes electrónicos sobre una protoboard, en el banco de la sala | Maqueta navegable; falta el juego real con la estética nueva |
+| [Mahjong](docs/mahjong/README.md) | Mahjong solitario, en modo zen | Prototipo, todavía en vertical |
 
-## Qué hay en cada archivo
+## Estado
 
-| Archivo o carpeta | Qué es |
+- **Lo publicado** en https://efevali.github.io/fogonazo/ todavía es Fogonazo como juego único, en vertical (0.6.1, del 8/10/2026). La colección lo reemplaza en esa misma dirección con su primera versión, la 0.1.0 de una numeración nueva.
+- **Para probar en el teléfono:** la [sala](https://efevali.github.io/fogonazo/docs/sala/prototipo/), que por el banco de electrónica lleva a la [maqueta de Fogonazo](https://efevali.github.io/fogonazo/docs/sala/maqueta-fogonazo/instrumento.html), y el [prototipo del mahjong](https://efevali.github.io/fogonazo/docs/mahjong/prototipo.html).
+- **Lo que sigue**, en [la colección](docs/coleccion.md#lo-que-sigue).
+
+## Dónde está cada cosa
+
+| Qué | Dónde |
 |---|---|
-| `index.html` | El juego entero, en un solo archivo. **No se edita a mano:** lo arma `herramientas/armar.js` a partir de `codigo/`. Es lo que publica GitHub Pages. |
-| `manifest.webmanifest` | La ficha que Android lee para instalarlo: nombre, ícono, colores, que abra sin barra del navegador y en vertical. |
-| `sw.js` | El *service worker*: guarda el juego en el teléfono para que funcione sin conexión y maneja las versiones nuevas. |
-| `fuentes/` | Silkscreen, Pixelify Sans, Jersey 15 y Jersey 25, con sus licencias (SIL OFL 1.1). |
-| `iconos/` | El ícono (el LED de 16 bits con su destello, sobre la placa) en los tamaños que pide Android. |
-| `codigo/` | El código del juego, sin dependencias (ver abajo). |
-| `herramientas/` | Armado, pruebas, calibración de la dificultad, versión, vista previa, íconos, tipografías y bocetos (ver abajo). |
-| `docs/` | El manifiesto del juego, el registro de decisiones, los bocetos aprobados y el muestrario de pantallas y sonidos (ver su [índice](docs/README.md)). |
-| `CONTRIBUTING.md` | El método de trabajo: issues, etiquetas, bocetos, ramas y commits. |
-| `CHANGELOG.md` | El registro de las versiones publicadas. |
+| Qué es la colección y lo común a todos los juegos | [`docs/coleccion.md`](docs/coleccion.md) |
+| Cómo se ve y cómo suena cada parte | [`docs/estilo.md`](docs/estilo.md) |
+| Cómo se piden y se montan las imágenes hechas con IA | [`docs/imagenes.md`](docs/imagenes.md) |
+| Por qué se decidió cada cosa y qué se descartó | [`docs/decisiones.md`](docs/decisiones.md) |
+| La sala, Fogonazo y el mahjong: estado, reglas, bocetos y arte | [`docs/sala/`](docs/sala/README.md), [`docs/fogonazo/`](docs/fogonazo/README.md), [`docs/mahjong/`](docs/mahjong/README.md) |
+| El método de trabajo | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
+| Lo publicado | [`CHANGELOG.md`](CHANGELOG.md) |
+
+## Qué hay en el repositorio
+
+| Carpeta o archivo | Qué es |
+|---|---|
+| `docs/` | La documentación, los bocetos, el arte vigente y los prototipos. Lo que está en `docs/` también se publica en GitHub Pages, y así se prueban los prototipos en el teléfono. |
+| `codigo/` | El código de Fogonazo publicado (0.6.1). Al armar la colección se conservan el motor (`engine.js`), los niveles (`levels.js`), la calibración (`calibrated.json`) y el sonido (`audio.js`); lo demás se retira. |
+| `herramientas/` | Armado, pruebas, calibración de la dificultad y, en `herramientas/sala/`, los dibujos con código y los recortes de las imágenes (ver abajo). |
+| `index.html`, `manifest.webmanifest`, `sw.js`, `fuentes/`, `iconos/` | Lo que publica GitHub Pages hoy: el juego armado en un solo archivo, la ficha de instalación, el *service worker* que lo deja andar sin conexión, las tipografías y los íconos. Se rehacen con la colección. |
 | `.github/` | Las plantillas de issue y de pull request. |
-| `package.json` | Los comandos y las dependencias de las herramientas (tipografías y Playwright). El juego no tiene dependencias. |
-| `.nojekyll` | Le indica a GitHub Pages que publique los archivos tal cual, sin procesarlos. |
-
-### El código
-
-| Archivo | Qué es |
-|---|---|
-| `codigo/engine.js` | El motor, sin pantalla: tablero, líneas, especiales, obstáculos, caída, válvulas, bonus, ayuda de piezas del pedido, el bot y la duración de cada animación. Corre igual en el navegador y en Node. |
-| `codigo/levels.js` | Los 30 niveles (nombre, componentes, pedido, diseño de la placa, texto y tasa de victoria buscada), los 6 bloques, el modo zen y los tres modos de dificultad. |
-| `codigo/calibrated.json` | El resultado de la calibración: movimientos o tiempo, meta de puntos y umbrales de estrellas de cada nivel. Lo escribe `herramientas/calibrar.js`. |
-| `codigo/page.html` | Estilos (8 y 16 bits) y estructura de la página. |
-| `codigo/sprites.js`, `codigo/sprites16.js` | Los dibujos en 8 bits (16 × 16) y en 16 bits (32 × 32). |
-| `codigo/audio.js` | La música y los efectos, sintetizados en el navegador: 8 bits tipo NES y 16 bits FM tipo Genesis. |
-| `codigo/clave.js` | La clave de producto: el avance en un serial con formato de Windows XP, ida y vuelta, con control de errores. Corre igual en el navegador y en Node. |
-| `codigo/game.js` | Tablero, animaciones, instrumentos del tablero, menús, guardado y flujo del juego. |
-
-## Cómo se arma
-
-Hace falta Node 18 o más nuevo.
-
-```
-node herramientas/armar.js
-```
-
-escribe `index.html` en la raíz. Para las herramientas que copian tipografías o sacan capturas, primero `npm install` y, la primera vez, `npx playwright install chromium`. Para probarlo: `python3 -m http.server` en la carpeta del repositorio y abrir `http://localhost:8000` en Chrome, con la vista de teléfono de las herramientas de desarrollo.
-
-## Cómo se publica una versión nueva
-
-1. Los cambios se hacen en `codigo/`, se arma `index.html` y se prueban en la vista previa (el artefacto «Fogonazo», abierto en el teléfono), armada con `node herramientas/vista_previa.js`.
-2. Si cambiaron las reglas o los niveles, `node herramientas/probar.js` tiene que pasar y los niveles afectados se recalibran (ver «Dificultad» en [CONTRIBUTING.md](CONTRIBUTING.md#dificultad)).
-3. Se sube el número de versión (ver «Versiones»): `node herramientas/version.js parche|menor|mayor`.
-4. Se suma la versión a `CHANGELOG.md`.
-5. Se une el pull request de la versión a `main` en un solo commit cuyo título empieza con el número de versión («0.2.0: …»); un parche urgente puede ir directo. GitHub Pages la publica en un minuto o dos.
-
-En el teléfono, el juego encuentra la versión nueva al abrirse, al volver a él después de un rato o con «Buscar» en Ajustes. Aparece «Hay una versión nueva» en Ajustes y un LED verde en el engranaje; «Actualizar» lo reabre ya actualizado. Si no se toca, entra sola al cerrar el juego del todo y volver a abrirlo.
-
-## Versiones
-
-Fogonazo usa **versionado semántico**: tres números, MAYOR.MENOR.PARCHE.
-
-- **Parche** (0.1.0 → 0.1.1): arreglos que no suman nada nuevo.
-- **Menor** (0.1.1 → 0.2.0): algo nuevo que no rompe lo anterior, como una función, un ajuste de dificultad o niveles nuevos.
-- **Mayor** (0.x → 1.0.0): mientras el primer número es 0, el juego está en desarrollo. La **1.0.0** es la versión estable y revisada, sin pendientes ni dudas. Después de la 1.0, el mayor sube solo cuando algo rompe lo anterior (por ejemplo, si el avance guardado dejara de ser compatible).
-
-Cada versión publicada se encuentra en el historial del repositorio («Commits») por su número: el título de su commit empieza con él. El registro está en [CHANGELOG.md](CHANGELOG.md). El teléfono no compara números: toma lo último que se publica. Para volver a una versión anterior se publica su contenido con un número nuevo; el historial conserva todo.
+| `package.json` | Los comandos y las dependencias de las herramientas. El juego no tiene dependencias. |
+| `.nojekyll` | Le indica a GitHub Pages que publique los archivos tal cual. |
 
 ## Herramientas
 
-- `herramientas/armar.js`: arma `index.html`.
-- `herramientas/probar.js`: juega 180 partidas con el bot y 6 partidas zen de 300 jugadas, y verifica que el tablero quede siempre consistente y que el modo zen no termine solo y renueve el encargo. Se corre después de tocar el motor.
-- `herramientas/probar_clave.js`: verifica que la clave de producto devuelva exactamente el mismo avance (2.000 avances al azar, pegados de seis formas), que rechace un carácter cambiado y que avise si la clave está incompleta. Se corre después de tocar `codigo/clave.js` o la cantidad de niveles.
+Hace falta Node 18 o más nuevo; para las que sacan capturas, `npm install` y, la primera vez, `npx playwright install chromium`. Para probar en la computadora: `python3 -m http.server` en la carpeta del repositorio y abrir `http://localhost:8000` en Chrome, con la vista de teléfono.
+
+Las del motor de Fogonazo siguen vigentes:
+
+- `herramientas/probar.js`: juega 180 partidas con el bot y 6 partidas zen de 300 jugadas, y verifica que la placa quede siempre consistente. Se corre después de tocar el motor.
 - `herramientas/calibrar.js`: recalibra la dificultad (`node herramientas/calibrar.js 400 0.62 16,17,18`: 400 partidas por nivel, con un bot que elige la mejor jugada el 62 % de las veces). Sin lista de niveles, recalibra los 30.
-- `herramientas/medir.js`: la tasa de victoria del bot con los valores calibrados actuales, para ver cuánto cambia un nivel después de tocar reglas.
-- `herramientas/modos.js`: cuántas partidas gana el bot y cuántas llegan a dos y tres estrellas en cada modo de dificultad (`node herramientas/modos.js 100`), para ajustar los factores de `MODES` en `codigo/levels.js`.
-- `herramientas/bots.js`: compara un bot como el de la calibración con uno fuerte y uno perfecto, en los 30 niveles.
+- `herramientas/medir.js`: la tasa de victoria del bot con los valores calibrados actuales.
+- `herramientas/modos.js`: cuántas partidas gana el bot y cuántas llegan a dos y tres estrellas en cada modo de dificultad.
+- `herramientas/bots.js`: compara el bot de la calibración con uno fuerte y uno perfecto.
 - `herramientas/ayuda_piezas.js`: mide los niveles de pedido de piezas con y sin la ayuda de piezas del pedido.
-- `herramientas/version.js`: sube la versión (`parche`, `menor` o `mayor`) en el juego y en `sw.js`, pone la fecha de hoy y vuelve a armar. Con `fecha`, solo cambia la fecha.
-- `herramientas/vista_previa.js`: arma la vista previa para el artefacto de claude.ai (el mismo `index.html`, con las tipografías adentro del archivo y sin manifiesto) en `dist/vista-previa.html`.
-- `herramientas/fuentes.js`: copia las tipografías de los paquetes de npm a `fuentes/`, con sus licencias, y verifica que tengan todos los caracteres de los textos del juego.
-- `herramientas/iconos.js`: dibuja los íconos con los dibujos de 16 bits del juego (`herramientas/iconos.html`).
-- `herramientas/boceto.js`: captura una pantalla tal como se ve en el teléfono, con el avance y el estilo que se le indiquen, para los bocetos (ver [CONTRIBUTING.md](CONTRIBUTING.md#bocetos)).
+- `herramientas/sala/`: los dibujos con código de los bocetos (`escena-banco.html`, `escena-instrumento*.html`, `arte-s10.js`, `catalogo-s10.html`, `referencia-p005.html`) y los recortes de las imágenes sobre magenta (`piezas.py` y `obstaculos.py`, con Python, Pillow, NumPy y SciPy).
 
-## Progreso
+Las demás (`armar.js`, `version.js`, `vista_previa.js`, `boceto.js`, `fuentes.js`, `iconos.js`, `probar_clave.js`) son del Fogonazo publicado y se rehacen o se retiran al armar la colección.
 
-Se guarda en el teléfono, dentro de los datos de Chrome para este sitio, con la clave `chispazo.v1` (el nombre anterior del juego). El juego le pide a Android que no lo borre por falta de espacio. En Ajustes › Progreso está la **clave de producto**: un serial que guarda las estrellas de cada modo y los récords zen, para copiarlo y recuperar el avance pegándolo en «Cargar una clave» (en este u otro teléfono). Ahí mismo está «Borrar progreso», que borra solo el avance de Fogonazo.
+## Versiones
 
-El sitio, `efevali.github.io`, es el mismo de Kasa: comparten los datos de Chrome, aunque cada uno guarda lo suyo con su propia clave y su service worker solo toca lo propio. Por eso, borrar los datos del sitio desde la configuración de Chrome borra el avance de los dos.
-
-El avance de la vista previa de claude.ai es aparte: se guarda en la cuenta de claude.ai y no pasa a la versión instalable.
+Versionado semántico: MAYOR.MENOR.PARCHE. Un parche arregla sin sumar nada; una menor suma algo sin romper lo anterior; mientras el primer número sea 0, la colección está en desarrollo. Cada versión se encuentra en el historial («Commits») porque el título de su commit empieza con el número, y se registra en [CHANGELOG.md](CHANGELOG.md).

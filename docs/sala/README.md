@@ -1,125 +1,40 @@
-# La sala (en curso)
+# La sala
 
-Trabajo en curso: la pantalla de inicio de la colección de minijuegos que va a contener a Fogonazo, al mahjong y a los juegos que vengan. Es un living ilustrado donde algunos objetos, los objetos activos, llevan a los juegos. Todavía no forma parte de Fogonazo publicado ni tiene issues ni versión. Las decisiones están en el [registro](../decisiones.md#colección-y-mahjong-en-curso); acá figuran el estado, los archivos y cómo seguir.
+La pantalla de inicio de la colección: un living de los 70 ilustrado donde algunos objetos, los objetos activos, llevan a los juegos. Cómo se ve está en la [guía de estilo](../estilo.md#la-sala); por qué es así, en el [registro de decisiones](../decisiones.md#la-sala).
 
-## Estado al 26/10/2026
+## Estado
 
-- **Imagen base vigente:** [`arte/sala-v2.png`](arte/sala-v2.png), de 2752 × 1536, generada con Gemini. Vista frontal de un living de los 70, al atardecer con lluvia.
-- **Piezas de Fogonazo vigentes:** [`arte/fogonazo/P-003_piezas-fogonazo.jpg`](arte/fogonazo/P-003_piezas-fogonazo.jpg), las siete piezas básicas de Gemini sobre fondo magenta, para recortar. Al montarlas se acortan las patas, como en el [montaje con patas cortas](bocetos/P-002-montaje-cortas.png).
-- **Pantalla-instrumento de Fogonazo vigente:** [`arte/fogonazo/P-004_escena-instrumento.png`](arte/fogonazo/P-004_escena-instrumento.png), de 1679 × 937, hecha con ChatGPT sobre el boceto S-08a.
-- **Prototipo:** [`prototipo/`](prototipo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/prototipo/. Es la misma página que el artefacto «Sala de los 70» de claude.ai, con la imagen en alta.
-- Producto lo vio y dijo: «tiene aspecto de juego profesional».
-- Producto lo probó en el teléfono (25/10): los objetos activos se ven bien. El brillo que se repetía después de tocar un objeto se arregló el 26/10 (ver «Por revisar»).
-- **Maqueta de Fogonazo** (26/10): [`maqueta-fogonazo/`](maqueta-fogonazo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/maqueta-fogonazo/. Es la partida del boceto S-06a con las piezas de Gemini. Ver «Maqueta de Fogonazo» más abajo. Producto la probó en el teléfono: «se ve muy bien», y se sigue adelante con esta estética.
+- **Imagen base vigente:** [`arte/sala-v2.png`](arte/sala-v2.png), de 2752 × 1536, generada con Gemini. Vista frontal, al atardecer con lluvia.
+- **Prototipo:** [`prototipo/`](prototipo/index.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/sala/prototipo/. Producto lo probó en el teléfono: los objetos activos se ven bien, y «tiene aspecto de juego profesional».
 
 ## Qué hace el prototipo
 
-- **Tres objetos activos**, sin carteles ni marcas; cada uno brilla apenas por turno, cada unos 5 s:
-  - **Banco de electrónica → Fogonazo.** Desde el 26/10 lleva a la [maqueta de Fogonazo](maqueta-fogonazo/instrumento.html), a la pantalla-instrumento; «◀ Sala» vuelve. Antes abría una tarjeta «próximamente» con aspecto de tapa de kit de electrónica.
-  - **Mesa ratona con el mahjong → Mahjong.** Tarjeta «próximamente» con aspecto de estuche de paño rojo.
-  - **Equipo de audio → Sonido.** Panel con aspecto de frente de receiver, con música, efectos y lluvia. La lluvia de fondo suena de verdad; música y efectos todavía no están conectados.
-- **Ambiente animado:** lluvia afuera y gotas que bajan por el vidrio (pasan por detrás de la lámpara de arco), traza del osciloscopio, LEDs del banco, vapor de la tetera, cera de la lámpara de lava, disco girando, vúmetros y lámparas que respiran apenas.
-- **Herramientas de prueba:** un botón muestra las zonas táctiles; otro pone pantalla completa y bloquea en horizontal donde el navegador lo permite. En vertical, se ve la sala entera, achicada.
+- **Tres objetos activos**, que brillan apenas por turno:
+  - **El banco de electrónica** lleva a la [maqueta de Fogonazo](maqueta-fogonazo/instrumento.html), que vuelve con «◀ Sala».
+  - **La mesa ratona con el mahjong** abre una tarjeta «próximamente» con aspecto de estuche de paño rojo.
+  - **El equipo de audio** abre el sonido, un panel con aspecto de frente de receiver, con música, efectos y lluvia. La lluvia suena de verdad; música y efectos todavía no están conectados.
+- **El ambiente animado** de la [guía de estilo](../estilo.md#la-sala).
+- **Herramientas de prueba:** un botón muestra las zonas táctiles; otro pone pantalla completa y bloquea en horizontal donde el navegador lo permite. En vertical se ve la sala entera, achicada.
 
 ## Archivos
 
 | Carpeta | Qué hay |
 |---|---|
-| [`arte/`](arte/) | La imagen base vigente, en la resolución original de Gemini. |
-| [`arte/historial/`](arte/historial/) | Las imágenes anteriores: (1) la prueba del sector del equipo de audio con ChatGPT; (2a) la de Gemini elegida, con la costilla de Adán, que fue la base del primer prototipo; (2b) su alternativa; (3) la primera sala completa de Gemini, con el mahjong mal resuelto. |
-| [`bocetos/`](bocetos/) | Las pruebas que hizo Desarrollo dibujando con código, de la S-01 a la S-05 (ver abajo). |
+| [`arte/`](arte/) | La imagen base vigente, en la resolución original. |
+| [`bocetos/`](bocetos/) | [S-05](bocetos/S-05-composicion-sala.jpg), la composición de la sala completa que se le pasó a la IA. Queda como guía para futuras ediciones de la imagen. |
 | [`prototipo/`](prototipo/) | La página, la imagen base para la web, una copia aclarada para el brillo de los objetos activos y las máscaras de cada objeto activo y de la ventana. |
-| [`maqueta-fogonazo/`](maqueta-fogonazo/index.html) | La maqueta jugable de la partida de Fogonazo: la página, el fondo prerenderizado, las piezas recortadas y las fuentes. |
+| [`maqueta-fogonazo/`](maqueta-fogonazo/instrumento.html) | La maqueta de Fogonazo, que se cuenta en [su documentación](../fogonazo/README.md#la-maqueta). Vive acá para que la sala la abra directamente. |
 
-Las referencias que se usaron para orientar el estilo (las ilustraciones isométricas y las fotos de livings de época) no se guardan acá: son de terceros y el repositorio es público. Para eso está la carpeta Referencias de Drive, que es privada (ver «Trabajo con Gemini en Drive»).
+Las referencias de estilo de terceros (ilustraciones isométricas, fotos de livings de época, el recorte de revista) no se guardan en este repositorio, que es público.
 
-### Bocetos
+## Notas técnicas
 
-| Boceto | Qué es | Estado |
-|---|---|---|
-| [S-01](bocetos/S-01-isometrica-neutra.jpg) | Primera prueba: living neutro en isométrica, en vertical | Descartado: muy simple, y los muebles mal construidos (el sillón, la biblioteca y los cajones que salían de costado) |
-| [S-02](bocetos/S-02-isometrica-70.jpg) | Living de los 70 en isométrica, con luz calculada, en vertical | Descartado: luces excesivas, gato falso, y todo se veía chico en vertical |
-| S-03 | Encuadres en horizontal: [a · isométrica recortada](bocetos/S-03a-encuadre-isometrica-recortada.png), [b · vista frontal](bocetos/S-03b-encuadre-vista-frontal.png), [c · isométrica con arrastre](bocetos/S-03c-encuadre-isometrica-con-arrastre.png); y los juegos: [d · Fogonazo 10 × 8](bocetos/S-03d-fogonazo-horizontal.png), [e · mahjong «tortuga»](bocetos/S-03e-mahjong-horizontal.png) | Se eligió la b. La d y la e son la referencia para pasar los juegos a horizontal (ninguna se aprobó como diseño final) |
-| S-04 | Pruebas de estilo en vista frontal, del sector del equipo de audio: [a](bocetos/S-04a-prueba-frontal.jpg), [b · más detalle](bocetos/S-04b-prueba-frontal-detalle.jpg) | Superadas: se pasó a generar las imágenes con Gemini |
-| [S-05](bocetos/S-05-composicion-sala.jpg) | Composición de la sala completa en vista frontal | Vigente como guía de composición: es la que se le pasó a Gemini |
-| S-06 | Fogonazo en horizontal con estética de la colección (26/10): [a · banco](bocetos/S-06a-fogonazo-banco.png), componentes reales sobre una protoboard en el banco de nogal, con display de LED, instrumento de aguja, etiquetas Dymo y el pedido en una ficha; [b · kit](bocetos/S-06b-fogonazo-kit.png), piezas ilustradas planas en la bandeja de una caja de kit de los 70 | Se eligió la a (26/10): es la base del pedido de piezas a Gemini (P-002). Después de elegirla se le agregaron las patas a la resistencia, que no se dibujaban. La b queda como alternativa si las piezas de Gemini no sirven |
-| S-07 | Estructura nueva de Fogonazo (26/10, ver [estructura](../estructura.md)): [a · pantalla-instrumento en Niveles](bocetos/S-07a-fogonazo-instrumento-niveles.png), [b · en Récords, con el aviso de Chrome](bocetos/S-07b-fogonazo-instrumento-records.png), [c · sonido con el parlante y los vúmetros](bocetos/S-07c-fogonazo-sonido.png), [d · mapa continuo en una placa verde](bocetos/S-07d-fogonazo-mapa.png), [e · nota de cuaderno de una novedad](bocetos/S-07e-fogonazo-nota.png) | Revisado el 26/10: la idea sirve, pero el instrumento tiene que verse real, en perspectiva y voluminoso (con Gemini); la placa del parlante, de pertinax como un proyecto de revista; el mapa, una señal sobre hoja milimetrada; la nota, bien, con la partida menos amontonada. Sigue en S-08 |
-| S-08 | [a · escena del instrumento en perspectiva](bocetos/S-08a-fogonazo-escena-instrumento.png), composición para Gemini ([versión limpia](bocetos/S-08a-fogonazo-escena-instrumento-limpia.png), sin textos ni contenido de pantalla); [b · mapa como señal medida sobre hoja milimetrada](bocetos/S-08b-fogonazo-mapa-milimetrado.png); [c · partida redistribuida con la nota](bocetos/S-08c-fogonazo-partida-nota.png) | Aprobado: es la base de la maqueta de Fogonazo |
-| S-09 | Legibilidad de la maqueta de Fogonazo (26/10), capturada al tamaño del teléfono: [a · instrumento, antes y después](bocetos/S-09a-tipografias-instrumento.jpg), [b · récords](bocetos/S-09b-tipografias-records.jpg), [c · sonido y manual como página de revista](bocetos/S-09c-sonido-y-manual.jpg) | Aprobado (26/10), con las palabras de las perillas un poco más chicas que en la propuesta, porque casi desbordaban el frente |
-| S-10 | Especiales y obstáculos en el estilo del banco (26/10), dibujados con código como guía para el pedido de imágenes: [a · especiales en la partida](bocetos/S-10a-especiales-partida.jpg) (rayo en fila y en columna, sobrecarga, batería de 9 V en dos colores, antena con un símbolo de wifi animado), [b · obstáculos en la partida](bocetos/S-10b-obstaculos-partida.jpg) (pads en sus tres estados, quemados, cinta kapton, válvulas, huecos y zócalo), [c · lámina de detalle](bocetos/S-10c-catalogo.jpg). Se generan con [`herramientas/sala/arte-s10.js`](../../herramientas/sala/arte-s10.js), [`boceto-s10.js`](../../herramientas/sala/boceto-s10.js) sobre la maqueta y [`catalogo-s10.html`](../../herramientas/sala/catalogo-s10.html) | Revisado el 26/10: la batería, parada y en dos colores (como la conocida pila de tope cobre, en negro y turquesa); la antena sin varilla, que no se entendía, con un símbolo de wifi animado. Base del pedido P-005 |
+- **Coordenadas:** las zonas táctiles y las animaciones están en el sistema de 2576 × 1438 de la primera descarga de la imagen; la imagen en alta se dibuja escalada en ese mismo recuadro y coincide sin corrimientos (se verificó).
+- **Si la imagen cambia,** se pide un cambio puntual sobre ella (ver [imágenes](../imagenes.md#cómo-se-pide)), para no tener que volver a medir.
+- **El brillo de cada objeto activo** va en una capa propia, separada del destello del toque, para que el ciclo de aviso no se interrumpa.
 
-## Cómo se trabaja la imagen
+## Por definir
 
-- **Una IA de imágenes (Gemini o ChatGPT) genera las imágenes; Desarrollo hace todo lo demás**: la composición, la revisión (lógica de los muebles, posición de los objetos activos, franja segura), las zonas táctiles, los brillos, las animaciones y el código.
-- **Cambios puntuales sobre la misma base.** Se le pide a Gemini que cambie una sola cosa y deje el resto «exactamente igual». Funciona: al corregir el mahjong cambió alrededor del 1 % de la imagen, y la comparación píxel por píxel mostró todo lo demás idéntico. Importa porque las zonas táctiles y las animaciones se miden sobre la imagen: si algo se mueve, hay que volver a medir.
-- **Bajar la imagen con la opción de descarga de Gemini.** Copiarla, compartirla o capturarla da una vista previa (salió una de 512 × 286). La descarga dio 2752 × 1536 en PNG. Que Gemini suba la imagen directo a Drive también da una versión reducida (salió un JPEG de 1375 × 768 con nombre .png).
-- **Proporción.** La imagen es casi 16:9 y el teléfono en horizontal ronda 20:9: se recorta arriba y abajo. Lo importante tiene que quedar en la franja central, alrededor del 80 % del alto.
-- **Coordenadas del prototipo.** Están en el sistema de 2576 × 1438 de la primera descarga; la imagen en alta se dibuja escalada en ese mismo recuadro y coincide sin corrimientos (se verificó).
-- **Lo que se anima, chico y simple.** Cuando la imagen ya trae algo que se va a animar (la cera de la lámpara de lava, la etiqueta del disco, la traza del osciloscopio), se repinta encima.
-
-### Trabajo con Gemini en Drive (retirado el 26/10)
-
-> **Retirado.** Desde el P-005, los pedidos se hacen en una conversación común con cualquier IA de imágenes, sin Gem ni Drive: dos imágenes (primero el resultado esperado, por ejemplo una entrega aprobada sobre magenta; después el boceto de Desarrollo) y el pedido en texto, autocontenido. ChatGPT admite solo dos imágenes por pedido. La carpeta de Drive y la mesa quedan como están, sin uso. Lo que sigue queda como historia.
-
-Desde el 25/10, Gemini es una herramienta de edición de imágenes: ejecuta pedidos escritos por Desarrollo y aprobados por Producto, dentro de una Gem llamada «Minijuegos». El intercambio pasa por la carpeta privada «IAs - Proyectos / Minijuegos» del Drive de Producto, a la que Desarrollo entra con los conectores de Google Drive y Google Docs.
-
-- **Mesa de trabajo:** el único documento. Lo escribe Desarrollo y Gemini lo lee antes de cada trabajo. Tiene la mecánica general (roles, ciclo de cada pedido, carpetas), las exigencias técnicas (formato y resolución, ediciones puntuales, franja segura, objetos activos, elementos animados, objetos sueltos, nombres de archivo), lo vigente, los temas abiertos y los pedidos en curso. Es general: lo propio de cada pantalla va solo en «Lo vigente» y en los pedidos. Queda solo lo actual; el historial se guarda en este repositorio.
-- **Carpetas:** Entregas (lo entregado, sin revisar), Vigentes (lo que está en uso), Superados (lo reemplazado) y Referencias (material para orientar el estilo o la composición: imágenes de terceros y bocetos de Desarrollo). Desarrollo revisa cada entrega y, si se aprueba, la mueve a Vigentes y pasa la anterior a Superados.
-- **Los pedidos siguen la numeración P-002, P-003…** El P-001 es la corrección del mahjong (abajo).
-- **En la mesa, solo lo que Gemini puede abrir o usar** (26/10). Nada de rutas ni enlaces de este repositorio, ni datos que no le sirven para el trabajo: cada archivo que un pedido necesita se sube a Drive y la mesa lo nombra ahí.
-- **Este repositorio sigue siendo la fuente de verdad.** Las imágenes aprobadas se copian a `arte/` y las decisiones se registran en el registro de decisiones.
-
-Antes se probó que Gemini tuviera rol de equipo, con una memoria propia que editaba él mismo y un documento conjunto con Desarrollo. Desde la Gem, la edición resultó poco confiable y la Gem se limita a responder pedidos, así que se descartó. La memoria quedó en Superados.
-
-### Pedidos a Gemini
-
-Desde el 25/10 los pedidos se escriben en la mesa de trabajo; cuando se cierran, su historial se registra acá. Cerrados desde entonces:
-
-- **P-002, piezas de Fogonazo** (26/10). Las siete piezas básicas con la terminación de la sala, en una grilla de 4 × 2 sobre fondo magenta (no verde croma, porque la bobina es verde), a partir de la lámina [`P-002-referencia-piezas.png`](bocetos/P-002-referencia-piezas.png), hecha con las piezas del boceto S-06a. La lámina y el boceto se subieron a Referencias y Gemini los leyó solo. **Entrega:** [`arte/historial/P-002_piezas-fogonazo.jpg`](arte/historial/P-002_piezas-fogonazo.jpg), 2752 × 1536; llegó como JPEG con nombre de fecha, bajado desde el teléfono. **Revisión:** aprobada como prueba. Las piezas son coherentes entre sí, están en el orden pedido y son técnicamente correctas. El fondo es parejo (253, 0, 252, con un desvío de 1,5), sin sombra ni halo, y el recorte sale limpio. Desvíos: el LED trae patas que la lámina no tenía, y el cerámico y el cristal, patas largas (como en la lámina). Así, en la casilla, las patas achican los cuerpos ([montaje tal cual](bocetos/P-002-montaje-tal.png)). Se resuelve en código: las patas se acortan al montar las piezas, como si estuvieran clavadas en la protoboard ([montaje con patas cortas](bocetos/P-002-montaje-cortas.png)). Al electrolítico le falta la ranura de la tapa, que no se nota a tamaño de juego. La resistencia queda finita; se pidió engrosarla en el P-003. Al responder «procedé» en el chat, Gemini no trabajó: el pedido figuraba como entregado y con turno de Claude, y la mesa manda.
-
-- **P-003, resistencia más gruesa** (26/10). Edición puntual sobre la entrega del P-002: solo la resistencia, con el cuerpo el doble de largo que de alto y patas cortas. **Entrega:** [`arte/fogonazo/P-003_piezas-fogonazo.jpg`](arte/fogonazo/P-003_piezas-fogonazo.jpg), 2752 × 1536, otra vez en JPEG (una primera subida fue una vista reducida de 1024 × 572). **Revisión:** la edición fue puntual, y fuera de la celda 1 solo cambió la punta de la pata que asomaba en la celda 2. Pero no cumplió el objetivo: Gemini agrandó la resistencia entera, de 160 a 200 píxeles de alto y también más larga, sin cambiar la proporción (2,4 a 1). Montada en la casilla queda igual que la del P-002, a 14 píxeles de alto ([comparación](bocetos/P-003-comparacion-resistencia.png)). Desarrollo propuso engrosarla en código, estirada un 35 % (unos 19 píxeles), y Producto prefirió el dibujo original de Gemini. Queda vigente la del P-003, que tiene la misma forma pero más resolución. Reemplaza entera a la del P-002, porque las otras seis piezas son idénticas.
-- **P-004, escena del instrumento** (26/10). La pantalla propia de Fogonazo a partir de la composición [S-08a](bocetos/S-08a-fogonazo-escena-instrumento-limpia.png), con la sala y el recorte de revista de Producto (en Referencias de Drive) como referencias. **Con Gemini** costó mucho que hiciera lo pedido; la entrega ([historial](arte/historial/P-004_escena-instrumento-gemini.jpg), 2752 × 1536 en JPEG) se aparta del boceto: parece un televisor visto de frente, con una sola fila de LEDs, el parlante a la derecha, pared de madera y mucho desgaste ([montaje](bocetos/P-004-montaje-telefono-gemini.png)). **Con ChatGPT**, Producto le pasó la sala, el boceto y solo el extracto del pedido, sin la mesa: respetó el boceto (tapa con rejillas, dos filas de LEDs, placa girada, parlante conectado, pared de la sala) y quedó más limpio ([montaje](bocetos/P-004-montaje-telefono-chatgpt.png)). Salió de 1679 × 937, en PNG; el teléfono la estira un 43 %, aceptable por el estilo pintado. El título de la revista trae letras inventadas, chicas y casi fuera del recorte. **Vigente: la de ChatGPT.**
-- **P-005, especiales y obstáculos** (26/10). Las ocho piezas que dibuja la IA, a partir de la lámina [`P-005-referencia.png`](bocetos/P-005-referencia.png) (salida de [`herramientas/sala/referencia-p005.html`](../../herramientas/sala/referencia-p005.html)): batería, pad de cobre, pad con remaches, pad soldado, quemado, quemado con carcasa TO-3, válvula y zócalo octal. Lo demás (flechas del rayo, halo de la sobrecarga, wifi de la antena, cinta kapton, hollín, madera del hueco, tira del zócalo) se dibuja con código. Fue la primera prueba de la mecánica nueva: ChatGPT no tenía cupo, así que Producto lo hizo con Gemini, **sin la Gem**, en una conversación común con las dos imágenes (primero las piezas del P-003 como resultado esperado, después la lámina) y el pedido en texto. **Entrega:** [`arte/fogonazo/P-005_especiales-obstaculos.jpg`](arte/fogonazo/P-005_especiales-obstaculos.jpg), 2576 × 1438 en JPEG. **Revisión:** aprobada. Respetó orden, formas y colores de la lámina con la terminación de las piezas; los tres pads salieron idénticos (471 × 471 píxeles), así que se reemplazan uno por otro sin corrimientos; el vidrio de la válvula salió ahumado y opaco, sin magenta a través; fondo parejo (252, 0, 252, con un desvío de 2,5), sin sombras ni halos, recorte limpio. Detalles menores: el contorno oscuro toma un tinte violeta muy leve en los bordes, que no se nota a tamaño de juego, y el TO-3, ancho y bajo, queda algo chico en la casilla (se puede agrandar en código). Recortes con [`herramientas/sala/obstaculos.py`](../../herramientas/sala/obstaculos.py) en `maqueta-fogonazo/piezas/`; montaje en la partida: [especiales](bocetos/P-005-montaje-especiales.jpg) y [obstáculos](bocetos/P-005-montaje-obstaculos.jpg).
-
-> Te paso dos imágenes. La primera es un boceto de composición de la sala completa de mi juego (vista frontal). La segunda es la ilustración que ya aprobamos del sector del equipo de audio. Convertí el boceto en una ilustración con exactamente el mismo estilo, paleta e iluminación que la segunda imagen.
-> - Mantené el encuadre y la posición de cada mueble del boceto.
-> - El sector del equipo de audio tiene que verse igual que en la segunda imagen: bafles, aparador con bandeja, receiver, grabador de cinta, casetera y discos; el cuadro del arcoíris con su lámpara; la costilla de Adán; la lámpara de lava; la biblioteca con la lámpara hongo.
-> - Izquierda: banco de electrónica de aficionado de los 70, con osciloscopio, protoboard con LEDs, soldador, cajonera de componentes, lámpara articulada verde, tablero perforado con herramientas, estante con manuales y una radio, y una banqueta.
-> - Centro: ventana con lluvia y ciudad al atardecer, cortinas ocre, sillón de corderoy color óxido con almohadones mostaza, crema y oliva y una manta tejida doblada, lámpara de arco con pantalla de bronce sobre una mesa ratona de nogal con un mahjong en juego (estuche abierto, muro de fichas, fichas en mano, tetera y tazas), y alfombra peluda.
-> - Derecha, adelante: puf de cuero.
-> - Muebles con construcción lógica: los brazos del sillón van de punta a punta y los cajones abren hacia adelante.
-> - Luz cálida pero no exagerada. Sin texto, logos ni personas.
-> - Dejá los objetos importantes lejos de los bordes de arriba y de abajo, porque se van a recortar.
-
-El resultado (historial, 3) salió bien salvo el mahjong: el muro de fichas eran libros y la mano, una barra con letras inventadas. Se corrigió con:
-
-> En la mesa ratona, reemplazá la pila de libros verdes y la barra gris por fichas de mahjong reales: una fila de fichas apiladas boca abajo con el dorso verde, y una fila de fichas paradas de frente, color marfil, con símbolos tradicionales (círculos, bambúes y caracteres chinos), sin letras latinas. Las fichas dentro del estuche abierto, también con esos símbolos. Dejá todo lo demás exactamente igual.
-
-## Maqueta de Fogonazo
-
-Un recorrido navegable para probar en el teléfono la estructura nueva ([estructura](../estructura.md)) con las imágenes vigentes. No es el juego: tiene una lógica mínima propia, separada de `codigo/engine.js`. Se entra por https://efevali.github.io/fogonazo/docs/sala/maqueta-fogonazo/instrumento.html.
-
-- **Pantalla-instrumento** ([`instrumento.html`](maqueta-fogonazo/instrumento.html)), sobre la escena del P-004. La perilla «Modo» pasa entre Niveles, Zen y Récords; la de «Dificultad», entre Fácil, Normal y Difícil (se toca la palabra o la perilla, que gira). En Niveles, tocar la pantalla abre el mapa; el zen todavía no está. Récords muestra, por dificultad, el nivel más alto y las estrellas, y el aviso de que el avance vive en Chrome. La placa con el parlante abre el sonido: música y efectos, con perillas que se giran arrastrando y una fila de diez LEDs que sigue al dedo (tocar el primero cuando está solo apaga el canal); los LEDs de la placa de la escena muestran los volúmenes. La revista de la pared abre el manual, una página de revista de hobbista («Proyecto Nº 21») pegada con cinta: título, bajada, dos columnas en serif, foto en sepia con trama y los especiales. «◀ Sala» vuelve al prototipo de la sala.
-- **Mapa** ([`mapa.html`](maqueta-fogonazo/mapa.html)), como en S-08b: la señal sobre hoja milimetrada, que se arrastra de costado; lo jugado en tinta con sus estrellas, lo que viene en lápiz. Se juega el nivel siguiente o se repite uno pasado.
-- **Partida** ([`index.html`](maqueta-fogonazo/index.html)), con la distribución de S-08c: etiqueta con el nivel y la dificultad, marcador, pedido compacto. Placa de 10 × 8, intercambio deslizando o tocando, líneas de tres o más, cascadas, pedido, estrellas y bonus por movimientos que sobran; al ganar, «Siguiente nivel». Sin especiales, obstáculos ni música.
-- **Niveles de prueba:** cada número da una variación del mismo nivel (dos o tres pedidos de 8 a 15 piezas, de 19 a 26 movimientos), ajustada por la dificultad como en el juego: Fácil 30 % más de movimientos y 20 % menos de puntos por estrella; Normal, 12 % y 10 %.
-- **Guardado:** la dificultad, los volúmenes y las estrellas por nivel y dificultad, en Chrome (`comun.js`).
-- **Letras (S-09):** nada por debajo de unos 10 píxeles reales en el teléfono, porque la escena del instrumento se dibuja a un 55 % de la imagen. El osciloscopio usa IBM Plex Mono SemiBold con un brillo simple; perillas, sonido y botones, Barlow Semi Condensed; el manual, PT Serif.
-- **Cómo está hecha:** cada pantalla dibuja encima de su imagen lo que cambia. El fondo de la partida sale de [`herramientas/sala/escena-banco.html`](../../herramientas/sala/escena-banco.html) con `?v=a2&bg=1`, capturado a 915 × 412 con densidad 2,625; las piezas, de la imagen del P-003 con [`herramientas/sala/piezas.py`](../../herramientas/sala/piezas.py); la pantalla-instrumento usa la imagen del P-004 tal cual, con las medidas de la pantalla, las perillas y los LEDs tomadas sobre ella.
-
-## Por revisar
-
-- ~~**Observaciones de Producto sobre la maqueta de Fogonazo** (26/10).~~ Resueltas el mismo día con el S-09: letras más grandes en todas las pantallas del instrumento, el manual como página de revista, las perillas del sonido giran (el lienzo tomaba el arrastre como desplazamiento; ahora tiene `touch-action: none`) y los LEDs del volumen siguen al dedo. Falta probarlo en el teléfono. Quedan sin tocar los rótulos «MOVIMIENTOS» y «PUNTOS» de la partida, pintados en el fondo: legibles pero justos.
-
-- **La lámpara de arco** se lee como apoyada contra la ventana, detrás del sillón, y no sobre la mesa. Se decidió dejarla así: corregirla toca la geometría y es arriesgado.
-- ~~**El brillo de un objeto activo después de usarlo.**~~ Arreglado el 26/10. Al cerrar el panel, el objeto tocado se volvía a iluminar enseguida y quedaba desfasado de los otros dos, porque el destello del toque reemplazaba la animación de aviso y esta arrancaba de cero. Ahora el destello va en una capa propia y el ciclo de aviso no se interrumpe nunca.
-- **Coherencia entre la sala y cada juego.** El mahjong tiene hoy la estética de Kasa (verde papel y tinta azul) y Fogonazo la de 8 y 16 bits; la sala es una ilustración de los 70. Decidido el 26/10: Fogonazo deja el pixel art, y los juegos pueden tener estilos distintos pero tienen que sentirse parte de la colección. Falta definir cómo se ve cada juego y cómo se pasa de la sala al juego.
-
-## Lo que sigue
-
-1. ~~Maqueta de la partida de Fogonazo en horizontal (boceto S-06a) con las piezas de Gemini recortadas, para probar en el teléfono.~~ Hecha y aprobada (26/10).
-2. Estructura de colección en el repositorio: la sala como pantalla de inicio y cada juego como módulo, con lo común aparte (sonido, guardado, «atrás» de Android, instalación).
-3. Fogonazo en horizontal, con tablero de 10 × 8 y el marcador a los costados (referencia: S-03d). Obliga a transponer y recalibrar los niveles.
-4. El mahjong en horizontal (referencia: S-03e).
-5. Los menús, y la sala como juego de buscar y encontrar.
-6. El nombre de la colección. El repositorio se renombra después.
+- La transición de la sala a cada juego.
+- La música de la sala, si la tiene.
+- Los menús, y la sala como juego de buscar y encontrar.
