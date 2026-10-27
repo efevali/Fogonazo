@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="es">
 <meta charset="utf-8">
-<title>S-11 · ícono y ajustes de la colección</title>
-<!-- Boceto S-11. Open from the repo root through a local server and capture with Playwright:
-     ?hoja=iconos            the two icon options, 915 x 412 at density 2.625
-     ?hoja=inicio            both icons on an Android home screen, 412 x 915 at density 2.625
-     ?hoja=panel&estado=chrome | nueva | guia   the settings panel of the hi-fi, over the room -->
+<title>S-11 · ajustes de la colección</title>
+<!-- Boceto S-11: the settings of the collection in the hi-fi panel (sound and install), over the room.
+     Open from the repo root through a local server and capture with Playwright at 915 x 412, density 2.625:
+     ?estado=chrome | instalada | guia
+     The icon in the install row is the provisional one: the rainy window cropped from the room. -->
 <style>
 @font-face { font-family: Fraunces; font-weight: 100 900; src: url(../../docs/sala/maqueta-fogonazo/fuentes/fraunces-latin-soft-normal.woff2) format('woff2'); }
 @font-face { font-family: Barlow; font-weight: 500; src: url(../../docs/sala/maqueta-fogonazo/fuentes/barlow-semi-condensed-latin-500-normal.woff2) format('woff2'); }
@@ -19,38 +19,11 @@
 html, body { margin: 0; height: 100%; background: var(--night); font-family: var(--label); color: #f3e6d0; overflow: hidden; }
 [hidden] { display: none !important; }
 
-/* ---------- sheet: icons ---------- */
-.sheet-icons { width: 915px; height: 412px; display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: #1b1512; }
-.opt { padding: 18px 22px; display: grid; grid-template-rows: auto auto 1fr auto; gap: 6px; }
-.opt + .opt { border-left: 1px solid rgba(243, 230, 208, .12); }
-.opt h2 { margin: 0; font: 600 22px/1 var(--display); font-variation-settings: "SOFT" 100; }
-.opt .sub { margin: 0; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; opacity: .6; font-weight: 600; }
-.opt .row { display: flex; align-items: end; gap: 18px; align-self: center; }
-.opt figure { margin: 0; display: grid; gap: 5px; justify-items: center; font-size: 12px; letter-spacing: .06em; opacity: .9; }
-.opt iframe { border: 0; background: transparent; display: block; }
-.opt p { margin: 0; font-size: 14px; line-height: 1.35; opacity: .85; }
-
-/* ---------- sheet: home screen ---------- */
-.home { width: 412px; height: 915px; position: relative;
-  background: radial-gradient(ellipse at 30% 20%, #3b4a63, #1d2433 55%, #12151d); }
-.home .status { height: 26px; display: flex; justify-content: space-between; padding: 0 18px; align-items: center; font: 600 13px var(--label); color: #e9ecf3; }
-.home .clock { margin: 74px 0 0 28px; font: 300 64px/1 var(--label); color: #f2f4f8; letter-spacing: -.01em; }
-.home .date { margin: 6px 0 0 30px; font: 500 15px var(--label); color: #d9deea; }
-.grid { position: absolute; left: 0; right: 0; bottom: 120px; display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 22px; }
-.app { display: grid; justify-items: center; gap: 6px; font: 500 12.5px var(--label); color: #f2f4f8; text-shadow: 0 1px 2px rgba(0, 0, 0, .6); }
-.app .ic { width: 54px; height: 54px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; }
-.app .ic.g { font: 600 22px var(--label); color: rgba(255, 255, 255, .9); }
-.app iframe { border: 0; display: block; }
-.dock { position: absolute; left: 22px; right: 22px; bottom: 34px; height: 64px; border-radius: 32px; background: rgba(255, 255, 255, .14);
-  display: flex; justify-content: space-around; align-items: center; }
-.dock span { width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, .22); }
-.home .tag { position: absolute; left: 0; right: 0; top: 300px; text-align: center; font: 500 13px var(--label); color: #d9deea; opacity: .8; }
-
 /* ---------- sheet: settings panel over the room ---------- */
 .stage { width: 915px; height: 412px; position: relative; }
 .stage svg.room { position: absolute; inset: 0; width: 100%; height: 100%; }
 .veil { position: absolute; inset: 0; background: rgba(10, 6, 4, .5); display: grid; place-items: center; }
-.plate { width: 660px; display: grid; grid-template-columns: 16px 1fr 16px; border-radius: 10px; overflow: hidden;
+.plate { width: 600px; display: grid; grid-template-columns: 16px 1fr 16px; border-radius: 10px; overflow: hidden;
   box-shadow: 0 18px 40px rgba(0, 0, 0, .55), 0 2px 0 rgba(255, 255, 255, .08) inset; }
 .cap { background: linear-gradient(90deg, var(--walnut-deep), var(--walnut) 45%, var(--walnut-deep)); }
 .face { background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .07) 0 1px, rgba(0, 0, 0, .03) 1px 2px), linear-gradient(180deg, var(--alu), var(--alu-shade));
@@ -67,18 +40,10 @@ html, body { margin: 0; height: 100%; background: var(--night); font-family: var
 .track b { position: absolute; top: 12px; width: 1px; height: 4px; background: #5a544c; }
 .rule { height: 0; border-top: 1px solid rgba(0, 0, 0, .28); border-bottom: 1px solid rgba(255, 255, 255, .55); margin: 2px 0; }
 .inst { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; }
-.inst .ic { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; box-shadow: 0 1px 3px rgba(0, 0, 0, .4); }
-.inst .ic iframe { border: 0; display: block; }
+.inst .ic { width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0, 0, 0, .4);
+  background: url(../../docs/sala/prototipo/sala.jpg) -63.9px -18.2px / 196.6px auto no-repeat; }
 .inst b { display: block; font-size: 16px; font-weight: 700; letter-spacing: .01em; }
 .inst small { display: block; font-size: 14px; font-weight: 500; opacity: .8; margin-top: 1px; }
-.ver { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 12px; align-items: center; }
-.dialwin { background: linear-gradient(180deg, #0c1418, #16252b); border-radius: 4px; padding: 5px 10px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, .7), 0 1px 0 rgba(255, 255, 255, .5);
-  font: 600 14px var(--label); letter-spacing: .08em; color: var(--dial); text-shadow: 0 0 6px rgba(127, 227, 255, .6); white-space: nowrap; }
-.dialwin em { font-style: normal; opacity: .65; margin-right: 6px; }
-.pilot { display: flex; align-items: center; gap: 7px; white-space: nowrap; font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
-.pilot .led { flex: none; width: 10px; height: 10px; border-radius: 50%; background: #3e4a3a; box-shadow: inset 0 1px 2px rgba(0, 0, 0, .6); }
-.pilot.on .led { background: var(--green); box-shadow: 0 0 9px var(--green); }
-.pilot.off { opacity: .55; }
 .btn { border-radius: 6px; padding: 7px 14px; font: 600 14px var(--label); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
 .btn.dark { display: flex; align-items: center; gap: 9px; background: #2a2622; color: #f3ead6; border: 0; box-shadow: 0 2px 0 #11100e; }
 .btn.dark .lamp { width: 9px; height: 9px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 8px var(--amber); }
@@ -94,65 +59,28 @@ ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622
 
 <body>
 <script>
-const q = new URLSearchParams(location.search);
-const hoja = q.get('hoja') || 'iconos', estado = q.get('estado') || 'chrome';
-const ICON = (v, size, mask = 'none') => `<iframe src="boceto-s11-icono.html?v=${v}&size=${size}&mask=${mask}" width="${size}" height="${size}" scrolling="no"></iframe>`;
-
-if (hoja === 'iconos') {
-  const opt = (v, name, note) => `<section class="opt">
-    <h2>${v.toUpperCase()} · ${name}</h2><p class="sub">Boceto de encuadre: el dibujo final lo haría la IA</p>
-    <div class="row">
-      <figure>${ICON(v, 210)}<span>CUADRADO</span></figure>
-      <figure>${ICON(v, 120, 'circle')}<span>RECORTADO POR ANDROID</span></figure>
-      <figure>${ICON(v, 54, 'circle')}<span>TAMAÑO REAL</span></figure>
-    </div>
-    <p>${note}</p></section>`;
-  document.body.innerHTML = `<div class="sheet-icons">${
-    opt('a', 'De pie frente a la ventana', 'Alguien parado en el living, frente al sillón, mirando la lluvia. Cabeza y hombros grandes: se lee bien chico.')}${
-    opt('b', 'De rodillas en el sillón', 'Alguien arrodillado en el sillón, mirando por encima del respaldo. Se ve más la sala, pero la figura queda más chica.')}</div>`;
+const estado = new URLSearchParams(location.search).get('estado') || 'chrome';
+const room = `<svg class="room" viewBox="0 120 2576 1200" preserveAspectRatio="xMidYMid slice"><image href="../../docs/sala/prototipo/sala.jpg" width="2576" height="1438"/></svg>`;
+const vol = (name, v) => `<div class="vrow"><label>${name}</label><div class="track">${
+  Array.from({ length: 11 }, (_, i) => `<b style="left:${i * 10}%"></b>`).join('')}<i style="left:${v * 10}%"></i></div><output>${v}</output></div>`;
+const sound = vol('Música', 7) + vol('Efectos', 8) + vol('Lluvia', 5);
+const install = `<div class="rule"></div><div class="inst"><span class="ic"></span>
+    <span><b>Instalá Minijuegos en tu teléfono</b><small>Queda entre tus apps y funciona sin conexión.</small></span>
+    <button class="btn dark"><span class="lamp"></span>Instalar</button></div>`;
+let face;
+if (estado === 'guia') {
+  face = `<div class="head"><h2>Instalar Minijuegos</h2><span>Ajustes</span></div>
+    <ol class="steps">
+      <li><span class="n">1</span><span>Tocá <span class="kebab" role="img" aria-label="el menú de tres puntos"></span> arriba a la derecha de Chrome.</span></li>
+      <li><span class="n">2</span><span>Elegí <b>«Instalar app»</b>. Si dice «Agregar a la pantalla principal», tocá esa y después <b>«Instalar»</b>.</span></li>
+    </ol>
+    <p class="hint">Si abriste el enlace desde otra app, como WhatsApp o Gmail, primero tocá <span class="kebab"></span> y <b>«Abrir en Chrome»</b>.</p>
+    <div class="foot"><button class="btn ghost">Entendido</button></div>`;
+} else {
+  face = `<div class="head"><h2>Ajustes</h2><span>Minijuegos</span></div>${sound}${estado === 'chrome' ? install : ''}
+    <div class="foot"><button class="btn ghost">Listo</button></div>`;
 }
-
-if (hoja === 'inicio') {
-  const g = (bg, t, l) => `<div class="app"><span class="ic g" style="background:${bg}">${t}</span>${l}</div>`;
-  const ours = v => `<div class="app"><span class="ic">${ICON(v, 54, 'circle')}</span>Minijuegos</div>`;
-  document.body.innerHTML = `<div class="home">
-    <div class="status"><span>16:20</span><span>▾ ◢ ▮</span></div>
-    <div class="clock">16:20</div><div class="date">martes 27 de octubre</div>
-    <div class="tag">A la izquierda la opción A; a la derecha, la B</div>
-    <div class="grid">
-      ${g('#3d7d6a', '◷', 'Reloj')}${g('#5b6fb5', '▦', 'Calendario')}${g('#b5634a', '✉', 'Correo')}${g('#8a6bb0', '♪', 'Música')}
-      ${ours('a')}${g('#4a8db5', '☁', 'Clima')}${g('#a8904a', '✎', 'Notas')}${ours('b')}
-    </div>
-    <div class="dock"><span></span><span></span><span></span><span></span></div></div>`;
-}
-
-if (hoja === 'panel') {
-  const room = `<svg class="room" viewBox="0 120 2576 1200" preserveAspectRatio="xMidYMid slice"><image href="../../docs/sala/prototipo/sala.jpg" width="2576" height="1438"/></svg>`;
-  const vol = (name, v) => `<div class="vrow"><label>${name}</label><div class="track">${
-    Array.from({ length: 11 }, (_, i) => `<b style="left:${i * 10}%"></b>`).join('')}<i style="left:${v * 10}%"></i></div><output>${v}</output></div>`;
-  const sound = vol('Música', 7) + vol('Efectos', 8) + vol('Lluvia', 5);
-  const install = `<div class="rule"></div><div class="inst"><span class="ic">${ICON('a', 40, 'circle')}</span>
-      <span><b>Instalá Minijuegos en tu teléfono</b><small>Queda entre tus apps y funciona sin conexión.</small></span>
-      <button class="btn dark"><span class="lamp"></span>Instalar</button></div>`;
-  const version = nueva => `<div class="rule"></div><div class="ver">
-      <span class="dialwin"><em>VERSIÓN</em>0.1.0 · 3/11/2026</span>
-      <span class="pilot ${nueva ? 'on' : 'off'}"><span class="led"></span>${nueva ? 'Versión nueva' : 'Al día'}</span>
-      ${nueva ? '<button class="btn dark"><span class="lamp"></span>Actualizar</button>' : '<button class="btn ghost">Buscar</button>'}
-      <button class="btn ghost">Listo</button></div>`;
-  let face;
-  if (estado === 'guia') {
-    face = `<div class="head"><h2>Instalar Minijuegos</h2><span>Ajustes</span></div>
-      <ol class="steps">
-        <li><span class="n">1</span><span>Tocá <span class="kebab" role="img" aria-label="el menú de tres puntos"></span> arriba a la derecha de Chrome.</span></li>
-        <li><span class="n">2</span><span>Elegí <b>«Instalar app»</b>. Si dice «Agregar a la pantalla principal», tocá esa y después <b>«Instalar»</b>.</span></li>
-      </ol>
-      <p class="hint">Si abriste el enlace desde otra app, como WhatsApp o Gmail, primero tocá <span class="kebab"></span> y <b>«Abrir en Chrome»</b>.</p>
-      <div class="foot"><button class="btn ghost">Entendido</button></div>`;
-  } else {
-    face = `<div class="head"><h2>Ajustes</h2><span>Minijuegos</span></div>${sound}${estado === 'chrome' ? install : ''}${version(estado === 'nueva')}`;
-  }
-  document.body.innerHTML = `<div class="stage">${room}<div class="veil"><div class="plate"><div class="cap"></div><div class="face">${face}</div><div class="cap"></div></div></div></div>`;
-}
+document.body.innerHTML = `<div class="stage">${room}<div class="veil"><div class="plate"><div class="cap"></div><div class="face">${face}</div><div class="cap"></div></div></div></div>`;
 </script>
 </body>
 </html>
