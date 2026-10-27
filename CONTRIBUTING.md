@@ -84,9 +84,10 @@ Cada issue lleva título (el cambio, en una línea), **dónde** (la sala, el jue
 ## Ramas, commits y pull requests
 
 - **`main`** es lo publicado: GitHub Pages publica lo que está ahí.
-- **Una rama por versión**, `tanda/0.2.0`, con su pull request en borrador desde el primer boceto. Se borra al unirse a `main`.
-- **Commits** en español: «S-10: …» para un boceto, «P-005: …» para un pedido de imágenes, «#12: …» para lo que implementa un issue y «0.2.0: …» para el que sube la versión.
-- **Al unir**, el pull request se aplasta en un solo commit (*squash*) cuyo título empieza con el número de versión. Su descripción lleva «Closes #n» por cada issue.
+- **Cada versión entra a `main` en un solo commit**, con el OK de Producto, cuyo título empieza con el número («0.4.0: …») y cuyo mensaje lleva «Closes #n» por cada issue que resuelve: así se cierran solos y la versión queda en el historial, lista para volver a ella. Sin pull requests: el registro es el mismo y cuesta menos (decidido el 27/10).
+- **Una sola rama de trabajo, `trabajo`**, para guardar en GitHub lo que todavía no se publica (la sesión de Desarrollo corre en una máquina que se puede borrar). Se reusa en cada versión, así no se juntan ramas viejas.
+- **Commits** en español: «S-10: …» para un boceto, «P-005: …» para un pedido de imágenes, «#12: …» para lo que implementa un issue y «0.2.0: …» para la versión.
+- **Para volver atrás:** se publica como versión nueva el contenido de la versión a la que se quiere volver; el historial conserva todo.
 
 ## Pruebas
 

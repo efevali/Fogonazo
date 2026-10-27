@@ -159,6 +159,8 @@ Un recorrido navegable para probar en el teléfono la estructura y las imágenes
 
 | S-12 | «◀ Volver» abajo a la derecha y aureolas: [el instrumento](bocetos/S-12b-instrumento-volver-aureolas.jpg), con las aureolas del parlante y de la revista en su punto más alto (en la app respiran por turno); [el mapa](bocetos/S-12c-mapa-volver.jpg); [la partida](bocetos/S-12d-partida-volver.jpg), donde «Volver» sale al mapa sin pasar por la pausa. Aprobado (27/10) |
 
+| S-13 | La partida real, lo que faltaba: [a · la pausa](bocetos/S-13a-pausa.jpg), una placa de aluminio con sus tornillos y teclas de cinta Dymo (la principal, en cinta roja); [b · nivel ganado](bocetos/S-13b-fin-gano.jpg) y [c · nivel perdido](bocetos/S-13c-fin-perdio.jpg), una etiqueta de control de calidad atada con un hilo, con las estrellas y el sello «Aprobada» o «Rechazada» en tinta, y lo que faltó; [d · la partida zen](bocetos/S-13d-partida-zen.jpg), con un reloj en el display, el instrumento sin estrellas y una marca de lápiz rojo en el récord, y el encargo optativo en la ficha; [e · fin del zen](bocetos/S-13e-fin-zen.jpg), un parte de trabajo con puntos, tiempo y récords. Capturas de la maqueta con `fogonazo/partida.html?boceto=…`; el fondo zen sale de `herramientas/sala/escena-banco.html?v=a2&bg=1&zen=1` | En revisión |
+
 Montajes de los pedidos de imágenes: [las piezas con patas cortas](bocetos/P-002-montaje-cortas.png) (con su [lámina de referencia](bocetos/P-002-referencia-piezas.png)), [la escena del instrumento en el teléfono](bocetos/P-004-montaje-telefono-chatgpt.png), y [los especiales](bocetos/P-005-montaje-especiales.jpg) y [los obstáculos](bocetos/P-005-montaje-obstaculos.jpg) en la partida (con su [lámina](bocetos/P-005-referencia.png)).
 
 ## Por definir
