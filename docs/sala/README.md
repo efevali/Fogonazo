@@ -59,7 +59,7 @@ Las referencias que se usaron para orientar el estilo (las ilustraciones isomét
 
 ### Trabajo con Gemini en Drive (retirado el 26/10)
 
-> **Retirado.** Desde el P-005, los pedidos se hacen en una conversación común con cualquier IA de imágenes, sin Gem ni Drive: dos imágenes (primero el resultado esperado, por ejemplo una entrega aprobada sobre magenta; después el boceto de Desarrollo) y el pedido en texto, autocontenido. ChatGPT admite solo dos imágenes por pedido. Lo que sigue queda como historia.
+> **Retirado.** Desde el P-005, los pedidos se hacen en una conversación común con cualquier IA de imágenes, sin Gem ni Drive: dos imágenes (primero el resultado esperado, por ejemplo una entrega aprobada sobre magenta; después el boceto de Desarrollo) y el pedido en texto, autocontenido. ChatGPT admite solo dos imágenes por pedido. La carpeta de Drive y la mesa quedan como están, sin uso. Lo que sigue queda como historia.
 
 Desde el 25/10, Gemini es una herramienta de edición de imágenes: ejecuta pedidos escritos por Desarrollo y aprobados por Producto, dentro de una Gem llamada «Minijuegos». El intercambio pasa por la carpeta privada «IAs - Proyectos / Minijuegos» del Drive de Producto, a la que Desarrollo entra con los conectores de Google Drive y Google Docs.
 
