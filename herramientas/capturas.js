@@ -87,6 +87,19 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   await tocar('.lvl[data-n="1"]'); await listo();
   ok(ruta() === 'fogonazo/partida.html', 'el nivel 1 abre la partida'); await foto('09-fogonazo-partida');
   ok(await tema() === 'Placa', 'en la partida suena Placa');
+  // un intercambio con dos toques: hay que encontrar uno que forme línea (gasta un movimiento)
+  const movs = () => pantalla().evaluate(() => window.__maqueta.state().moves);
+  const tablero = await (await pantalla().$('#board')).boundingBox();
+  const marco = await (await pantalla().frameElement()).boundingBox();
+  const celda = (r, c) => [marco.x + tablero.x + (c + .5) * tablero.width / 10, marco.y + tablero.y + (r + .5) * tablero.height / 8];
+  const antes = await movs(); let jugo = false;
+  for (let r = 0; r < 8 && !jugo; r++) for (let c = 0; c < 9 && !jugo; c++) {
+    await page.touchscreen.tap(...celda(r, c)); await espera(60);
+    await page.touchscreen.tap(...celda(r, c + 1)); await espera(500);
+    jugo = (await movs()) !== antes;
+  }
+  ok(jugo, 'las piezas se intercambian con dos toques');
+  await espera(1500);
   await atras(); ok(await abierto('#menu') && ruta() === 'fogonazo/partida.html', 'en la partida, «atrás» abre la pausa'); await foto('10-fogonazo-pausa');
   await tocar('#menu [data-act="resume"]'); ok(!(await abierto('#menu')), '«Seguir» cierra la pausa');
   await atras(); ok(await abierto('#menu'), 'después de seguir, «atrás» vuelve a abrir la pausa');
