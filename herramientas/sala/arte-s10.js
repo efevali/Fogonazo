@@ -31,6 +31,8 @@ window.S10 = (() => {
     <linearGradient id="s10wood" x1="0" y1="0" x2="1" y2=".3"><stop offset="0" stop-color="#7c4523"/><stop offset=".5" stop-color="#6a3a1c"/><stop offset="1" stop-color="#5a3016"/></linearGradient>
     <linearGradient id="s10shadowT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#140902" stop-opacity=".7"/><stop offset="1" stop-color="#140902" stop-opacity="0"/></linearGradient>
     <linearGradient id="s10shadowL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#140902" stop-opacity=".6"/><stop offset="1" stop-color="#140902" stop-opacity="0"/></linearGradient>
+    <linearGradient id="s10teal" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0f7e86"/><stop offset=".25" stop-color="#3fc6c8"/><stop offset=".55" stop-color="#1fa3a8"/><stop offset="1" stop-color="#0b5f66"/></linearGradient>
+    <linearGradient id="s10smoke" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6f787e"/><stop offset=".25" stop-color="#b9c4c8"/><stop offset=".5" stop-color="#8e989d"/><stop offset="1" stop-color="#5a6268"/></linearGradient>
   </defs>`;
 
   const g = (x, y, s, body, extra = '') => `<g transform="translate(${x} ${y}) scale(${s / 100})" ${extra}>${body}</g>`;
@@ -50,31 +52,20 @@ window.S10 = (() => {
     sobreUnder: () => `<circle cx="50" cy="52" r="58" fill="url(#s10hot)"/><circle cx="50" cy="52" r="40" fill="url(#s10hot)"/>`,
     sobreOver: () => `<g filter="url(#s10ember)">${[[16, 18], [86, 22], [12, 80], [88, 84], [50, 6]].map(([x, y], i) => `<path d="M${x - 4},${y} h8 M${x},${y - 4} v8" stroke="#fff4c8" stroke-width="${i % 2 ? 2 : 2.6}" stroke-linecap="round"/>`).join('')}</g>
       <path d="M30,8 q4,-6 0,-12 M50,4 q4,-6 0,-12 M70,8 q4,-6 0,-12" stroke="#ffd59a" stroke-width="1.6" fill="none" opacity=".5"/>`,
-    // Battery: a 9 V battery whose label has the seven component colors.
-    bateria: () => {
-      const cols = ['#e07a2a', '#2f6fd6', '#e33a2c', '#3e9a4a', '#7a4bb3', '#e7b52a', '#b9c0c6'];
-      const band = cols.map((c, i) => `<rect x="${29 + i * 6}" y="40" width="6.2" height="36" fill="${c}"/>`).join('');
-      return `<g filter="url(#s10drop)" transform="translate(50 56) scale(1.18) translate(-50 -56)">
-        <rect x="27" y="22" width="46" height="70" rx="4" fill="url(#s10bat)"/>
-        ${band}
-        <rect x="29" y="40" width="42" height="36" fill="url(#s10gloss)"/>
-        <rect x="29" y="38" width="42" height="2" fill="#d9d9d9" opacity=".6"/><rect x="29" y="76" width="42" height="2" fill="#d9d9d9" opacity=".6"/>
-        <text x="50" y="88" text-anchor="middle" font-family="Barlow, sans-serif" font-weight="700" font-size="9" fill="#e9e5dc">9V</text>
-        <rect x="27" y="18" width="46" height="8" rx="2" fill="#5a5d61"/>
-        <path d="M34,18 v-8 h12 v8 z" fill="url(#s10steel)"/><path d="M35,10 l4,-3 h4 l4,3 z" fill="#c9cdd1"/>
-        <rect x="55" y="9" width="11" height="9" rx="4" fill="url(#s10steel)"/><circle cx="60.5" cy="10" r="3.5" fill="#e6e9ec"/>
-        <rect x="31" y="24" width="4" height="64" rx="2" fill="#fff" opacity=".18"/>
-      </g>`;
-    },
-    // Antenna: the component with a short telescopic whip and two wave arcs.
-    antena: () => `<g filter="url(#s10drop)">
-        <circle cx="70" cy="44" r="5.5" fill="#4a4e53"/><circle cx="70" cy="44" r="3.2" fill="#c9cdd1"/>
-        <path d="M70,44 L77,26" stroke="#2f3236" stroke-width="7.5" stroke-linecap="round"/><path d="M70,44 L77,26" stroke="#d3d7da" stroke-width="5" stroke-linecap="round"/>
-        <path d="M77,26 L82,13" stroke="#2f3236" stroke-width="5.6" stroke-linecap="round"/><path d="M77,26 L82,13" stroke="#e6e9ec" stroke-width="3.4" stroke-linecap="round"/>
-        <path d="M82,13 L85,5" stroke="#2f3236" stroke-width="4" stroke-linecap="round"/><path d="M82,13 L85,5" stroke="#f5f6f7" stroke-width="2.2" stroke-linecap="round"/>
-        <circle cx="85.5" cy="4.5" r="4" fill="#eef0f2" stroke="#2f3236" stroke-width="1.3"/></g>
-      <g filter="url(#s10blue)" fill="none" stroke="#f2fdff" stroke-linecap="round"><path d="M76,-3 A11,11 0 0 0 76,12" stroke-width="3"/><path d="M95,-3 A11,11 0 0 1 95,12" stroke-width="3"/>
-        <path d="M69,-8 A18,18 0 0 0 69,17" stroke-width="2.4" opacity=".6"/><path d="M102,-8 A18,18 0 0 1 102,17" stroke-width="2.4" opacity=".6"/></g>`,
+    // Battery: a standing 9 V battery, two-tone like the well-known copper-top scheme but black and turquoise; no text.
+    bateria: () => `<g filter="url(#s10drop)">
+        <rect x="26" y="20" width="48" height="74" rx="5" fill="url(#s10bat)"/>
+        <path d="M26,25 a5,5 0 0 1 5,-5 h38 a5,5 0 0 1 5,5 v19 h-48 z" fill="url(#s10teal)"/>
+        <rect x="26" y="43" width="48" height="3" fill="url(#s10steel)"/>
+        <rect x="26" y="20" width="48" height="74" rx="5" fill="url(#s10gloss)"/>
+        <rect x="26" y="20" width="48" height="74" rx="5" fill="none" stroke="#141416" stroke-width="1.6"/>
+        <path d="M34,20 v-8 h12 v8 z" fill="url(#s10steel)"/><path d="M35,12 l4,-3 h4 l4,3 z" fill="#c9cdd1"/>
+        <rect x="54" y="11" width="12" height="9" rx="4" fill="url(#s10steel)"/><circle cx="60" cy="12" r="3.6" fill="#e6e9ec"/>
+      </g>`,
+    // Antenna: the component with a wifi-like symbol whose arcs light up in turn (animated in the game).
+    antena: () => `<g filter="url(#s10blue)" fill="none" stroke="#f2fdff" stroke-linecap="round" transform="translate(78 30)">
+        <circle cx="0" cy="0" r="4" fill="#f2fdff" stroke="none"/>
+        <path d="M-9,-9 A12.7,12.7 0 0 1 9,-9" stroke-width="4.6"/><path d="M-16,-16 A22.6,22.6 0 0 1 16,-16" stroke-width="4.6"/><path d="M-23,-23 A32.5,32.5 0 0 1 23,-23" stroke-width="4.2" opacity=".55"/></g>`,
 
     // ---------- obstacles ----------
     // Copper pad under a component: one pass solders it.
@@ -84,7 +75,9 @@ window.S10 = (() => {
     pad2: () => D.pad1() + [[14, 14], [86, 14], [14, 86], [86, 86]].map(([x, y]) => `<circle cx="${x}" cy="${y + 1.5}" r="7" fill="#3a1c08" opacity=".5"/><circle cx="${x}" cy="${y}" r="6.5" fill="url(#s10brass)"/><circle cx="${x}" cy="${y}" r="2.2" fill="#4a3608"/>`).join(''),
     // Soldered pad: tinned, shiny.
     padOk: () => `<rect x="3" y="3" width="94" height="94" rx="9" fill="#b8bdc1"/><rect x="5" y="5" width="90" height="90" rx="8" fill="url(#s10tin)"/>
-      <ellipse cx="34" cy="28" rx="18" ry="8" fill="#fff" opacity=".55" transform="rotate(-20 34 28)"/>`,
+      <ellipse cx="50" cy="52" rx="24" ry="22" fill="#8d959b"/><ellipse cx="50" cy="50" rx="22" ry="20" fill="url(#s10tin)"/>
+      <ellipse cx="42" cy="42" rx="8" ry="5" fill="#fff" opacity=".8" transform="rotate(-25 42 42)"/>
+      <ellipse cx="30" cy="22" rx="14" ry="5" fill="#fff" opacity=".45" transform="rotate(-20 30 22)"/>`,
     // Burnt component: a charred, cracked blob with a scorch mark on the board. One hit.
     quem1: () => `<circle cx="50" cy="54" r="50" fill="url(#s10scorch)"/>
       <path d="M22,62 C14,44 26,22 46,20 C66,16 84,30 80,52 C86,70 70,86 50,84 C34,86 20,78 22,62 Z" fill="url(#s10char)" filter="url(#s10drop)"/>
@@ -108,13 +101,13 @@ window.S10 = (() => {
     valvula: () => `<circle cx="50" cy="50" r="40" fill="#ffa040" opacity=".35" filter="url(#s10soft)"/><g filter="url(#s10drop)" transform="translate(50 54) scale(1.3 1.12) translate(-50 -54)">
         ${[38, 46, 54, 62].map(x => `<rect x="${x - 1.2}" y="88" width="2.4" height="9" fill="#c9cdd1"/>`).join('')}
         <path d="M30,78 h40 v10 a4,4 0 0 1 -4,4 h-32 a4,4 0 0 1 -4,-4 z" fill="url(#s10bake)"/>
-        <rect x="38" y="36" width="24" height="34" rx="2" fill="#5d646a"/><rect x="40" y="38" width="20" height="30" fill="#3d4247"/>
+        <path d="M28,80 V30 C28,14 38,8 50,8 C62,8 72,14 72,30 V80 Z" fill="url(#s10smoke)"/>
+        <rect x="38" y="36" width="24" height="34" rx="2" fill="#4a5056"/><rect x="40" y="38" width="20" height="30" fill="#2c3035"/>
         <rect x="46.5" y="32" width="7" height="40" fill="#ffc070" filter="url(#s10ember)"/><rect x="48.8" y="34" width="2.4" height="36" fill="#fff4d0"/>
-        <path d="M28,80 V30 C28,14 38,8 50,8 C62,8 72,14 72,30 V80 Z" fill="url(#s10glass)" stroke="#ffffff" stroke-opacity=".55" stroke-width="1.5"/>
-        <path d="M30,30 C30,16 40,10 50,10 C60,10 70,16 70,30 C64,24 36,24 30,30 Z" fill="url(#s10getter)" opacity=".9"/>
-        <rect x="33" y="30" width="5" height="46" rx="2.5" fill="#fff" opacity=".45"/>
-      </g>
-      `,
+        <path d="M30,30 C30,16 40,10 50,10 C60,10 70,16 70,30 C64,24 36,24 30,30 Z" fill="url(#s10getter)"/>
+        <rect x="32" y="30" width="5" height="46" rx="2.5" fill="#fff" opacity=".55"/><rect x="64" y="34" width="2.5" height="40" rx="1.2" fill="#fff" opacity=".3"/>
+        <path d="M28,80 V30 C28,14 38,8 50,8 C62,8 72,14 72,30 V80 Z" fill="none" stroke="#3a4146" stroke-width="1.6"/>
+      </g>`,
     // Hole: no protoboard there; the walnut bench shows through, with the board's cut edge.
     hueco: () => `<rect x="0" y="0" width="100" height="100" fill="url(#s10wood)"/><rect x="0" y="0" width="100" height="100" fill="#000" filter="url(#s10grain)" opacity=".9"/>`,
   };

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<!-- Reference sheet for image request P-005: the eight new objects on magenta, 4 × 2, like the P-002 sheet.
+     Only the objects: glows, sparks, scorch, tape and waves are drawn by code in the game. -->
+<style>html, body { margin: 0; background: #ff00ff; } svg { display: block; }</style>
+</head>
+<body>
+<svg id="s" width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg"></svg>
+<script src="arte-s10.js"></script>
+<script>
+const D = S10.D, Z = 360;
+// strip what belongs to code (scorch halo, outer glow) from the object drawings
+const noHalo = str => str.replace(/<circle cx="50" cy="5[04]" r="50" fill="url\(#s10scorch\)"\/>/, '').replace(/<circle cx="50" cy="50" r="40" fill="#ffa040"[^>]*\/>/, '');
+// a single octal tube socket, seen like the pieces: from the front, a little from above
+const zocalo = () => `<g filter="url(#s10drop)">
+  <rect x="14" y="58" width="72" height="22" rx="4" fill="url(#s10bake)"/>
+  <ellipse cx="50" cy="58" rx="36" ry="16" fill="#4a3022"/><ellipse cx="50" cy="57" rx="33" ry="14" fill="#2a1a10"/>
+  <ellipse cx="50" cy="57" rx="10" ry="4.6" fill="#0e0805"/><rect x="48" y="51" width="4" height="4" fill="#0e0805"/>
+  ${[...Array(8)].map((_, i) => { const a = (i / 8) * Math.PI * 2 + .2; return `<ellipse cx="${50 + 24 * Math.cos(a)}" cy="${57 + 9.6 * Math.sin(a)}" rx="3" ry="1.6" fill="#0e0805"/><ellipse cx="${50 + 24 * Math.cos(a)}" cy="${57 + 9.6 * Math.sin(a) - .4}" rx="1.6" ry=".8" fill="#c9a13e"/>`; }).join('')}
+  <path d="M18,66 Q50,74 82,66" stroke="#6a4a32" stroke-width="1.4" fill="none"/>
+  ${[22, 78].map(x => `<rect x="${x - 7}" y="60" width="14" height="5" rx="1.5" fill="url(#s10steel)"/><circle cx="${x}" cy="62.5" r="1.6" fill="#4e5459"/>`).join('')}
+</g>`;
+const ITEMS = [D.bateria(), D.pad1(), D.pad2(), D.padOk(), noHalo(D.quem1()), noHalo(D.quem2()), noHalo(D.valvula()), zocalo()];
+let out = S10.defs + '<rect width="1920" height="1080" fill="#ff00ff"/>';
+ITEMS.forEach((body, i) => {
+  const cx = 240 + (i % 4) * 480, cy = i < 4 ? 270 : 810;
+  out += `<g transform="translate(${cx - Z / 2} ${cy - Z / 2}) scale(${Z / 100})">${body}</g>`;
+});
+document.getElementById('s').innerHTML = out;
+</script>
+</body>
+</html>

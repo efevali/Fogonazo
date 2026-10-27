@@ -19,7 +19,7 @@ const BASE = '../../docs/sala/maqueta-fogonazo/', T = 158, K = T / 45;
 const cellBg = (x, y, r, c, dy = 0) => `<svg x="${x}" y="${y}" width="${T}" height="${T}" viewBox="0 0 ${T} ${T}"><image href="${BASE}fondo.webp" x="${-(232.5 + c * 45) * K}" y="${-(26 + r * 45 + dy) * K}" width="${915 * K}" height="${412 * K}"/></svg>`;
 const ITEMS = [
   // [kind, name, note, piece type]
-  [['rayoH', 'Rayo', 'barre la fila', 0], ['rayoV', 'Rayo', 'barre la columna', 4], ['sobre', 'Sobrecarga', 'explota alrededor', 3], ['bateria', 'Batería', 'pila de 9 V, etiqueta de 7 colores', null], ['antena', 'Antena', 'transmite a un blanco', 2]],
+  [['rayoH', 'Rayo', 'barre la fila', 0], ['rayoV', 'Rayo', 'barre la columna', 4], ['sobre', 'Sobrecarga', 'explota alrededor', 3], ['bateria', 'Batería', 'pila de 9 V en dos colores', null], ['antena', 'Antena', 'ondas animadas sobre la pieza', 2]],
   [['pad1', 'Pad de cobre', 'una pasada', 1], ['pad2', 'Pad con remaches', 'dos pasadas', 5], ['padOk', 'Pad soldado', 'estañado', 3], ['quem1', 'Quemado', 'un golpe', null], ['quem2', 'Quemado con carcasa', 'dos golpes (TO-3)', null]],
   [['kapton', 'Cinta kapton', 'se despega con una línea', 2], ['valvula', 'Válvula', 'baja hasta el zócalo', null], ['hueco', 'Hueco', 'sin protoboard: se ve la mesa', null], ['zocalo', 'Zócalo', 'debajo de la fila de abajo', null]],
 ];
