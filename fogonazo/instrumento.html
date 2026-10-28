@@ -142,7 +142,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
             <p class="sp"><b>Sobrecarga.</b> Línea en L o en T: explota alrededor.</p>
             <p class="sp"><b>Batería.</b> Cinco en línea: se lleva todos los de un tipo.</p>
             <p class="sp"><b>Antena.</b> Cuadrado de 2 × 2: rompe sus vecinas y transmite.</p>
-            <p class="mag-note">En la maqueta todavía no hay especiales ni obstáculos.</p>
+            <p class="mag-note">Intercambiá dos especiales entre sí y se combinan.</p>
           </div>
         </div>
       </foreignObject>
@@ -154,7 +154,6 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     </g>
   </g>
 
-  <text id="toast" x="964" y="690" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="20" fill="#ffe6b0" opacity="0" style="transition: opacity .3s"></text>
 </svg>
 <div id="rotate">Girá el teléfono para jugar en horizontal</div>
 
@@ -163,10 +162,11 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 <script>
 (() => {
   'use strict';
-  const M = window.Maqueta, NS = 'http://www.w3.org/2000/svg', $ = id => document.getElementById(id);
+  const M = window.Estado, NS = 'http://www.w3.org/2000/svg', $ = id => document.getElementById(id);
   const VOL = k => App.sonido.volumen(k);
   const S = { x: 718, y: 307, w: 492, h: 346 };
   const star = (cx, cy, r, ri = r * .45) => { let p = ''; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? ri : r; p += (i ? 'L' : 'M') + (cx + rr * Math.cos(a)).toFixed(1) + ',' + (cy + rr * Math.sin(a)).toFixed(1); } return p + 'Z'; };
+  const fmt = v => v.toLocaleString('es-AR'), fmtTime = t => Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
   const T = (x, y, txt, size, extra = '') => `<text x="${x}" y="${y}" font-size="${size}" ${extra}>${txt}</text>`;
 
   // graticule
@@ -181,7 +181,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     { id: 'dif', cx: 1410, cy: 590, r: 48, labels: ['FÁCIL', 'NORMAL', 'DIFÍCIL'], title: 'DIFICULTAD' },
   ];
   const ang = i => (-140 + 50 * i) * Math.PI / 180;
-  let mode = 0;
+  let mode = M.vista;
   const value = k => k.id === 'modo' ? mode : M.modo;
   function drawKnobs() {
     let s = '';
@@ -201,7 +201,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   function setKnob(id, i) {
     const k = KNOBS.find(x => x.id === id), cur = value(k);
     const v = i === 'next' ? (cur + 1) % k.labels.length : +i;
-    if (id === 'modo') mode = v; else M.modo = v;
+    if (id === 'modo') mode = M.vista = v; else M.modo = v;
     click(); drawKnobs(); drawScreen();
   }
 
@@ -223,8 +223,9 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
       s += T(x, S.y + 46, 'ZEN', 24, 'letter-spacing="3" opacity=".85"');
       s += T(x, S.y + 120, 'SIN LÍMITE', 58, 'letter-spacing="2"');
       s += wave(S.y + 190, 10, 160);
-      s += T(x, S.y + 266, 'RÉCORD  —', 28);
-      s += T(x, S.y + 318, 'AÚN NO ESTÁ EN LA MAQUETA', 22, 'opacity=".85"');
+      const z = M.zen;
+      s += T(x, S.y + 266, 'RÉCORD  ' + (z.puntos ? `${fmt(z.puntos)} · ${fmtTime(z.tiempo)}` : '—'), 28);
+      s += T(x, S.y + 318, 'TOCÁ PARA JUGAR ▶', 24, 'letter-spacing="1.5" opacity=".85"');
     } else {
       s += T(x, S.y + 42, 'RÉCORDS', 24, 'letter-spacing="3" opacity=".85"');
       M.MODES.forEach((m, i) => {
@@ -235,7 +236,8 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
         s += `<path d="${star(cx - 18, S.y + 184, 10)}"/>` + T(cx - 3, S.y + 193, String(M.total(i)), 26);
       });
       s += `<line x1="${S.x + 22}" y1="${S.y + 212}" x2="${S.x + S.w - 22}" y2="${S.y + 212}" stroke="#9dffbf" stroke-opacity=".5"/>`;
-      s += T(x, S.y + 252, 'ZEN', 22, 'opacity=".85"') + T(x + 80, S.y + 252, '—', 26);
+      const z = M.zen;
+      s += T(x, S.y + 252, 'ZEN', 22, 'opacity=".85"') + T(x + 80, S.y + 252, z.puntos ? `${fmt(z.puntos)} PUNTOS · ${fmtTime(z.tiempo)}` : '—', 26);
       s += T(x, S.y + 292, 'Tu avance vive solo en este Chrome.', 20, 'opacity=".85"');
       s += T(x, S.y + 318, 'Si borrás los datos, se pierde.', 20, 'opacity=".85"');
     }
@@ -282,7 +284,6 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 
   // ---------- sound effect for the controls ----------
   const click = () => App.sonido.fx('click');
-  const toast = msg => { const t = $('toast'); t.textContent = msg; t.style.opacity = 1; clearTimeout(toast.t); toast.t = setTimeout(() => t.style.opacity = 0, 1800); };
 
   // ---------- input ----------
   // a sheet is a step that «atrás» undoes: opening it adds one, closing it goes back
@@ -296,7 +297,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     if (el.dataset.knob) return setKnob(el.dataset.knob, el.dataset.i);
     if (el.dataset.ch && el.dataset.v) { const k = el.dataset.ch, v = +el.dataset.v; return setVol(k, VOL(k) === v && v === 1 ? 0 : v); }
     switch (el.id) {
-      case 'hitScreen': if (mode === 0) { click(); App.ir('fogonazo/mapa.html'); } else if (mode === 1) toast('El zen todavía no está en la maqueta'); break;
+      case 'hitScreen': if (mode === 0) { click(); App.ir('fogonazo/mapa.html'); } else if (mode === 1) { click(); App.ir('fogonazo/partida.html?zen=1', 1); } break;
       case 'hitSound': click(); drawChannels(); show('sound'); break;
       case 'hitManual': click(); show('manual'); break;
       case 'done': case 'closeManual': click(); close(); break;

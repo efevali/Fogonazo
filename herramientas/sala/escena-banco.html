@@ -20,6 +20,11 @@ const V = new URLSearchParams(location.search).get('v') || 'a';
 const W = 915, H = 412;
 const IMG = new URLSearchParams(location.search).get('img');
 const BG = new URLSearchParams(location.search).get('bg') === '1';
+// zen=1: the background of the zen match (fogonazo/fondo-zen.webp): «TIEMPO» instead of «MOVIMIENTOS», a meter
+// without stars (it measures the distance to the record) and «Encargo» instead of «Pedido»
+const ZEN = new URLSearchParams(location.search).get('zen') === '1';
+// tiempo=1: the background of a timed level (fogonazo/fondo-tiempo.webp): only «TIEMPO» instead of «MOVIMIENTOS»
+const TIEMPO = ZEN || new URLSearchParams(location.search).get('tiempo') === '1';
 const A2 = V === 'a2';
 const pc = (t, x, y, w, h) => IMG
   ? `<image href="../../fogonazo/piezas/pieza${t}.png" x="${x + w * .06}" y="${y + h * .06}" width="${w * .88}" height="${h * .88}" preserveAspectRatio="xMidYMid meet"/>`
@@ -313,7 +318,7 @@ function variantA() {
   add(`<rect x="${dx - 6}" y="${dyy - 6}" width="${dw + 12}" height="${dh + 12}" rx="5" fill="#2a2724"/><rect x="${dx}" y="${dyy}" width="${dw}" height="${dh}" rx="3" fill="#1d0705"/>`);
   add(BG ? seg7('88', dx + 14, dyy + 8, 28, 42, 10, '#3a0f0a', '#3a0f0a') : `<g filter="url(#glowR)">${seg7('18', dx + 14, dyy + 8, 28, 42, 10, '#ff3a26', '#3a0f0a')}</g>`);
   add(`<rect x="${dx}" y="${dyy}" width="${dw}" height="${dh / 2}" rx="3" fill="#fff" opacity=".05"/>`);
-  add(`<text x="${cx}" y="${dyy + dh + 24}" text-anchor="middle" font-family="Barlow" font-weight="600" font-size="13" letter-spacing="2.4" fill="#4a463f">MOVIMIENTOS</text>`);
+  add(`<text x="${cx}" y="${dyy + dh + 24}" text-anchor="middle" font-family="Barlow" font-weight="600" font-size="13" letter-spacing="2.4" fill="#4a463f">${TIEMPO ? 'TIEMPO' : 'MOVIMIENTOS'}</text>`);
   // analog meter: score toward stars
   const mw = lw - 28, mh = 92, mx = lx + 14, my = ay + (A2 ? 152 : 132);
   add(`<rect x="${mx - 4}" y="${my - 4}" width="${mw + 8}" height="${mh + 8}" rx="6" fill="#2a2724"/><rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="3" fill="url(#dial)"/>`);
@@ -322,9 +327,9 @@ function variantA() {
   let ticks = '';
   for (let d = -48; d <= 48; d += 6) { const a = ang(d), r1 = d % 24 === 0 ? R - 14 : R - 9; ticks += `<line x1="${(pcx + r1 * Math.cos(a)).toFixed(1)}" y1="${(pcy + r1 * Math.sin(a)).toFixed(1)}" x2="${(pcx + R * Math.cos(a)).toFixed(1)}" y2="${(pcy + R * Math.sin(a)).toFixed(1)}"/>`; }
   add(`<clipPath id="mclip"><rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="3"/></clipPath><g clip-path="url(#mclip)">`);
-  add(`<path d="M${pcx + R * Math.cos(ang(14))},${pcy + R * Math.sin(ang(14))} A${R},${R} 0 0 1 ${pcx + R * Math.cos(ang(48))},${pcy + R * Math.sin(ang(48))}" stroke="#c8402c" stroke-width="5" fill="none" opacity=".75"/>`);
+  if (!ZEN) add(`<path d="M${pcx + R * Math.cos(ang(14))},${pcy + R * Math.sin(ang(14))} A${R},${R} 0 0 1 ${pcx + R * Math.cos(ang(48))},${pcy + R * Math.sin(ang(48))}" stroke="#c8402c" stroke-width="5" fill="none" opacity=".75"/>`);
   add(`<g stroke="#3a3128" stroke-width="1.3">${ticks}</g>`);
-  for (const [d, on] of [[-20, true], [14, true], [44, false]]) { const a = ang(d), r = R - 26; add(`<path d="${star(pcx + r * Math.cos(a), pcy + r * Math.sin(a), 7.5)}" fill="${on && !BG ? '#d8962a' : 'none'}" stroke="#3a3128" stroke-width="1.2"/>`); }
+  if (!ZEN) for (const [d, on] of [[-20, true], [14, true], [44, false]]) { const a = ang(d), r = R - 26; add(`<path d="${star(pcx + r * Math.cos(a), pcy + r * Math.sin(a), 7.5)}" fill="${on && !BG ? '#d8962a' : 'none'}" stroke="#3a3128" stroke-width="1.2"/>`); }
   const na = ang(26);
   if (!BG) add(`<line x1="${pcx}" y1="${pcy}" x2="${(pcx + (R + 2) * Math.cos(na)).toFixed(1)}" y2="${(pcy + (R + 2) * Math.sin(na)).toFixed(1)}" stroke="#1b1612" stroke-width="2" stroke-linecap="round"/>`);
   add(`</g><rect x="${mx}" y="${my}" width="${mw}" height="${mh * .45}" rx="3" fill="#fff" opacity=".18"/>`);
@@ -338,7 +343,7 @@ function variantA() {
   add(`<g transform="rotate(1.6 ${rcx} ${cy0 + chh / 2})"><g filter="url(#soft)"><rect x="${rx0}" y="${cy0}" width="${rw}" height="${chh}" rx="2" fill="#f6eedb"/></g>`);
   for (let y = cy0 + 50; y < cy0 + chh - 8; y += A2 ? 21 : 22) add(`<line x1="${rx0}" y1="${y}" x2="${rx0 + rw}" y2="${y}" stroke="#9bb8d8" stroke-width=".8"/>`);
   add(`<line x1="${rx0}" y1="${cy0 + 36}" x2="${rx0 + rw}" y2="${cy0 + 36}" stroke="#d25a4a" stroke-width="1"/>`);
-  add(`<text x="${rx0 + 14}" y="${cy0 + 27}" font-family="Elite" font-size="19" fill="#2c2620">Pedido</text>`);
+  add(`<text x="${rx0 + 14}" y="${cy0 + 27}" font-family="Elite" font-size="19" fill="#2c2620">${ZEN ? 'Encargo' : 'Pedido'}</text>`);
   if (!BG) ORDERS.forEach(([t, n, of], i) => {
     const y = A2 ? cy0 + 46 + i * 42 : cy0 + 54 + i * 66, done = n >= of;
     add(`<g filter="url(#dropA)">${A2 ? pc(t, rx0 + 14, y, 38, 38) : pc(t, rx0 + 10, y, 46, 46)}</g>`);

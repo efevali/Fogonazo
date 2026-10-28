@@ -18,16 +18,18 @@
   const base = new URL('./', location.href).pathname;
 
   // ------------------------------------------------------------ ambiente de cada pantalla
-  // lluvia: la de la sala; música: el tema de Fogonazo de cada lugar (Taller fuera de la partida, Placa en la partida)
+  // lluvia: la de la sala; música: el tema de Fogonazo de cada lugar (Taller fuera de la partida). En la partida la
+  // elige la pantalla (Placa, Urgente en el contrarreloj o Siesta en el zen), con App.sonido.musica.
   const AMBIENTE = [
     [/^sala\//, { lluvia: true, musica: null }],
-    [/^fogonazo\/partida\.html/, { lluvia: false, musica: 'game' }],
+    [/^fogonazo\/partida\.html/, { lluvia: false, musica: 'pantalla' }],
     [/^fogonazo\//, { lluvia: false, musica: 'map' }],
   ];
   function ambiente(url) {
     const a = (AMBIENTE.find(([re]) => re.test(url)) || [null, { lluvia: false, musica: null }])[1];
     Sound.rain(a.lluvia);
     Sound.duck(false);
+    if (a.musica === 'pantalla') return;
     if (a.musica) Sound.music(a.musica); else Sound.stopMusic();
   }
 
@@ -137,6 +139,7 @@
       volumen: k => Sound.volume(k),
       setVolumen(k, v) { Sound.ensure(); Sound.setVolume(k, v); },
       duck(on) { Sound.duck(on); },
+      musica(tema) { Sound.music(tema); },
     },
     instalacion: {
       get disponible() { return !enApp(); },

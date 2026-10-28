@@ -12,9 +12,9 @@ Lo que vale para todo el juego:
 
 ## Estado
 
-- **En la app desde la 0.1.0, como maqueta navegable** (ver abajo): pantalla-instrumento, mapa y partida, con las imágenes vigentes, su música y sus efectos, y una lógica mínima propia. Producto la probó: «se ve genial».
+- **Jugable en la app desde la 0.4.0:** la partida real, con el motor y los 30 niveles hechos a mano, los especiales, los obstáculos, las válvulas, la nota de cuaderno, el contrarreloj y el zen (ver «Cómo está hecho»). De la 0.1.0 a la 0.3.1 fue una maqueta navegable, con una lógica mínima propia.
 - **Arte vigente**, en [`arte/`](arte/): las siete piezas ([P-003](arte/P-003_piezas-fogonazo.jpg)), la escena de la pantalla-instrumento ([P-004](arte/P-004_escena-instrumento.png), de 1679 × 937; el teléfono la estira un 43 %, aceptable por el estilo pintado) y los especiales y obstáculos ([P-005](arte/P-005_especiales-obstaculos.jpg)). Los recortes listos para usar están en [`fogonazo/piezas/`](../../fogonazo/piezas/), en la app.
-- **El motor** (`codigo/`) ya está en la placa de 10 × 8, con los 30 niveles hechos a mano pasados a horizontal, sin nombres ni textos, y recalibrados (0.3.0). La maqueta todavía no lo usa: llega con la partida real. Los pasos que siguen están en [la colección](../coleccion.md#lo-que-sigue).
+- **El motor** (`codigo/`) ya está en la placa de 10 × 8, con los 30 niveles hechos a mano pasados a horizontal, sin nombres ni textos, y recalibrados (0.3.0); la partida lo usa desde la 0.4.0. Los pasos que siguen están en [la colección](../coleccion.md#lo-que-sigue).
 
 ## Recorrido
 
@@ -38,6 +38,7 @@ La portada del juego y su lugar de ajustes: un osciloscopio del banco visto de c
 - **Perilla «Modo»:** Niveles (con el nivel siguiente a la vista; tocar la pantalla abre el mapa), Zen y Récords.
 - **Perilla «Dificultad»:** Fácil, Normal y Difícil.
 - **Récords**, por dificultad: el nivel más alto y las estrellas sumadas, con el aviso de que el avance vive en Chrome. También los récords del zen.
+- **La perilla «Modo» queda donde se la dejó**, también al volver de una partida.
 - **Sonido:** la placa con el parlante abre los ajustes de música y efectos, los mismos de toda la colección.
 - **Manual:** la revista pegada en la pared, «Proyecto Nº 21», con cómo se juega y los especiales.
 - **«◀ Volver»**, abajo a la derecha, vuelve a la sala.
@@ -135,17 +136,21 @@ Una placa libre, sin obstáculos, con los seis primeros componentes y todos los 
 - **En Fogonazo, solo música y efectos;** la lluvia es de la sala. Los volúmenes son los de toda la colección.
 - **El avance** (estrellas por nivel y modo, récords del zen, dificultad elegida) vive en Chrome, en el teléfono, sin clave. Ver [la colección](../coleccion.md#guardado).
 
-## La maqueta
+## Cómo está hecho
 
-Un recorrido navegable para probar en el teléfono la estructura y las imágenes vigentes, hasta que esté la partida real. No es el juego: tiene una lógica mínima propia, separada de `codigo/engine.js`. Vive en [`fogonazo/`](../../fogonazo/), en la app, y se entra desde la sala por el banco.
+Vive en [`fogonazo/`](../../fogonazo/), en la app, y se entra desde la sala por el banco. Cada pantalla dibuja encima de su imagen lo que cambia.
 
-- **Pantalla-instrumento** (`instrumento.html`), sobre la escena del P-004: las perillas Modo y Dificultad, el mapa al tocar la pantalla en Niveles, los récords con el aviso de Chrome, el sonido (perillas que giran con el dedo en círculo y diez LEDs que siguen al dedo, con los volúmenes de toda la colección) y el manual. La placa del sonido y la revista tienen aureolas que respiran por turno. El zen todavía no está.
-- **Mapa** (`mapa.html`): la señal sobre hoja milimetrada, que se arrastra de costado.
-- **Partida** (`partida.html`), con la distribución de S-08c: placa de 10 × 8, intercambio deslizando o tocando, líneas de tres o más, cascadas, pedido, estrellas y bonus por movimientos que sobran; al ganar, «Siguiente nivel». «◀ Volver» sale al mapa. Pausa con «Seguir», «Empezar de nuevo» y «Volver al mapa». Sin especiales, obstáculos ni nota.
-- **Sonido:** Taller suena en el instrumento y el mapa, Placa en la partida; los efectos son los de siempre (intercambio, línea que sube con la cascada, jugada inválida, ganar y perder).
-- **Niveles de prueba:** cada número da una variación del mismo nivel (dos o tres pedidos de 8 a 15 piezas, de 19 a 26 movimientos), ajustada por la dificultad como en el juego.
-- **Guardado:** la dificultad y las estrellas por nivel y dificultad, en Chrome (`estado.js`).
-- **Cómo está hecha:** cada pantalla dibuja encima de su imagen lo que cambia. El fondo de la partida sale de `herramientas/sala/escena-banco.html` con `?v=a2&bg=1`, capturado a 915 × 412 con densidad 2,625; las piezas, de la imagen del P-003 con `herramientas/sala/piezas.py`; los especiales y obstáculos, de la del P-005 con `herramientas/sala/obstaculos.py`; la pantalla-instrumento usa la imagen del P-004 tal cual, con las medidas de la pantalla, las perillas y los LEDs tomadas sobre ella.
+- **Pantalla-instrumento** (`instrumento.html`), sobre la escena del P-004 tal cual, con las medidas de la pantalla, las perillas y los LEDs tomadas sobre ella: las perillas Modo y Dificultad; tocar la pantalla abre el mapa en Niveles y la partida zen en Zen; los récords con el aviso de Chrome; el sonido (perillas que giran con el dedo en círculo y diez LEDs que siguen al dedo, con los volúmenes de toda la colección) y el manual. La placa del sonido y la revista tienen aureolas que respiran por turno.
+- **Mapa** (`mapa.html`): la señal sobre hoja milimetrada, que se arrastra de costado, hasta el nivel 30.
+- **Partida** (`partida.html`), con la distribución de S-08c, sobre `codigo/engine.js`, `codigo/levels.js` y `codigo/calibrated.json`, con el modo de dificultad aplicado. La placa se dibuja en un *canvas*: las piezas del P-003 y los especiales y obstáculos del P-005, recortados en [`fogonazo/piezas/`](../../fogonazo/piezas/) (con `herramientas/sala/piezas.py` y `herramientas/sala/obstaculos.py`); las señales de S-10 (flechas del rayo, chispas de la sobrecarga, wifi de la antena), la cinta kapton y los huecos, con código. Cada paso del motor se anima con su misma duración (`Engine.stepDuration`), como en el Fogonazo publicado. Con `?zen=1`, la partida zen.
+- **Tres fondos** con el marcador grabado, de `herramientas/sala/escena-banco.html` capturado a 915 × 412 con densidad 2,625: `fondo.webp` (`?v=a2&bg=1`), `fondo-tiempo.webp` para el contrarreloj, que solo cambia «MOVIMIENTOS» por «TIEMPO» (`&tiempo=1`), y `fondo-zen.webp`, sin estrellas y con «Encargo» (`&zen=1`).
+- **El reloj**, del contrarreloj y del zen, arranca con el primer toque en la placa. Los últimos 10 segundos suenan.
+- **La pista:** si nadie toca la placa, después de 5 segundos en los niveles 1 a 3 y de 8 en los demás, se mueven las dos piezas de la mejor jugada (o late el especial que conviene tocar).
+- **La nota de cuaderno** (S-08c) sale en el nivel que presenta algo (`tip`): un título, un dibujito en birome y una o dos frases. Los textos están en `NOTAS`, en `partida.html`.
+- **El fin de un nivel:** la etiqueta de control de calidad de S-13. Al ganar, las estrellas se estampan de a una y, si hubo bonus, las líneas dicen lo que se hizo jugando, el bonus y el total; al perder, lo que faltó. En el zen, el parte de trabajo, con el sello «Nuevo récord» o, si no lo hubo, «Terminado».
+- **Sonido:** Taller suena en el instrumento y el mapa; en la partida, Placa, Urgente en el contrarreloj y Siesta en el zen (la elige la partida con `App.sonido.musica`). Los efectos son los de siempre.
+- **Guardado** (`estado.js`), en Chrome: la dificultad, la posición de la perilla Modo, las estrellas y el mejor puntaje de cada nivel en cada dificultad, y los récords del zen, que se anotan en cada jugada y cada 10 segundos.
+- **Para las herramientas:** `?semilla=n` da siempre el mismo tablero, y `window.__partida` deja ver el estado, jugar una jugada y terminar el nivel sin jugarlo (lo usa `herramientas/capturas.js`).
 - **Detalle por revisar:** los rótulos «MOVIMIENTOS» y «PUNTOS» de la partida, pintados en el fondo, son legibles pero justos.
 
 ## Bocetos
@@ -159,10 +164,10 @@ Un recorrido navegable para probar en el teléfono la estructura y las imágenes
 
 | S-12 | «◀ Volver» abajo a la derecha y aureolas: [el instrumento](bocetos/S-12b-instrumento-volver-aureolas.jpg), con las aureolas del parlante y de la revista en su punto más alto (en la app respiran por turno); [el mapa](bocetos/S-12c-mapa-volver.jpg); [la partida](bocetos/S-12d-partida-volver.jpg), donde «Volver» sale al mapa sin pasar por la pausa. Aprobado (27/10) |
 
-| S-13 | La partida real, lo que faltaba: [a · la pausa](bocetos/S-13a-pausa.jpg), una placa de aluminio con sus tornillos y teclas de cinta Dymo (la principal, en cinta roja); [b · nivel ganado](bocetos/S-13b-fin-gano.jpg) y [c · nivel perdido](bocetos/S-13c-fin-perdio.jpg), una etiqueta de control de calidad atada con un hilo, con las estrellas y el sello «Aprobada» o «Rechazada» en tinta, y lo que faltó; [d · la partida zen](bocetos/S-13d-partida-zen.jpg), con un reloj en el display, el instrumento sin estrellas y una marca de lápiz rojo en el récord, y el encargo optativo en la ficha; [e · fin del zen](bocetos/S-13e-fin-zen.jpg), un parte de trabajo con puntos, tiempo y récords. Capturas de la maqueta con `fogonazo/partida.html?boceto=…`; el fondo zen sale de `herramientas/sala/escena-banco.html?v=a2&bg=1&zen=1` | En revisión |
+| S-13 | La partida real, lo que faltaba: [a · la pausa](bocetos/S-13a-pausa.jpg), una placa de aluminio con sus tornillos y teclas de cinta Dymo (la principal, en cinta roja); [b · nivel ganado](bocetos/S-13b-fin-gano.jpg) y [c · nivel perdido](bocetos/S-13c-fin-perdio.jpg), una etiqueta de control de calidad, con las estrellas y el sello «Aprobada» o «Rechazada» en tinta, y lo que faltó; [d · la partida zen](bocetos/S-13d-partida-zen.jpg), con un reloj en el display, el instrumento sin estrellas y una marca de lápiz rojo en el récord, y el encargo optativo en la ficha; [e · fin del zen](bocetos/S-13e-fin-zen.jpg), un parte de trabajo con puntos, tiempo y récords. Capturas de la maqueta | Aprobado (27/10), sin el hilo que ataba la etiqueta en el boceto: «mejor la tarjeta sola» |
 
 Montajes de los pedidos de imágenes: [las piezas con patas cortas](bocetos/P-002-montaje-cortas.png) (con su [lámina de referencia](bocetos/P-002-referencia-piezas.png)), [la escena del instrumento en el teléfono](bocetos/P-004-montaje-telefono-chatgpt.png), y [los especiales](bocetos/P-005-montaje-especiales.jpg) y [los obstáculos](bocetos/P-005-montaje-obstaculos.jpg) en la partida (con su [lámina](bocetos/P-005-referencia.png)).
 
 ## Por definir
 
-En bocetos, antes de implementar: la pausa, el fin de nivel (ganar y perder), la partida zen, el nivel en que se presenta la antena y el ícono de la app.
+El ícono de la app, cuando la colección tenga nombre.

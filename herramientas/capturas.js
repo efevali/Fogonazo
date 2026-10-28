@@ -4,8 +4,9 @@
 
    Sirve el repositorio en un puerto local, abre la app en horizontal a 915 × 412 con densidad 2,625 (unos
    2400 × 1080 píxeles, como el teléfono de referencia) y verifica el camino y el «atrás» de Android:
-   sala → ajustes → Fogonazo → sonido → manual → mapa → partida → pausa → mapa → … → sala.
-   Al final prueba que la app abra sin conexión. Si algo no da lo esperado, lo dice y termina con error. */
+   sala → ajustes → Fogonazo → sonido → manual → mapa → partida → pausa → mapa → … → sala. Después abre partidas
+   puntuales (la nota, el contrarreloj, los obstáculos, los especiales, el fin de nivel y el zen) con un tablero fijo
+   (?semilla=…). Al final prueba que la app abra sin conexión. Si algo no da lo esperado, lo dice y termina con error. */
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
@@ -50,6 +51,14 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
     await pantalla().evaluate(() => document.fonts.ready);
     await espera(500);
   }
+  async function partida() { await listo(); await pantalla().waitForFunction(() => window.__partida && window.__partida.g, null, { timeout: 8000 }); await espera(300); }
+  // una partida puntual, abierta desde donde se esté (como si se la eligiera en el mapa)
+  async function abrirPartida(q) { await page.evaluate(u => App.ir(u, 1), 'fogonazo/partida.html?' + q); await partida(); }
+  const estado = () => pantalla().evaluate(() => window.__partida.state());
+  // unas jugadas de verdad (las mejores que encuentra el motor) y el final forzado, ganado o perdido
+  async function fin(gano, jugadas = 3) {
+    for (let i = 0; i < jugadas; i++) await pantalla().evaluate(() => { const P = window.__partida; if (P.state().ended) return; const m = Engine.rankMoves(P.g, null)[0]; return m && P.mover(m.a, m.b); });
+    await pantalla().evaluate(v => window.__partida.terminar(v), gano); await pantalla().waitForFunction(() => !document.getElementById('end').hidden, null, { timeout: 30000 }); await espera(1800); }
   async function foto(nombre) { await page.screenshot({ path: path.join(SALIDA, nombre + '.png') }); console.log('    → ' + nombre + '.png'); }
   async function tocar(sel) { await pantalla().locator(sel).first().click({ force: true }); await espera(450); }
   async function atras() { await page.goBack({ waitUntil: 'commit' }).catch(() => {}); await espera(450); }
@@ -84,11 +93,12 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   await tocar('#closeManual'); ok(!(await abierto('#manual')), '«Cerrar» cierra el manual');
   await tocar('#hitScreen'); await listo();
   ok(ruta() === 'fogonazo/mapa.html', 'la pantalla del osciloscopio abre el mapa'); await foto('08-fogonazo-mapa');
-  await tocar('.lvl[data-n="1"]'); await listo();
-  ok(ruta() === 'fogonazo/partida.html', 'el nivel 1 abre la partida'); await foto('09-fogonazo-partida');
+  await tocar('.lvl[data-n="1"]'); await partida();
+  ok(ruta() === 'fogonazo/partida.html', 'el nivel 1 abre la partida');
+  ok(await abierto('#nota'), 'el nivel 1 trae la nota de cuaderno'); await foto('09-fogonazo-partida');
   ok(await tema() === 'Placa', 'en la partida suena Placa');
   // un intercambio con dos toques: hay que encontrar uno que forme línea (gasta un movimiento)
-  const movs = () => pantalla().evaluate(() => window.__maqueta.state().moves);
+  const movs = () => pantalla().evaluate(() => window.__partida.state().movesUsed);
   const tablero = await (await pantalla().$('#board')).boundingBox();
   const marco = await (await pantalla().frameElement()).boundingBox();
   const celda = (r, c) => [marco.x + tablero.x + (c + .5) * tablero.width / 10, marco.y + tablero.y + (r + .5) * tablero.height / 8];
@@ -104,16 +114,57 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   await tocar('#menu [data-act="resume"]'); ok(!(await abierto('#menu')), '«Seguir» cierra la pausa');
   await atras(); ok(await abierto('#menu'), 'después de seguir, «atrás» vuelve a abrir la pausa');
   await atras(); await listo(); ok(ruta() === 'fogonazo/mapa.html', 'desde la pausa, «atrás» va al mapa');
-  await tocar('.lvl[data-n="1"]'); await listo();
+  await tocar('.lvl[data-n="1"]'); await partida();
   await tocar('#pause'); ok(await abierto('#menu'), 'el botón de pausa abre la pausa');
   await tocar('#menu [data-act="map"]'); await listo(); ok(ruta() === 'fogonazo/mapa.html', '«Volver al mapa» va al mapa');
-  await tocar('.lvl[data-n="1"]'); await listo();
+  await tocar('.lvl[data-n="1"]'); await partida();
   await tocar('#volver'); await listo(); ok(ruta() === 'fogonazo/mapa.html', 'en la partida, «Volver» va al mapa sin pasar por la pausa');
   await atras(); await listo(); ok(ruta() === 'fogonazo/instrumento.html', 'desde el mapa, «atrás» va al instrumento');
   await atras(); await listo(); ok(ruta().startsWith('sala/'), 'desde el instrumento, «atrás» va a la sala');
   ok(await tema() === null, 'en la sala no hay música');
   const fuera = await page.evaluate(() => history.state && history.state.i);
   ok(fuera === 0, 'en la sala no quedan pasos en el historial: el próximo «atrás» sale de la app');
+
+  console.log('Partidas');
+  await abrirPartida('nivel=2&semilla=7');
+  ok(await pantalla().evaluate(() => document.getElementById('nota').textContent.includes('RAYO')), 'el nivel 2 presenta el rayo en la nota'); await foto('11-fogonazo-nota');
+  await tocar('#volver'); await listo(); ok(ruta().startsWith('sala/'), '«Volver» deja la partida');
+  await abrirPartida('nivel=5&semilla=3');
+  ok((await estado()).mode === 'time' && await tema() === 'Urgente', 'el contrarreloj (nivel 5) cuenta el tiempo y suena Urgente'); await foto('12-fogonazo-contrarreloj');
+  await tocar('#volver'); await listo();
+  await abrirPartida('nivel=18&semilla=7'); await foto('13-fogonazo-huecos-quemados'); await tocar('#volver'); await listo();
+  await abrirPartida('nivel=20&semilla=7');
+  // los especiales se arman jugando; para la captura se ponen unos a mano
+  await pantalla().evaluate(() => { const P = window.__partida, g = P.g, K = Engine.K, put = (i, k) => { const p = g.p[i]; if (p && p.k === 0 && !p.lock) { p.k = k; if (k === K.BAT) p.c = -1; } };
+    put(0, K.LH); put(11, K.LV); put(9, K.BOMB); put(70, K.ANT); put(79, K.BAT); P.redibujar(); });
+  await espera(400); await foto('14-fogonazo-especiales-obstaculos'); await tocar('#volver'); await listo();
+  await abrirPartida('nivel=25&semilla=7');
+  ok(await pantalla().evaluate(() => window.__partida.g.p.some(p => p && p.k === Engine.K.TUBE)), 'el nivel 25 arranca con una válvula'); await foto('15-fogonazo-valvulas');
+  // una jugada de verdad: la mejor que encuentra el motor, con sus animaciones
+  const antesJ = (await estado()).movesUsed;
+  await pantalla().evaluate(() => { const m = Engine.rankMoves(window.__partida.g, null)[0]; return window.__partida.mover(m.a, m.b); });
+  ok((await estado()).movesUsed === antesJ + 1, 'una jugada del motor se anima y gasta un movimiento');
+  await tocar('#volver'); await listo();
+  await abrirPartida('nivel=4&semilla=3'); await fin(true);
+  ok(await pantalla().evaluate(() => document.getElementById('endStamp').textContent === 'APROBADA'), 'al ganar, la etiqueta sale aprobada'); await foto('16-fogonazo-fin-gano');
+  await atras(); await listo(); ok(ruta().startsWith('sala/'), 'desde el fin del nivel, «atrás» sale de la partida');
+  await abrirPartida('nivel=7&semilla=3'); await fin(false);
+  ok(await pantalla().evaluate(() => document.getElementById('endLines').textContent.startsWith('Falt')), 'al perder, la etiqueta dice lo que faltó'); await foto('17-fogonazo-fin-perdio');
+  await tocar('#end [data-act="map"]'); await listo();
+
+  console.log('Zen');
+  await tocar('#hitBench'); await listo();
+  await tocar('[data-knob="modo"][data-i="1"]'); await foto('18-fogonazo-instrumento-zen');
+  await tocar('#hitScreen'); await partida();
+  ok((await estado()).mode === 'zen' && await tema() === 'Siesta', 'la pantalla en Zen abre la partida zen y suena Siesta');
+  await pantalla().evaluate(() => { const m = Engine.rankMoves(window.__partida.g, null)[0]; return window.__partida.mover(m.a, m.b); });
+  await espera(1200); await foto('19-fogonazo-zen');
+  await atras(); ok(await abierto('#menu') && await pantalla().evaluate(() => !!document.querySelector('#menu [data-act="end"]')), 'en el zen, «atrás» abre la pausa con «Terminar»'); await foto('20-fogonazo-zen-pausa');
+  await tocar('#menu [data-act="end"]'); await espera(800);
+  ok(await abierto('#end') && await pantalla().evaluate(() => document.getElementById('endHead').textContent === 'PARTE DE TRABAJO'), '«Terminar» muestra el parte de trabajo'); await foto('21-fogonazo-zen-fin');
+  await tocar('#end [data-act="map"]'); await listo();
+  ok(ruta() === 'fogonazo/instrumento.html' && await pantalla().evaluate(() => /RÉCORD\s+[\d.]+ · \d+:\d\d/.test(document.getElementById('screen').textContent)), 'el instrumento muestra el récord del zen');
+  await atras(); await listo(); ok(ruta().startsWith('sala/'), 'del instrumento, «atrás» vuelve a la sala');
 
   console.log('Sonido');
   const volFog = await pantalla().evaluate(() => App.sonido.volumen('musica'));

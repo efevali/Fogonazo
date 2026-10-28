@@ -2,6 +2,20 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.4.0 — 27/10/2026
+
+Fogonazo se juega: la partida real, con el motor y los niveles de siempre, reemplaza a la maqueta.
+
+- **Los 30 niveles hechos a mano**, en la placa de 10 × 8, con el modo de dificultad elegido en la pantalla-instrumento. El mapa llega hasta el 30; del 31 en adelante vienen los generados.
+- **Especiales y obstáculos** en el estilo del banco (S-10, P-005): rayo, sobrecarga, batería y antena, con sus combinaciones; pads de cobre, quemados, cinta kapton, huecos y válvulas con su zócalo.
+- **La nota de cuaderno** junto a la placa, en el nivel que presenta algo nuevo (S-08c).
+- **El contrarreloj**, con un reloj en el display, el rótulo «TIEMPO» y su música, Urgente. El reloj arranca con el primer toque en la placa.
+- **El zen**, desde la pantalla-instrumento: reloj, encargo optativo, récords de puntos y de tiempo, que también se ven en Récords, y su música, Siesta (S-13d y e).
+- **La pausa y el fin de nivel** (S-13): la placa de aluminio con teclas Dymo y la etiqueta de control de calidad, sin hilo, con las estrellas estampadas y lo que faltó al perder.
+- Como en el Fogonazo publicado: la pista después de unos segundos sin jugar, el bonus al terminar, las cascadas y los puntos sobre la placa.
+- La perilla «Modo» de la pantalla-instrumento queda donde se la dejó.
+- Las estrellas que se ganaron en la maqueta se conservan: esos niveles siguen abiertos.
+
 ## 0.3.1 — 27/10/2026
 
 - Fogonazo: en la partida, las piezas no se movían. Quedaba una llamada al sonido de la maqueta, que la 0.1.0 reemplazó por el de la colección, y cada toque en la placa se cortaba ahí. Venía desde la 0.1.0.

@@ -7,7 +7,7 @@
 | [imagenes.md](imagenes.md) | Cómo se piden, se revisan y se montan las imágenes hechas con IA, y los pedidos cerrados. |
 | [decisiones.md](decisiones.md) | Por qué se decidió cada cosa y qué se descartó, para no volver a discutirlo. |
 | [sala/](sala/README.md) | La sala, la pantalla de inicio: estado, imagen, objetos activos y prototipo. |
-| [fogonazo/](fogonazo/README.md) | Fogonazo: estructura, reglas, niveles, dificultad, maqueta, bocetos y arte. |
+| [fogonazo/](fogonazo/README.md) | Fogonazo: estructura, reglas, niveles, dificultad, cómo está hecho, bocetos y arte. |
 | [mahjong/](mahjong/README.md) | El mahjong: estado, prototipo y lo que sigue. |
 
 El método de trabajo está en [CONTRIBUTING.md](../CONTRIBUTING.md).

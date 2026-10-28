@@ -71,6 +71,8 @@ Por qué la colección es como es: cada decisión vigente con su fecha y su moti
 - **Letras legibles en el teléfono** (26/10, S-09): nada por debajo de unos 10 píxeles reales. *Descartados:* Share Tech Mono en el osciloscopio y textos de 6 a 9 píxeles reales.
 - **El manual, una página de revista pegada en la pared del banco** (26/10, S-09). *Descartados:* un recuadro blanco plano y el manual como una opción más de la perilla.
 - **Especiales y obstáculos como objetos del banco** (26/10, S-10, P-005). *Descartados:* la batería con una etiqueta de siete colores y la antena telescópica, que no se entendía.
+- **La pausa, el fin de nivel y la partida zen también son objetos del banco** (27/10, S-13): una placa de aluminio con teclas Dymo, una etiqueta de control de calidad con sello de tinta y un parte de trabajo. *Descartado:* el hilo que ataba la etiqueta en el boceto: «mejor la tarjeta sola».
+- **Sin pantalla de inicio de nivel** (27/10, 0.4.0): el pedido está en la ficha y la novedad en la nota, así que la partida empieza directo, y el reloj del contrarreloj y del zen arranca con el primer toque en la placa, para poder mirarla antes. *Descartado:* la ventana con el pedido antes de cada nivel, del Fogonazo publicado.
 
 ### Estructura y niveles
 

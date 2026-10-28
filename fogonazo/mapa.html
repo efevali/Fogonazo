@@ -51,7 +51,7 @@ svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
 <script>
 (() => {
   'use strict';
-  const M = window.Maqueta, $ = id => document.getElementById(id), NS = 'http://www.w3.org/2000/svg';
+  const M = window.Estado, $ = id => document.getElementById(id), NS = 'http://www.w3.org/2000/svg';
   const stage = $('stage');
   let s = 1;
   function fit() {
@@ -66,7 +66,7 @@ svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
   $('totalTxt').textContent = `${M.total()} · ${M.MODES[M.modo]}`;
 
   // ---------- the signal ----------
-  const cur = M.next(), last = cur + 8, step = 74, x0 = 96, ax = 44, ay = 206;
+  const cur = M.next(), last = Math.min(cur + 8, M.ULTIMO), step = 74, x0 = 96, ax = 44, ay = 206;
   const xOf = n => x0 + (n - 1) * step;
   const y = x => ay - (62 + 14 * Math.sin((x - ax) / 900 * Math.PI * 2)) * Math.cos((x - x0) / (2 * step) * Math.PI * 2) - 4 * Math.sin((x - ax) / 19 * Math.PI * 2);
   const width = xOf(last) + 200, curX = xOf(cur);
@@ -77,7 +77,7 @@ svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
   if (inked) o += `<path d="${inked}" stroke="#1d3a94" stroke-width="2.2" fill="none" stroke-linejoin="round"/>`;
   o += `<path d="${pencil}" stroke="#6b6b6b" stroke-width="1.2" fill="none" stroke-dasharray="3 3" opacity=".7"/>`;
   for (let n = 1; n <= last; n++) {
-    const x = xOf(n), yy = y(x), st = M.best(n), done = n < cur, now = n === cur, peak = (n - 1) % 2 === 0;
+    const x = xOf(n), yy = y(x), st = M.best(n), done = n < cur || st > 0, now = n === cur && !done, peak = (n - 1) % 2 === 0;
     const gy = yy + (peak ? (done ? -46 : now ? -32 : -22) : (done ? 34 : 30));
     o += `<g class="lvl" data-n="${n}" role="button" tabindex="${done || now ? 0 : -1}" aria-label="Nivel ${n}">`;
     o += `<rect x="${x - 34}" y="${Math.min(yy, gy) - 34}" width="68" height="${Math.abs(gy - yy) + 60}" fill="transparent"/>`;
@@ -87,7 +87,7 @@ svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
     if (done) for (let k = 0; k < 3; k++) o += `<path d="${star(x - 15 + k * 15, gy + 15, 6)}" fill="${k < st ? '#c8402c' : 'none'}" stroke="#c8402c" stroke-width="1.2" opacity="${k < st ? 1 : .55}"/>`;
     o += `</g>`;
   }
-  o += `<text x="${curX + 24}" y="${y(curX) - 22}" font-family="Caveat" font-weight="600" font-size="20" fill="#c8402c" transform="rotate(-4 ${curX + 24} ${y(curX)})">← jugar</text>`;
+  if (!M.best(cur)) o += `<text x="${curX + 24}" y="${y(curX) - 22}" font-family="Caveat" font-weight="600" font-size="20" fill="#c8402c" transform="rotate(-4 ${curX + 24} ${y(curX)})">← jugar</text>`;
   const track = $('track');
   track.innerHTML = o;
 

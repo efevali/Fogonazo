@@ -4,13 +4,13 @@ Una colección de minijuegos para el celular, en horizontal, que se instala desd
 
 | Juego | Qué es | Estado |
 |---|---|---|
-| [Fogonazo](docs/fogonazo/README.md) | Juntar tres con componentes electrónicos sobre una protoboard, en el banco de la sala | Maqueta navegable dentro de la app; falta el juego real |
+| [Fogonazo](docs/fogonazo/README.md) | Juntar tres con componentes electrónicos sobre una protoboard, en el banco de la sala | Jugable dentro de la app: los 30 primeros niveles y el zen |
 | [Mahjong](docs/mahjong/README.md) | Mahjong solitario, en modo zen | Prototipo, todavía en vertical |
 
 ## Estado
 
-- **Publicada:** la 0.1.0, en https://efevali.github.io/fogonazo/, que se abre en Chrome y se instala desde los ajustes de la sala (el equipo de audio) o desde el menú ⋮ → «Instalar app». Funciona sin conexión. Reemplazó a Fogonazo como juego único (0.6.1).
-- **Qué tiene:** la sala con sus objetos activos; Fogonazo como maqueta navegable (instrumento, mapa y partida, sin especiales, obstáculos ni zen), con su música y sus efectos; los ajustes de sonido comunes y la instalación. Nombre e ícono son provisorios.
+- **Publicada** en https://efevali.github.io/fogonazo/, que se abre en Chrome y se instala desde los ajustes de la sala (el equipo de audio) o desde el menú ⋮ → «Instalar app». Funciona sin conexión. La 0.1.0 reemplazó a Fogonazo como juego único (0.6.1); qué trae cada versión está en el [registro de cambios](CHANGELOG.md).
+- **Qué tiene:** la sala con sus objetos activos; Fogonazo jugable (instrumento, mapa, los 30 niveles hechos a mano con sus especiales y obstáculos, y el zen), con su música y sus efectos; los ajustes de sonido comunes y la instalación. Nombre e ícono son provisorios.
 - **Lo que sigue**, en [la colección](docs/coleccion.md#lo-que-sigue).
 
 ## Dónde está cada cosa
@@ -34,8 +34,8 @@ La app no se arma: lo que está en el repositorio es lo que publica GitHub Pages
 | `index.html` | La página contenedora: muestra una pantalla por vez y resuelve lo común (ver `comun/app.js`). |
 | `comun/` | Lo común a toda la colección: `app.js` (pantallas, «atrás» de Android, sonido por pantalla, instalación), `pantalla.js` (lo que cada pantalla usa de la contenedora), `sonido.js` (el sonido sintetizado: voces, efectos y temas de Fogonazo, lluvia y volúmenes) y `fuentes/` (las tipografías, con sus licencias). |
 | `sala/` | La sala: la página, la imagen, la copia aclarada para el brillo y las máscaras de los objetos activos. |
-| `fogonazo/` | Fogonazo: la pantalla-instrumento, el mapa, la partida (todavía la maqueta), el avance (`estado.js`), las escenas y las piezas recortadas. |
-| `codigo/` | El motor de Fogonazo (`engine.js`), los 30 niveles (`levels.js`) y su calibración (`calibrated.json`), que la partida real va a usar. Corren igual en el navegador y en Node. |
+| `fogonazo/` | Fogonazo: la pantalla-instrumento, el mapa, la partida, el avance (`estado.js`), las escenas, los fondos de la partida y las piezas recortadas. |
+| `codigo/` | El motor de Fogonazo (`engine.js`), los 30 niveles (`levels.js`) y su calibración (`calibrated.json`), que usa la partida. Corren igual en el navegador y en Node. |
 | `manifest.webmanifest`, `sw.js`, `iconos/` | La ficha de instalación (Minijuegos, en horizontal, a pantalla completa), el *service worker* que guarda la app en el teléfono para que ande sin conexión, y los íconos provisorios. |
 | `docs/` | La documentación, los bocetos, el arte vigente y el prototipo del mahjong. Lo que está en `docs/` también se publica, pero no forma parte de la app. |
 | `herramientas/` | Pruebas, capturas, versión, íconos, calibración y los dibujos con código de los bocetos (ver abajo). |
