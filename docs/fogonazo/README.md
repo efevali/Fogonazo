@@ -166,6 +166,7 @@ Vive en [`fogonazo/`](../../fogonazo/), en la app, y se entra desde la sala por 
 | S-15 | El manual en dos hojas, con el texto nuevo: [a · cómo se juega](bocetos/S-15a-manual-hoja-1.jpg) y [b · las piezas especiales](bocetos/S-15b-manual-hoja-2.jpg). Capturas de la app | Aprobado (29/10) |
 | S-16 | [La placa del sonido](bocetos/S-16-placa-sonido.jpg) como la de la ilustración, con las letras oscuras. Captura de la app | Aprobado (29/10), con los componentes ubicados como en la ilustración |
 | S-17 | [La nota de cuaderno con letra más grande](bocetos/S-17-nota-nivel-18.jpg), en el nivel 18, el de la nota más larga. Captura de la app | Aprobado (29/10) |
+| S-18 | [La batería con siete rayitos de colores](bocetos/S-18a-bateria-rayitos.jpg), uno por componente, girando a su alrededor. Captura de la partida | Aprobado (29/10). *Descartada:* la aureola de colores (b) |
 
 Montajes de los pedidos de imágenes: [las piezas con patas cortas](bocetos/P-002-montaje-cortas.png) (con su [lámina de referencia](bocetos/P-002-referencia-piezas.png)), [la escena del instrumento en el teléfono](bocetos/P-004-montaje-telefono-chatgpt.png), y [los especiales](bocetos/P-005-montaje-especiales.jpg) y [los obstáculos](bocetos/P-005-montaje-obstaculos.jpg) en la partida (con su [lámina](bocetos/P-005-referencia.png)).
 

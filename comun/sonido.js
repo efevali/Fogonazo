@@ -362,8 +362,9 @@ const Sound = (() => {
       want(v) { on = v; this.apply(); },
       apply() {
         if (!ctx) return;
-        // 0.5.0: con la lluvia nueva, 0,155 la deja frente a la música como en la prueba de sonido aprobada
-        const g = on && !set.mute ? vol.lluvia / 10 * 0.155 : 0;
+        // 0.5.1: 0,5, el mismo nivel de la prueba de sonido donde se eligió. En la 0.5.0 iba a 0,155 y casi no se
+        // oía: es una lluvia grave y apagada, y el parlante del teléfono deja pasar poco de los graves
+        const g = on && !set.mute ? vol.lluvia / 10 * 0.5 : 0;
         if (g > 0 && !built) build();
         rainBus.gain.setTargetAtTime(g, ctx.currentTime, 0.4);
         if (g > 0 && !timer) timer = setInterval(tick, 40);

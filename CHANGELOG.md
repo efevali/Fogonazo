@@ -2,6 +2,12 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.6.0 — 29/10/2026
+
+- Fogonazo: **la batería brilla con siete rayitos**, uno por cada color de los componentes, que giran a su alrededor (S-18). Era el especial más poderoso y casi no tenía animación.
+- Fogonazo: en el teléfono, el texto de la segunda hoja del manual se salía de la hoja. El manual nunca había usado su letra, PT Serif, sino la serif del teléfono, más ancha; ahora la usa, y la segunda hoja se acomodó para entrar con aire.
+- La lluvia de la sala casi no se oía: vuelve al nivel de la prueba de sonido donde se eligió.
+
 ## 0.5.0 — 29/10/2026
 
 La sala suena a lluvia de verdad y sus ajustes pasan a ser un rack de audio; en Fogonazo, el manual se lee mejor y la placa del sonido se parece a la de la ilustración.

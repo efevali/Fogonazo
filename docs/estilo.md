@@ -27,7 +27,7 @@ Las reglas vigentes de cómo se ve y cómo suena la colección. Por qué se deci
 - **El marcador, con objetos de época:** una etiqueta Dymo con el nivel y la dificultad, un display de LED para los movimientos, el puntaje, un instrumento de aguja con las estrellas y el pedido en una ficha escrita a máquina. Sin nombre de nivel, la columna izquierda tiene aire y el pedido es compacto.
 - **Especiales y obstáculos** (S-10, con las imágenes del P-005):
   - **Rayo, sobrecarga y antena** son la pieza con una señal dibujada con código: flechas eléctricas blancas, con borde y brillo azul para que se lean sobre la protoboard clara, que se deslizan hacia donde barre; la pieza al rojo, con un halo y chispas que titilan, y un símbolo de wifi cuyos arcos se encienden por turno.
-  - **Batería:** una pila de 9 V parada, en dos colores (negro y turquesa), como la conocida pila de tope cobre pero con otro par de colores.
+  - **Batería:** una pila de 9 V parada, en dos colores (negro y turquesa), como la conocida pila de tope cobre pero con otro par de colores. Debajo, un brillo celeste y siete rayitos con los colores de los siete componentes (naranja, azul, rojo, verde, violeta, amarillo y acero), que giran despacio con un brillo que corre de uno al siguiente (S-18): es la más poderosa, porque se lleva todos los de un tipo.
   - **Pads de cobre**, con remaches si llevan dos pasadas, estañados al soldarse.
   - **Quemados**, carbonizados; los de dos golpes, en una cápsula metálica TO-3, que se puede agrandar en código si queda chica en la casilla.
   - **Cinta kapton**, ámbar y translúcida, dibujada con código.

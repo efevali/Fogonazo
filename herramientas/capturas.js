@@ -105,7 +105,15 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   const choca = await pantalla().evaluate(() => { const a = document.getElementById('closeManual').getBoundingClientRect(), b = document.getElementById('back').getBoundingClientRect();
     return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom; });
   ok(!choca, '«Cerrar» no queda encima de «Volver»');
+  // el texto de cada columna entra en su hoja, con la letra del manual (PT Serif) cargada
+  const entra = () => pantalla().evaluate(() => [...document.querySelectorAll('.pg:not([hidden])')].every(pg => {
+    const next = pg.querySelector('.pg-next').getBoundingClientRect(), fondo = pg.getBoundingClientRect().bottom;
+    return [...pg.querySelectorAll('.col')].every(c => { const r = c.getBoundingClientRect(), bajo = r.left < next.right && next.left < r.right;
+      return c.lastElementChild.getBoundingClientRect().bottom <= (bajo ? next.top : fondo); });
+  }) && document.fonts.check('24px "PT Serif"'));
+  ok(await entra(), 'el texto de la primera hoja entra, con PT Serif');
   await tocar('[data-pg="2"]'); ok(await abierto('#pg2') && !(await abierto('#pg1')), 'el triangulito pasa a la segunda hoja'); await foto('07b-fogonazo-manual-2');
+  ok(await entra(), 'el texto de la segunda hoja entra, con PT Serif');
   await tocar('#closeManual'); ok(!(await abierto('#manual')), '«Cerrar» cierra el manual');
   await tocar('#hitManual'); ok(await abierto('#pg1'), 'el manual vuelve a abrir en la primera hoja');
   await tocar('#closeManual');
