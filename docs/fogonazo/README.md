@@ -40,7 +40,7 @@ La portada del juego y su lugar de ajustes: un osciloscopio del banco visto de c
 - **Récords**, por dificultad: el nivel más alto y las estrellas sumadas, con el aviso de que el avance vive en Chrome. También los récords del zen.
 - **La perilla «Modo» queda donde se la dejó**, también al volver de una partida.
 - **Sonido:** la placa con el parlante abre los ajustes de música y efectos, los mismos de toda la colección.
-- **Manual:** la revista pegada en la pared, «Proyecto Nº 21», con cómo se juega y los especiales.
+- **Manual:** la revista pegada en la pared, «Proyecto Nº 21», en dos hojas: cómo se juega, y los especiales con sus combinaciones.
 - **«◀ Volver»**, abajo a la derecha, vuelve a la sala.
 
 ## Niveles: un camino continuo
@@ -140,7 +140,7 @@ Una placa libre, sin obstáculos, con los seis primeros componentes y todos los 
 
 Vive en [`fogonazo/`](../../fogonazo/), en la app, y se entra desde la sala por el banco. Cada pantalla dibuja encima de su imagen lo que cambia.
 
-- **Pantalla-instrumento** (`instrumento.html`), sobre la escena del P-004 tal cual, con las medidas de la pantalla, las perillas y los LEDs tomadas sobre ella: las perillas Modo y Dificultad; tocar la pantalla abre el mapa en Niveles y la partida zen en Zen; los récords con el aviso de Chrome; el sonido (perillas que giran con el dedo en círculo y diez LEDs que siguen al dedo, con los volúmenes de toda la colección) y el manual. La placa del sonido y la revista tienen aureolas que respiran por turno.
+- **Pantalla-instrumento** (`instrumento.html`), sobre la escena del P-004 tal cual, con las medidas de la pantalla, las perillas y los LEDs tomadas sobre ella: las perillas Modo y Dificultad; tocar la pantalla abre el mapa en Niveles y la partida zen en Zen; los récords con el aviso de Chrome; el sonido (perillas que giran con el dedo en círculo y diez LEDs que siguen al dedo, con los volúmenes de toda la colección, sobre la placa de S-16) y el manual de dos hojas (S-15), que siempre abre en la primera. La placa del sonido y la revista tienen aureolas que respiran por turno.
 - **Mapa** (`mapa.html`): la señal sobre hoja milimetrada, que se arrastra de costado, hasta el nivel 30.
 - **Partida** (`partida.html`), con la distribución de S-08c, sobre `codigo/engine.js`, `codigo/levels.js` y `codigo/calibrated.json`, con el modo de dificultad aplicado. La placa se dibuja en un *canvas*: las piezas del P-003 y los especiales y obstáculos del P-005, recortados en [`fogonazo/piezas/`](../../fogonazo/piezas/) (con `herramientas/sala/piezas.py` y `herramientas/sala/obstaculos.py`); las señales de S-10 (flechas del rayo, chispas de la sobrecarga, wifi de la antena), la cinta kapton y los huecos, con código. Cada paso del motor se anima con su misma duración (`Engine.stepDuration`), como en el Fogonazo publicado. Con `?zen=1`, la partida zen.
 - **Tres fondos** con el marcador grabado, de `herramientas/sala/escena-banco.html` capturado a 915 × 412 con densidad 2,625: `fondo.webp` (`?v=a2&bg=1`), `fondo-tiempo.webp` para el contrarreloj, que solo cambia «MOVIMIENTOS» por «TIEMPO» (`&tiempo=1`), y `fondo-zen.webp`, sin estrellas y con «Encargo» (`&zen=1`).
@@ -155,16 +155,17 @@ Vive en [`fogonazo/`](../../fogonazo/), en la app, y se entra desde la sala por 
 
 ## Bocetos
 
-| Boceto | Qué fija |
-|---|---|
+| Boceto | Qué fija | Estado |
+|---|---|---|
 | [S-06a](bocetos/S-06a-fogonazo-banco.png) | La partida como el banco visto de cerca: componentes reales sobre una protoboard en el nogal, con display de LED, instrumento de aguja, etiquetas Dymo y el pedido en una ficha |
 | S-08 | [a · la escena del instrumento](bocetos/S-08a-fogonazo-escena-instrumento.png), composición para la IA ([versión limpia](bocetos/S-08a-fogonazo-escena-instrumento-limpia.png), sin textos ni contenido de pantalla); [b · el mapa sobre hoja milimetrada](bocetos/S-08b-fogonazo-mapa-milimetrado.png); [c · la partida redistribuida, con la nota](bocetos/S-08c-fogonazo-partida-nota.png) |
-| S-09 | Las letras al tamaño del teléfono: [a · instrumento, antes y después](bocetos/S-09a-tipografias-instrumento.jpg), [b · récords](bocetos/S-09b-tipografias-records.jpg), [c · sonido y manual como página de revista](bocetos/S-09c-sonido-y-manual.jpg). Las palabras de las perillas, un poco más chicas que en la propuesta |
+| S-09 | Las letras al tamaño del teléfono: [a · instrumento, antes y después](bocetos/S-09a-tipografias-instrumento.jpg), [b · récords](bocetos/S-09b-tipografias-records.jpg). El sonido y el manual como página de revista de este boceto quedaron superados por S-16 y S-15. Las palabras de las perillas, un poco más chicas que en la propuesta |
 | S-10 | Especiales y obstáculos en el estilo del banco: [a · especiales en la partida](bocetos/S-10a-especiales-partida.jpg), [b · obstáculos](bocetos/S-10b-obstaculos-partida.jpg), [c · lámina de detalle](bocetos/S-10c-catalogo.jpg). Después se corrigieron la batería (parada, en negro y turquesa) y la antena (sin varilla, con wifi animado) |
-
 | S-12 | «◀ Volver» abajo a la derecha y aureolas: [el instrumento](bocetos/S-12b-instrumento-volver-aureolas.jpg), con las aureolas del parlante y de la revista en su punto más alto (en la app respiran por turno); [el mapa](bocetos/S-12c-mapa-volver.jpg); [la partida](bocetos/S-12d-partida-volver.jpg), donde «Volver» sale al mapa sin pasar por la pausa. Aprobado (27/10) |
-
 | S-13 | La partida real, lo que faltaba: [a · la pausa](bocetos/S-13a-pausa.jpg), una placa de aluminio con sus tornillos y teclas de cinta Dymo (la principal, en cinta roja); [b · nivel ganado](bocetos/S-13b-fin-gano.jpg) y [c · nivel perdido](bocetos/S-13c-fin-perdio.jpg), una etiqueta de control de calidad, con las estrellas y el sello «Aprobada» o «Rechazada» en tinta, y lo que faltó; [d · la partida zen](bocetos/S-13d-partida-zen.jpg), con un reloj en el display, el instrumento sin estrellas y una marca de lápiz rojo en el récord, y el encargo optativo en la ficha; [e · fin del zen](bocetos/S-13e-fin-zen.jpg), un parte de trabajo con puntos, tiempo y récords. Capturas de la maqueta | Aprobado (27/10), sin el hilo que ataba la etiqueta en el boceto: «mejor la tarjeta sola» |
+| S-15 | El manual en dos hojas, con el texto nuevo: [a · cómo se juega](bocetos/S-15a-manual-hoja-1.jpg) y [b · las piezas especiales](bocetos/S-15b-manual-hoja-2.jpg). Capturas de la app | Aprobado (29/10) |
+| S-16 | [La placa del sonido](bocetos/S-16-placa-sonido.jpg) como la de la ilustración, con las letras oscuras. Captura de la app | Aprobado (29/10), con los componentes ubicados como en la ilustración |
+| S-17 | [La nota de cuaderno con letra más grande](bocetos/S-17-nota-nivel-18.jpg), en el nivel 18, el de la nota más larga. Captura de la app | Aprobado (29/10) |
 
 Montajes de los pedidos de imágenes: [las piezas con patas cortas](bocetos/P-002-montaje-cortas.png) (con su [lámina de referencia](bocetos/P-002-referencia-piezas.png)), [la escena del instrumento en el teléfono](bocetos/P-004-montaje-telefono-chatgpt.png), y [los especiales](bocetos/P-005-montaje-especiales.jpg) y [los obstáculos](bocetos/P-005-montaje-obstaculos.jpg) en la partida (con su [lámina](bocetos/P-005-referencia.png)).
 

@@ -2,6 +2,18 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.5.0 — 29/10/2026
+
+La sala suena a lluvia de verdad y sus ajustes pasan a ser un rack de audio; en Fogonazo, el manual se lee mejor y la placa del sonido se parece a la de la ilustración.
+
+- **La lluvia de la sala**, leve y escuchada desde adentro: un colchón grave y apagado y gotitas que pegan en el vidrio. Antes sonaba a viento.
+- **Los ajustes, un rack de audio de los 70** (S-14): música, efectos y lluvia en medidores de diez LEDs, que se tocan o se recorren con el dedo; tocar el LED más alto encendido lo apaga.
+- **Vuelven la versión y «Actualizar»**, en el módulo «Sistema» del rack: la versión instalada en un display y, cuando hay una nueva, una luz ámbar y el botón encendido, que la instala y recarga la app en la sala. Sigue entrando sola al cerrar la app del todo.
+- Fogonazo: **el manual, en dos hojas** y con un texto más ameno (S-15): cómo se juega, y las piezas especiales con sus combinaciones. Se pasa de hoja con el triangulito.
+- Fogonazo: **la placa del sonido** como la de la ilustración, con sus componentes y las letras oscuras (S-16).
+- Fogonazo: **la nota de cuaderno, con letra más grande** (S-17).
+- Fogonazo: en el manual, «Cerrar» quedaba encima de «Volver».
+
 ## 0.4.0 — 27/10/2026
 
 Fogonazo se juega: la partida real, con el motor y los niveles de siempre, reemplaza a la maqueta.

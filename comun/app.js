@@ -8,7 +8,8 @@
    - Sonido: la música, los efectos y la lluvia viven acá (comun/sonido.js), así que no se cortan entre pantallas.
      La lluvia suena solo en la sala; cada juego elige su música.
    - Instalación: guarda el cuadro de instalación de Chrome para el panel de ajustes de la sala.
-   - Versión: el service worker deja la versión nueva esperando y entra sola al cerrar la app del todo.
+   - Versión: el service worker deja la versión nueva esperando; entra sola al cerrar la app del todo, o con
+     «Actualizar» en los ajustes de la sala (App.version), que muestran también la versión instalada.
 
    Las pantallas lo usan como «App» a través de comun/pantalla.js. */
 (() => {
@@ -108,6 +109,27 @@
   let instalada = false;
   const enApp = () => instalada || matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches || navigator.standalone === true;
 
+  // ------------------------------------------------------------ versión
+  // El service worker activo es la versión instalada; si hay otro esperando, es la nueva. Cada uno dice su número.
+  let reg = null;
+  const oyentes = new Set();
+  const avisar = () => oyentes.forEach(f => { try { f(); } catch (e) {} });
+  function preguntar(sw) {
+    return new Promise(r => {
+      if (!sw) return r(null);
+      const ch = new MessageChannel(), t = setTimeout(() => r(null), 1500);
+      ch.port1.onmessage = e => { clearTimeout(t); r(e.data && e.data.version || null); };
+      try { sw.postMessage('version', [ch.port2]); } catch (e) { clearTimeout(t); r(null); }
+    });
+  }
+  function vigilar(r) {
+    reg = r; avisar();
+    r.addEventListener('updatefound', () => {
+      const w = r.installing;
+      if (w) w.addEventListener('statechange', () => { if (w.state === 'installed' || w.state === 'activated') avisar(); });
+    });
+  }
+
   // ------------------------------------------------------------ la App que ven las pantallas
   window.App = {
     // ir a otra pantalla; extra: entradas del historial que la pantalla nueva usa para sus propios pasos (la partida, 1)
@@ -141,6 +163,23 @@
       duck(on) { Sound.duck(on); },
       musica(tema) { Sound.music(tema); },
     },
+    version: {
+      // { actual, nueva }: la versión instalada y la que espera (null si no hay)
+      async estado() {
+        const [actual, nueva] = await Promise.all([preguntar(reg && reg.active), preguntar(reg && reg.waiting)]);
+        return { actual, nueva };
+      },
+      // buscar en el servidor si hay una versión nueva; si aparece, avisa a quien escucha con alCambiar
+      buscar() { if (reg) reg.update().catch(() => {}); },
+      alCambiar(f) { oyentes.add(f); return () => oyentes.delete(f); },
+      // la versión que espera pasa a ser la activa y la app se recarga en la sala
+      actualizar() {
+        if (!reg || !reg.waiting) return false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => location.reload(), { once: true });
+        reg.waiting.postMessage('actualizar');
+        return true;
+      },
+    },
     instalacion: {
       get disponible() { return !enApp(); },
       get cuadro() { return !!cuadro; },
@@ -163,6 +202,6 @@
   cargar(INICIO, true);
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.register('sw.js').then(vigilar).catch(() => {});
   }
 })();

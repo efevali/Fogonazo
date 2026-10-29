@@ -10,6 +10,7 @@
 @font-face { font-family: Fraunces; font-weight: 100 900; src: url(../comun/fuentes/fraunces-latin-soft-normal.woff2) format('woff2'); }
 @font-face { font-family: "Barlow Semi Condensed"; font-weight: 500; src: url(../comun/fuentes/barlow-semi-condensed-latin-500-normal.woff2) format('woff2'); }
 @font-face { font-family: "Barlow Semi Condensed"; font-weight: 600; src: url(../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 600; src: url(../comun/fuentes/ibm-plex-mono-latin-600-normal.woff2) format('woff2'); }
 @font-face { font-family: "Barlow Semi Condensed"; font-weight: 700; src: url(../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
 /* Layout: one full-bleed illustrated room (Gemini) with an SVG layer in image coordinates; three active objects: bench, coffee table, hi-fi. */
 :root {
@@ -108,7 +109,53 @@ body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hid
 .btn { border-radius: 6px; padding: 8px 16px; font: 600 14px var(--label); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
 .btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
-/* sound: receiver faceplate */
+/* settings: a 70s audio rack (S-14), walnut cheeks and modules stacked one over the other, no screws.
+   An empty bay with a blind cover takes the spare height and is where future settings go. */
+.rack { width: min(600px, 100%); height: min(392px, 100%); display: grid; grid-template-columns: 18px minmax(0, 1fr) 18px; border-radius: 6px; overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .6); }
+.cheek { background: linear-gradient(90deg, var(--walnut-deep), var(--walnut) 45%, var(--walnut-deep)); }
+.bay { background: #141110; display: flex; flex-direction: column; gap: 3px; padding: 3px 0; min-height: 0; overflow-y: auto; }
+.mod { padding: 9px 26px; display: grid; gap: 6px; color: var(--ink);
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .07) 0 1px, rgba(0, 0, 0, .03) 1px 2px), linear-gradient(180deg, var(--alu), var(--alu-shade));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), inset 0 -1px 0 rgba(0, 0, 0, .25); }
+.mod.black { color: #e9e1d3; background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .035) 0 1px, rgba(0, 0, 0, .05) 1px 2px), linear-gradient(180deg, #2b2724, #1f1c1a);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 -1px 0 rgba(0, 0, 0, .5); }
+.ttl { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.ttl h3 { margin: 0; font: 700 13px/1 var(--label); letter-spacing: .22em; text-transform: uppercase; }
+.ttl span { font: 600 11px/1 var(--label); letter-spacing: .14em; text-transform: uppercase; opacity: .6; }
+.ttl h2 { margin: 0; font: 600 21px/1 var(--display); font-variation-settings: "SOFT" 100; }
+/* a channel: name, ten LEDs like Fogonazo's (green, yellow, red) and the reading on an amber display */
+.ch { display: grid; grid-template-columns: 74px minmax(0, 1fr) 34px; align-items: center; gap: 12px; height: 30px; }
+.ch .chl { font: 700 13px/1 var(--label); letter-spacing: .16em; text-transform: uppercase; }
+.meter { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; height: 16px; padding: 4px 6px; background: #0c0a09; border-radius: 3px; cursor: pointer;
+  touch-action: none; box-shadow: inset 0 1px 3px rgba(0, 0, 0, .9), 0 1px 0 rgba(255, 255, 255, .08); }
+.meter i { border-radius: 1.5px; background: var(--c); opacity: .18; transition: opacity .1s; }
+.meter i.on { opacity: 1; box-shadow: 0 0 6px var(--c), inset 0 1px 0 rgba(255, 255, 255, .5); }
+.meter:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.read { font: 600 17px/1 "IBM Plex Mono", monospace; color: var(--amber); text-shadow: 0 0 6px rgba(255, 182, 72, .6); text-align: center;
+  background: #0c0a09; border-radius: 3px; padding: 5px 0 4px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, .9); }
+/* system: the installed version on a green display, a status light and «Actualizar», lit only when a new one waits */
+.sys { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+.vfd { font: 600 15px/1 "IBM Plex Mono", monospace; color: #7dffd0; text-shadow: 0 0 7px rgba(125, 255, 208, .55); letter-spacing: .06em;
+  background: #06120e; border-radius: 3px; padding: 7px 10px 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, .9); min-width: 150px; }
+.state { display: flex; align-items: center; gap: 8px; font: 600 14px/1.2 var(--label); letter-spacing: .03em; }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; background: #4a4540; }
+.dot.green { background: #7dff6a; box-shadow: 0 0 7px #7dff6a; }
+.dot.amber { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+.btn.dark:disabled { background: #3a3633; color: #8d867d; cursor: default; }
+.btn.dark:disabled .lamp { background: #4a4540; box-shadow: none; }
+.blank { flex: 1 1 0; min-height: 0; background: repeating-linear-gradient(90deg, #1b1816 0 3px, #161312 3px 6px); }
+.rfoot { display: flex; justify-content: flex-end; padding: 6px 26px 4px; color: #e9e1d3; }
+.rack .inst { grid-template-columns: 34px 1fr auto; }
+.rack .inst .ic { width: 34px; height: 34px; }
+/* in the browser, with Chrome's bars, the phone has less height: the rack tightens so «Listo» stays in view */
+@media (max-height: 380px) {
+  .sheet:has(.rack) { padding-block: 6px; }
+  .bay { gap: 2px; padding-block: 2px; } .mod { padding-block: 5px; gap: 3px; } .ch { height: 24px; } .ttl h2 { font-size: 19px; }
+  .rack .inst small { display: none; } .rack .btn { padding-block: 5px; } .rfoot { padding-block: 3px; }
+}
+
+/* the install steps: receiver faceplate */
 .plate { width: min(600px, 100%); display: grid; grid-template-columns: 16px 1fr 16px; border-radius: 10px; overflow: hidden;
   box-shadow: 0 18px 40px rgba(0, 0, 0, .55), 0 2px 0 rgba(255, 255, 255, .08) inset; }
 .cap { background: linear-gradient(90deg, var(--walnut-deep), var(--walnut) 45%, var(--walnut-deep)); }
@@ -117,20 +164,7 @@ body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hid
 .head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .head h2 { margin: 0; font: 600 25px/1 var(--display); font-variation-settings: "SOFT" 100; }
 .head span { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; opacity: .7; font-weight: 600; }
-.row { display: grid; grid-template-columns: 84px 1fr 26px; align-items: center; gap: 12px; }
-.row label { font-size: 14px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
-.row output { font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 600; text-align: right; }
-/* a tick for each step under the track, from 0 to 10 */
-input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 30px; cursor: pointer; margin: 0;
-  background: repeating-linear-gradient(90deg, #5a544c 0 1px, transparent 1px calc((100% - 22px) / 10)) 11px 24px / calc(100% - 21px) 4px no-repeat; }
-input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: #2a2622; box-shadow: 0 1px 0 rgba(255, 255, 255, .5); }
-input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: #2a2622; }
-input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -8px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #ffffff, #cfcbc2 45%, #8d887f); border: 1px solid #55504a; box-shadow: 0 2px 3px rgba(0, 0, 0, .4); }
-input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff, #cfcbc2 45%, #8d887f); border: 1px solid #55504a; }
-input[type=range]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 .foot { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
-.rule { height: 0; border-top: 1px solid rgba(0, 0, 0, .28); border-bottom: 1px solid rgba(255, 255, 255, .55); margin: 2px 0 10px; }
 .inst { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; }
 .inst .ic { width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0, 0, 0, .4);
   background: url(../iconos/icono-192.png) center / cover; }
@@ -322,26 +356,38 @@ ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622
     </div>
   </div>
 
-  <!-- Settings: sound and install (S-11) -->
+  <!-- Settings: a 70s audio rack with sound, system and install (S-14) -->
   <div class="sheet" id="sheetAudio" hidden>
-    <div class="plate" role="dialog" aria-modal="true" aria-labelledby="tAudio">
-      <div class="cap"></div>
-      <div class="face">
-        <div class="head"><h2 id="tAudio">Ajustes</h2><span>Minijuegos</span></div>
-        <div class="row"><label for="volMusica">Música</label><input id="volMusica" data-vol="musica" type="range" min="0" max="10" step="1"><output for="volMusica"></output></div>
-        <div class="row"><label for="volEfectos">Efectos</label><input id="volEfectos" data-vol="efectos" type="range" min="0" max="10" step="1"><output for="volEfectos"></output></div>
-        <div class="row"><label for="volLluvia">Lluvia</label><input id="volLluvia" data-vol="lluvia" type="range" min="0" max="10" step="1"><output for="volLluvia"></output></div>
-        <div id="instRow" hidden>
-          <div class="rule"></div>
+    <div class="rack" role="dialog" aria-modal="true" aria-labelledby="tAudio">
+      <div class="cheek"></div>
+      <div class="bay">
+        <div class="mod">
+          <div class="ttl"><h2 id="tAudio">Ajustes</h2><span>Minijuegos</span></div>
+          <div class="ttl"><h3>Sonido</h3><span>Tocá o deslizá sobre los LEDs</span></div>
+          <div class="ch"><span class="chl" id="lMusica">Música</span><div class="meter" role="slider" tabindex="0" data-vol="musica" aria-labelledby="lMusica" aria-valuemin="0" aria-valuemax="10"></div><output class="read"></output></div>
+          <div class="ch"><span class="chl" id="lEfectos">Efectos</span><div class="meter" role="slider" tabindex="0" data-vol="efectos" aria-labelledby="lEfectos" aria-valuemin="0" aria-valuemax="10"></div><output class="read"></output></div>
+          <div class="ch"><span class="chl" id="lLluvia">Lluvia</span><div class="meter" role="slider" tabindex="0" data-vol="lluvia" aria-labelledby="lLluvia" aria-valuemin="0" aria-valuemax="10"></div><output class="read"></output></div>
+        </div>
+        <div class="mod black">
+          <div class="ttl"><h3>Sistema</h3></div>
+          <div class="sys">
+            <div class="vfd" id="verTxt">VERSIÓN —</div>
+            <div class="state" role="status"><span class="dot" id="verDot"></span><span id="verState"></span></div>
+            <button class="btn dark" type="button" id="updBtn" disabled><span class="lamp"></span>Actualizar</button>
+          </div>
+        </div>
+        <div class="mod" id="instRow" hidden>
+          <div class="ttl"><h3>Instalar</h3></div>
           <div class="inst">
             <span class="ic" aria-hidden="true"></span>
             <span><b>Instalá Minijuegos en tu teléfono</b><small>Queda entre tus apps y funciona sin conexión.</small></span>
             <button class="btn dark" type="button" id="instBtn"><span class="lamp"></span>Instalar</button>
           </div>
         </div>
-        <div class="foot"><button class="btn ghost" type="button" data-close>Listo</button></div>
+        <div class="blank" aria-hidden="true"></div>
+        <div class="rfoot"><button class="btn ghost" type="button" data-close>Listo</button></div>
       </div>
-      <div class="cap"></div>
+      <div class="cheek"></div>
     </div>
   </div>
 
@@ -419,7 +465,7 @@ ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622
     if (abiertos.length) abiertos[abiertos.length - 1].classList.add('under');
     sheet.hidden = false; abiertos.push(sheet);
     App.abrir();
-    const f = sheet.querySelector('input, button'); if (f) f.focus({ preventScroll: true });
+    const f = sheet.querySelector('[role=slider], input, button:not(:disabled)'); if (f) f.focus({ preventScroll: true });
   }
   function hide() {
     const sheet = abiertos.pop(); if (!sheet) return;
@@ -456,17 +502,64 @@ ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622
     aviso.hidden = false; clearTimeout(aviso.t); aviso.t = setTimeout(() => { aviso.hidden = true; }, 3500);
   });
 
-  // ---------- settings: the collection's volumes, 0 to 10 ----------
-  const vols = [...document.querySelectorAll('input[data-vol]')];
-  function pintarAjustes() {
-    for (const i of vols) { i.value = App.sonido.volumen(i.dataset.vol); i.nextElementSibling.value = i.value; }
-    document.getElementById('instRow').hidden = !App.instalacion.disponible;
+  // ---------- settings: the collection's volumes, 0 to 10, on LED meters ----------
+  // A tap on a LED sets the level up to it; a tap on the highest lit one turns it off (so the first one, tapped twice,
+  // leaves the channel at 0). Dragging along the meter follows the finger.
+  const meters = [...document.querySelectorAll('.meter')];
+  const LEDC = i => i < 6 ? '#7dff6a' : i < 8 ? '#ffe45a' : '#ff4a36';
+  for (const m of meters) for (let i = 0; i < 10; i++) { const e = document.createElement('i'); e.style.setProperty('--c', LEDC(i)); m.appendChild(e); }
+  function pintarCanal(m) {
+    const v = App.sonido.volumen(m.dataset.vol);
+    [...m.children].forEach((e, i) => e.classList.toggle('on', i < v));
+    m.setAttribute('aria-valuenow', v); m.nextElementSibling.value = v;
   }
-  for (const i of vols) i.addEventListener('input', () => {
-    i.nextElementSibling.value = i.value;
-    App.sonido.setVolumen(i.dataset.vol, +i.value);
-    if (i.dataset.vol === 'efectos') fx('click');
+  function fijar(m, v) {
+    v = Math.max(0, Math.min(10, v));
+    if (v === App.sonido.volumen(m.dataset.vol)) return;
+    App.sonido.setVolumen(m.dataset.vol, v); pintarCanal(m);
+    if (m.dataset.vol === 'efectos') fx('click');
+  }
+  const frac = (m, x) => { const r = m.getBoundingClientRect(); return (x - r.left) / r.width; };
+  for (const m of meters) {
+    let x0 = 0, drag = false;
+    m.addEventListener('pointerdown', e => {
+      e.preventDefault(); m.setPointerCapture(e.pointerId); x0 = e.clientX; drag = false;
+      const i = Math.max(0, Math.min(9, Math.floor(frac(m, e.clientX) * 10))), cur = App.sonido.volumen(m.dataset.vol);
+      fijar(m, cur === i + 1 ? i : i + 1);
+    });
+    m.addEventListener('pointermove', e => {
+      if (!m.hasPointerCapture(e.pointerId) || (!drag && Math.abs(e.clientX - x0) < 6)) return;
+      drag = true; fijar(m, Math.round(frac(m, e.clientX) * 10));
+    });
+    m.addEventListener('keydown', e => {
+      const d = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 }[e.key];
+      if (d) { e.preventDefault(); fijar(m, App.sonido.volumen(m.dataset.vol) + d); }
+    });
+  }
+
+  // ---------- settings: the installed version and «Actualizar» ----------
+  const verTxt = document.getElementById('verTxt'), verDot = document.getElementById('verDot'), verState = document.getElementById('verState');
+  const updBtn = document.getElementById('updBtn');
+  async function pintarVersion() {
+    const { actual, nueva } = await App.version.estado();
+    verTxt.textContent = 'VERSIÓN ' + (actual || '—');
+    const hay = !!nueva && nueva !== actual;
+    verDot.className = 'dot' + (hay ? ' amber' : actual ? ' green' : '');
+    verState.textContent = hay ? 'Nueva: la ' + nueva : actual ? 'Al día' : '';
+    updBtn.disabled = !hay;
+  }
+  const dejar = App.version.alCambiar(() => { if (!document.getElementById('sheetAudio').hidden) pintarVersion(); });
+  addEventListener('pagehide', dejar);
+  updBtn.addEventListener('click', () => {
+    fx('click');
+    if (App.version.actualizar()) { verState.textContent = 'Actualizando…'; updBtn.disabled = true; } else pintarVersion();
   });
+
+  function pintarAjustes() {
+    meters.forEach(pintarCanal);
+    document.getElementById('instRow').hidden = !App.instalacion.disponible;
+    App.version.buscar(); pintarVersion();
+  }
 
   // ---------- install ----------
   const K = '<span class="kebab" role="img" aria-label="el menú de tres puntos"></span>';

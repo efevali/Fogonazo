@@ -55,6 +55,11 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
 .mag h2 { font: 700 24px/1 Barlow; letter-spacing: .14em; text-transform: uppercase; margin: 12px 0 8px; color: #b8321f; break-after: avoid; }
 .mag p.sp { margin-bottom: 6px; }
 .mag b { font-weight: 700; }
+.pg { height: 100%; position: relative; }
+.mag h1.h1s { font-size: 40px; }
+.pg-next { cursor: pointer; padding: 6px 0 0 12px; position: absolute; right: 0; bottom: 0; font: 600 19px/1 Barlow; color: #5a4d3c; display: flex; align-items: center; gap: 10px; }
+.pg-next.back { right: auto; left: 0; padding: 6px 12px 0 0; }
+.pg-next .tri { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #b8321f; color: #f6ecd6; font-size: 20px; }
 .mag-note { font: 600 19px/1.25 Barlow; color: #5a4d3c; border-top: 1px solid rgba(43,36,27,.4); padding-top: 7px; margin-top: 12px !important; }
 #rotate { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20, 10, 4, .85); color: #f3e6d0;
   font: 600 18px/1.4 Barlow, sans-serif; text-align: center; padding: 24px; z-index: 5; }
@@ -75,6 +80,12 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     <clipPath id="scr"><rect x="718" y="307" width="492" height="346" rx="10"/></clipPath>
     <pattern id="perf" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="7" cy="7" r="1.6" fill="#5a3412" opacity=".55"/></pattern>
     <linearGradient id="pert" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b0773a"/><stop offset="1" stop-color="#94602b"/></linearGradient>
+    <linearGradient id="pcb" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#dc9640"/><stop offset=".55" stop-color="#c97d2c"/><stop offset="1" stop-color="#a9611f"/></linearGradient>
+    <radialGradient id="gloss" cx=".28" cy=".18" r=".9"><stop offset="0" stop-color="#fff4d8" stop-opacity=".38"/><stop offset=".5" stop-color="#fff4d8" stop-opacity=".05"/><stop offset="1" stop-color="#3a1c06" stop-opacity=".28"/></radialGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .25  0 0 0 0 .08  0 0 0 .55 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+    <radialGradient id="nut" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#f2efe8"/><stop offset=".7" stop-color="#a9a49b"/><stop offset="1" stop-color="#6d6860"/></radialGradient>
+    <linearGradient id="capS" x1="0" x2="1"><stop offset="0" stop-color="#1c3a72"/><stop offset=".35" stop-color="#4f7fcf"/><stop offset="1" stop-color="#16305e"/></linearGradient>
+    <radialGradient id="cap" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#7fa6e6"/><stop offset=".7" stop-color="#2f5fb0"/><stop offset="1" stop-color="#1c3a72"/></radialGradient>
     <radialGradient id="knob" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#5a5550"/><stop offset=".6" stop-color="#2a2724"/><stop offset="1" stop-color="#141210"/></radialGradient>
   </defs>
   <image href="instrumento.webp" width="1679" height="937"/>
@@ -110,10 +121,12 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   <!-- sound sheet -->
   <g id="sound" class="sheet">
     <rect x="0" y="0" width="1679" height="937" fill="#120803" opacity=".62"/>
-    <g filter="url(#sh)"><rect x="300" y="190" width="1080" height="560" rx="10" fill="url(#pert)"/></g>
-    <rect x="300" y="190" width="1080" height="560" rx="10" fill="url(#perf)"/>
-    <text x="340" y="252" font-family="Barlow" font-weight="700" font-size="40" letter-spacing="6" fill="#fff3dc">SONIDO</text>
-    <text x="340" y="290" font-family="Barlow" font-weight="600" font-size="25" fill="#fff3dc">Girá la perilla o pasá el dedo por los LEDs. Vale para toda la colección.</text>
+    <g filter="url(#sh)"><rect x="300" y="190" width="1080" height="560" rx="6" fill="url(#pcb)"/></g>
+    <rect x="300" y="190" width="1080" height="560" rx="6" filter="url(#grain)" opacity=".35"/>
+    <rect x="300" y="190" width="1080" height="560" rx="6" fill="url(#gloss)"/>
+    <g id="decor"></g>
+    <text x="340" y="252" font-family="Barlow" font-weight="700" font-size="40" letter-spacing="6" fill="#24170b">SONIDO</text>
+    <text x="340" y="290" font-family="Barlow" font-weight="600" font-size="23" fill="#24170b" opacity=".85">Girá la perilla o pasá el dedo por los LEDs. Vale para toda la colección.</text>
     <g id="channels"></g>
     <g id="done" class="lbl" transform="translate(1210 678)" tabindex="0" role="button" aria-label="Listo">
       <rect width="140" height="54" rx="5" fill="#2a2622"/><text x="70" y="36" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="24" letter-spacing="3" fill="#f1ebe0">LISTO</text>
@@ -127,29 +140,42 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
       <g filter="url(#sh)"><rect x="420" y="112" width="840" height="712" fill="#e6d8b6"/></g>
       <foreignObject x="420" y="112" width="840" height="712">
         <div xmlns="http://www.w3.org/1999/xhtml" class="mag">
+          <div class="pg" id="pg1">
           <div class="mag-top"><span class="mag-num">PROYECTO Nº 21</span><span>TÉCNICA DE AFICIONADO · 34</span></div>
           <h1>Fogonazo: el juego de los componentes</h1>
-          <p class="mag-dek">Un pasatiempo para armar con lo que sobra en el banco. Cómo se juega y qué hacen las piezas especiales.</p>
+          <p class="mag-dek">Con lo que sobra en el cajón del banco se arma un pasatiempo para las noches de lluvia. Así se juega.</p>
           <div class="mag-cols">
             <figure>
               <div class="mag-photo"><img src="piezas/pieza1.png" style="left:18%"/><img src="piezas/pieza1.png" style="left:40%"/><img src="piezas/pieza1.png" style="left:62%"/><img class="dim" src="piezas/pieza4.png" style="left:84%"/><img class="dim" src="piezas/pieza6.png" style="left:-4%"/></div>
-              <figcaption>Fig. 1. Tres iguales en línea se queman y caen otros nuevos.</figcaption>
+              <figcaption>Fig. 1. Tres iguales en fila: se queman y bajan otros a ocupar el lugar.</figcaption>
             </figure>
-            <p class="first">Deslizá un componente hacia su vecino, o tocá uno y después el otro. Si quedan tres o más iguales en línea, se queman.</p>
-            <p>Hay que cumplir el pedido de la ficha antes de quedarse sin movimientos. Las cascadas suman cada vez más; las estrellas dependen del puntaje.</p>
-            <h2>Especiales</h2>
-            <p class="sp"><b>Rayo.</b> Cuatro en línea: barre la fila o la columna.</p>
-            <p class="sp"><b>Sobrecarga.</b> Línea en L o en T: explota alrededor.</p>
-            <p class="sp"><b>Batería.</b> Cinco en línea: se lleva todos los de un tipo.</p>
-            <p class="sp"><b>Antena.</b> Cuadrado de 2 × 2: rompe sus vecinas y transmite.</p>
-            <p class="mag-note">Intercambiá dos especiales entre sí y se combinan.</p>
+            <p class="first">La idea es sencilla. Deslizás un componente hacia el de al lado y, si con el cambio quedan tres o más iguales en fila, se queman con un chispazo. Si preferís ir con calma, tocá uno y después su vecino.</p>
+            <p>Cada nivel trae su ficha de pedido, y hay que cumplirla antes de quedarse sin movimientos. Cuando lo que cae arma otra línea por su cuenta, es una cascada, y cada cascada paga más que la anterior.</p>
+            <p>Las estrellas salen del puntaje: con una se sigue, las tres son para volver y pulir el nivel.</p>
+          </div>
+          <div class="pg-next" data-pg="2" role="button" tabindex="0" aria-label="Página siguiente">Sigue en la página siguiente <span class="tri">▶</span></div>
+          </div>
+          <div class="pg" id="pg2" hidden="">
+          <div class="mag-top"><span class="mag-num">PROYECTO Nº 21</span><span>TÉCNICA DE AFICIONADO · 35</span></div>
+          <h1 class="h1s">Las piezas especiales</h1>
+          <p class="mag-dek">Cuando la jugada es de más de tres, el banco te devuelve algo mejor que un chispazo.</p>
+          <div class="mag-cols">
+            <p class="sp"><b>Rayo.</b> Sale de cuatro en fila. Tocalo o metelo en una línea y barre la fila o la columna de punta a punta.</p>
+            <p class="sp"><b>Sobrecarga.</b> Sale de una L o una T. Revienta todo lo que tiene alrededor: ideal para destrabar un rincón.</p>
+            <p class="sp"><b>Batería.</b> Cinco en fila, la jugada grande. Cambiala por un componente y se lleva todos los de ese tipo.</p>
+            <p class="sp"><b>Antena.</b> Sale de un cuadrado de dos por dos. Rompe sus cuatro vecinas y le transmite a una pieza que te haga falta para el pedido.</p>
+            <h2>Truco de taller</h2>
+            <p class="sp">Intercambiá dos especiales entre sí y se combinan. Dos rayos hacen una cruz; un rayo con una sobrecarga barre tres filas y tres columnas; dos sobrecargas, una explosión doble.</p>
+            <p class="sp">La batería con otro especial convierte a todos los de un tipo en ese especial. Dos baterías juntas limpian la placa entera.</p>
+          </div>
+          <div class="pg-next back" data-pg="1" role="button" tabindex="0" aria-label="Página anterior"><span class="tri">◀</span> Volver a la página anterior</div>
           </div>
         </div>
       </foreignObject>
       <rect x="390" y="100" width="120" height="34" fill="#efe6c8" opacity=".72" transform="rotate(-24 450 117)"/>
       <rect x="1170" y="100" width="120" height="34" fill="#efe6c8" opacity=".72" transform="rotate(22 1230 117)"/>
     </g>
-    <g id="closeManual" class="lbl" transform="translate(1300 770)" tabindex="0" role="button" aria-label="Cerrar">
+    <g id="closeManual" class="lbl" transform="translate(1440 676)" tabindex="0" role="button" aria-label="Cerrar">
       <rect width="150" height="54" rx="5" fill="#2a2622"/><text x="75" y="36" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="24" letter-spacing="3" fill="#f1ebe0">CERRAR</text>
     </g>
   </g>
@@ -262,24 +288,55 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
     let s = '';
     CH.forEach(([k, lab, y]) => {
       const v = VOL(k), px = 430, deg = -135 + 27 * v;
-      s += `<text x="${px}" y="${y - 72}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="24" letter-spacing="3" fill="#fff3dc">${lab}</text>`;
+      s += `<text x="${px}" y="${y - 78}" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="22" letter-spacing="3" fill="#24170b">${lab}</text>`;
       s += `<g class="lbl pot" data-ch="${k}" data-cy="${y}" role="slider" tabindex="0" aria-label="${lab}" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${v}">
-        <circle cx="${px}" cy="${y}" r="58" fill="#000" opacity=".3" transform="translate(0 6)"/><circle cx="${px}" cy="${y}" r="56" fill="url(#knob)"/>`;
-      for (let t = 0; t < 30; t++) { const a = t / 30 * Math.PI * 2; s += `<line x1="${px + 51 * Math.cos(a)}" y1="${y + 51 * Math.sin(a)}" x2="${px + 56 * Math.cos(a)}" y2="${y + 56 * Math.sin(a)}" stroke="#55504a" stroke-width="2.5"/>`; }
-      s += `<circle cx="${px}" cy="${y}" r="36" fill="#33302c"/><line x1="${px}" y1="${y}" x2="${px}" y2="${y - 46}" stroke="#f4f1ea" stroke-width="6" stroke-linecap="round" transform="rotate(${deg} ${px} ${y})"/></g>`;
+        <circle cx="${px + 6}" cy="${y + 10}" r="56" fill="#3a1a04" opacity=".35"/>`;
+      // the hex nut and washer that hold the pot to the board
+      let hex = ''; for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + i * Math.PI / 3; hex += (i ? 'L' : 'M') + (px + 58 * Math.cos(a)).toFixed(1) + ',' + (y + 58 * Math.sin(a)).toFixed(1); }
+      s += `<circle cx="${px}" cy="${y}" r="62" fill="#b8b2a6" opacity=".55"/><path d="${hex}Z" fill="url(#nut)" stroke="#6d6860" stroke-width="1.5"/>`;
+      s += `<circle cx="${px}" cy="${y}" r="44" fill="url(#knob)"/>`;
+      for (let t = 0; t < 36; t++) { const a = t / 36 * Math.PI * 2; s += `<line x1="${px + 39 * Math.cos(a)}" y1="${y + 39 * Math.sin(a)}" x2="${px + 44 * Math.cos(a)}" y2="${y + 44 * Math.sin(a)}" stroke="#55504a" stroke-width="2.2"/>`; }
+      s += `<circle cx="${px}" cy="${y}" r="30" fill="#2b2825"/><circle cx="${px - 8}" cy="${y - 10}" r="12" fill="#fff" opacity=".06"/>
+        <line x1="${px}" y1="${y - 10}" x2="${px}" y2="${y - 36}" stroke="#f4f1ea" stroke-width="5" stroke-linecap="round" transform="rotate(${deg} ${px} ${y})"/></g>`;
       s += `<rect data-row="${k}" x="518" y="${y - 48}" width="750" height="96" fill="transparent"/>`;
       for (let i = 0; i < 10; i++) {
         const lx = 560 + i * 74, on = i < v, c = LEDC(i);
         s += `<g class="lbl" data-ch="${k}" data-v="${i + 1}" role="button" tabindex="0" aria-label="${lab} ${i + 1}"><rect x="${lx - 30}" y="${y - 40}" width="66" height="80" fill="transparent"/>
-          <ellipse cx="${lx}" cy="${y + 20}" rx="22" ry="7" fill="#000" opacity=".25"/>
-          ${on ? `<circle cx="${lx}" cy="${y}" r="30" fill="${c}" opacity=".55" filter="url(#ledg)"/>` : ''}
-          <path d="M${lx - 18},${y + 16} V${y - 4} A18,18 0 0 1 ${lx + 18},${y - 4} V${y + 16} Z" fill="${c}" opacity="${on ? 1 : .28}"/>
-          <rect x="${lx - 21}" y="${y + 13}" width="42" height="7" rx="2" fill="${c}" opacity="${on ? .9 : .25}"/>
-          <ellipse cx="${lx - 6}" cy="${y - 8}" rx="5" ry="8" fill="#fff" opacity="${on ? .7 : .3}"/></g>`;
+          <circle cx="${lx}" cy="${y + 2}" r="15" fill="#e9c08a" opacity=".55"/><circle cx="${lx}" cy="${y + 2}" r="15" fill="none" stroke="#8a5320" stroke-width="1.2" opacity=".5"/>
+          <ellipse cx="${lx + 3}" cy="${y + 7}" rx="13" ry="10" fill="#3a1a04" opacity=".35"/>
+          ${on ? `<circle cx="${lx}" cy="${y}" r="26" fill="${c}" opacity=".5" filter="url(#ledg)"/>` : ''}
+          <circle cx="${lx}" cy="${y}" r="12" fill="${c}" opacity="${on ? 1 : .35}"/>
+          <circle cx="${lx}" cy="${y}" r="12" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="1.5"/>
+          <ellipse cx="${lx - 4}" cy="${y - 5}" rx="4" ry="5" fill="#fff" opacity="${on ? .8 : .45}"/></g>`;
       }
     });
     $('channels').innerHTML = s;
   }
+  function drawDecor() {
+    const cu = 'stroke="#f0b870" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".45"';
+    const pad = (x, y) => `<circle cx="${x}" cy="${y}" r="6.5" fill="#f5d6a8"/><circle cx="${x}" cy="${y}" r="2.2" fill="#6b3a10"/>`;
+    const res = (x, y, rot = 0) => `<g transform="rotate(${rot} ${x} ${y})"><line x1="${x - 34}" y1="${y}" x2="${x + 34}" y2="${y}" stroke="#d9d4ca" stroke-width="2.5"/>
+      <rect x="${x - 18}" y="${y - 6.5}" width="36" height="13" rx="6" fill="#d8b98a" stroke="#8a6a40" stroke-width="1"/>
+      ${[['#7a3b1c', -11], ['#1c1c1c', -5], ['#c8402c', 1], ['#c9a227', 10]].map(([c, dx]) => `<rect x="${x + dx}" y="${y - 6.5}" width="3.5" height="13" fill="${c}"/>`).join('')}</g>`;
+    let s = '';
+    // traces: each pot feeds its LED row along the top, and a common rail runs along the bottom edge
+    for (const y of [410, 590]) {
+      s += `<path d="M430,${y + 62} V${y + 74} H520 V${y + 40} H1270 V${y - 30}" ${cu}/>`;
+      for (let i = 0; i < 10; i++) { const lx = 560 + i * 74; s += `<path d="M${lx},${y + 16} V${y + 40}" ${cu}/>`; }
+    }
+    s += `<path d="M320,728 H1180 M1300,728 H1360 V220 H1310" ${cu}/><path d="M486,300 H1290 V260" ${cu}/>`;
+    for (const [x, y] of [[322, 212], [1358, 212], [322, 728], [1358, 728]]) s += `<circle cx="${x}" cy="${y}" r="9" fill="#2a1406"/><circle cx="${x}" cy="${y}" r="13" fill="none" stroke="#f0c27a" stroke-width="4"/>`;
+    s += res(1150, 300) + res(760, 500) + res(940, 500) + res(800, 682) + res(800, 704);
+    // an 8-pin chip between the rows, on the right
+    s += `<rect x="1052" y="486" width="92" height="38" rx="3" fill="#202020"/><circle cx="1064" cy="505" r="4" fill="#3a3a3a"/>`;
+    for (let i = 0; i < 4; i++) s += `<rect x="${1060 + i * 22}" y="478" width="8" height="9" fill="#d9d4ca"/><rect x="${1060 + i * 22}" y="523" width="8" height="9" fill="#d9d4ca"/>`;
+    // two blue electrolytic capacitors standing on the board, top right and bottom
+    const cap = (x, y) => `<rect x="${x}" y="${y}" width="38" height="66" rx="5" fill="url(#capS)"/><ellipse cx="${x + 19}" cy="${y + 1}" rx="19" ry="6" fill="#a9b8cf"/><path d="M${x + 19},${y - 4} l-6,5 h12 z" fill="#7c8aa0"/><rect x="${x + 26}" y="${y + 6}" width="7" height="56" fill="#d9e2f0" opacity=".55"/><line x1="${x + 10}" y1="${y + 66}" x2="${x + 10}" y2="${y + 78}" stroke="#d9d4ca" stroke-width="2.5"/><line x1="${x + 28}" y1="${y + 66}" x2="${x + 28}" y2="${y + 78}" stroke="#d9d4ca" stroke-width="2.5"/>`;
+    s += cap(1288, 256) + cap(1120, 648);
+    s += [[520, 450], [520, 630], [1270, 380], [1270, 560]].map(([x, y]) => pad(x, y)).join('');
+    $('decor').innerHTML = s;
+  }
+  drawDecor();
   function setVol(k, v) { App.sonido.setVolumen(k, Math.max(0, Math.min(10, v))); drawChannels(); drawBoardLeds(); if (k === 'efectos') click(); }
 
   // ---------- sound effect for the controls ----------
@@ -292,14 +349,17 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   const show = id => { if (isOpen()) return; open(id); App.abrir(); };
   const close = () => { if (isOpen()) App.volver(); };
   window.Pantalla.atras = () => open(null);
+  // the manual has two pages (S-15): the little red triangles turn them; it always opens on the first one
+  const pagina = n => { $('pg1').hidden = n !== 1; $('pg2').hidden = n !== 2; };
   function activate(el) {
     if (!el) return;
     if (el.dataset.knob) return setKnob(el.dataset.knob, el.dataset.i);
+    if (el.dataset.pg) { click(); return pagina(+el.dataset.pg); }
     if (el.dataset.ch && el.dataset.v) { const k = el.dataset.ch, v = +el.dataset.v; return setVol(k, VOL(k) === v && v === 1 ? 0 : v); }
     switch (el.id) {
       case 'hitScreen': if (mode === 0) { click(); App.ir('fogonazo/mapa.html'); } else if (mode === 1) { click(); App.ir('fogonazo/partida.html?zen=1', 1); } break;
       case 'hitSound': click(); drawChannels(); show('sound'); break;
-      case 'hitManual': click(); show('manual'); break;
+      case 'hitManual': click(); pagina(1); show('manual'); break;
       case 'done': case 'closeManual': click(); close(); break;
       case 'back': click(); App.volver(1 + App.extra); break;
     }
@@ -342,7 +402,7 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
   svg.addEventListener('pointerup', endDrag);
   svg.addEventListener('pointercancel', endDrag);
   svg.addEventListener('click', e => {
-    const el = e.target.closest('[data-knob], [data-v], #hitScreen, #hitSound, #hitManual, #done, #closeManual, #back');
+    const el = e.target.closest('[data-knob], [data-v], [data-pg], #hitScreen, #hitSound, #hitManual, #done, #closeManual, #back');
     if (!el) return;
     if (el.dataset.v && skipClick) { skipClick = false; return; }
     if (isOpen() && !el.closest('.sheet')) return;

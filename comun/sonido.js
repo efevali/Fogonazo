@@ -1,7 +1,7 @@
 /* El sonido de la colección, sintetizado con WebAudio: sin archivos de audio.
    - Voces básicas (pulso, triangular, ruido y FM de dos operadores), con las que se arman los efectos y la música.
    - Los efectos y los cuatro temas de Fogonazo (Placa, Taller, Urgente y Siesta), su sonido de siempre.
-   - La lluvia de la sala: ruido rosa filtrado que crece y baja despacio.
+   - La lluvia de la sala: un colchón de ruido rosa apagado y gotitas en el vidrio.
    - Un solo juego de volúmenes para toda la colección (música, efectos y lluvia, de 0 a 10), guardado en Chrome.
    Vive en la página contenedora (index.html), así que no se corta al pasar de una pantalla a otra. */
 const Sound = (() => {
@@ -319,8 +319,12 @@ const Sound = (() => {
   });
 
   // ------------------------------------------------------------ lluvia (la de la sala)
+  // 0.5.0 (#39): una lluvia leve escuchada desde adentro, detrás del vidrio. Un colchón grave y apagado (ruido rosa
+  // filtrado) y gotitas cortas, parejas y apagadas, que pegan en el vidrio al azar y repartidas en el estéreo. Sin gotas
+  // gordas espaciadas: desde adentro suenan falsas. La anterior era solo el colchón, más brillante, y sonaba a viento.
   const Rain = (() => {
-    let built = false, on = false;
+    const BED = { hp: 90, lp: 520, g: 0.15 }, DROPS = { rate: 34, lo: 1600, hi: 4200, dur: 0.018, vol: 0.05 };
+    let built = false, on = false, timer = null, next = 0;
     function build() {
       const len = ctx.sampleRate * 4, buf = ctx.createBuffer(2, len, ctx.sampleRate);
       for (let c = 0; c < 2; c++) {
@@ -330,27 +334,40 @@ const Sound = (() => {
           b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759; b2 = 0.96900 * b2 + w * 0.1538520;
           b3 = 0.86650 * b3 + w * 0.3104856; b4 = 0.55000 * b4 + w * 0.5329522; b5 = -0.7616 * b5 - w * 0.0168980;
           dd[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11; b6 = w * 0.115926;
-          if (Math.random() < 0.0009) dd[i] += Math.random() - 0.5;
         }
       }
       const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
-      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 260;
-      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600;
-      const swell = ctx.createGain(); swell.gain.value = 0.85;
-      const lfo = ctx.createOscillator(); lfo.frequency.value = 0.07;
-      const lfoAmt = ctx.createGain(); lfoAmt.gain.value = 0.15; lfo.connect(lfoAmt).connect(swell.gain);
-      src.connect(hp).connect(lp).connect(swell).connect(rainBus);
-      src.start(); lfo.start();
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = BED.hp;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = BED.lp;
+      const g = ctx.createGain(); g.gain.value = BED.g;
+      src.connect(hp).connect(lp).connect(g).connect(rainBus);
+      src.start();
       built = true;
+    }
+    // una gota en el vidrio: un chasquido de ruido muy corto por un filtro resonante
+    function drop(t) {
+      const D = DROPS, src = ctx.createBufferSource(); src.buffer = noiseBuf;
+      const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = D.lo * Math.pow(D.hi / D.lo, Math.random()); f.Q.value = 3 + Math.random() * 6;
+      const g = ctx.createGain(), v = D.vol * (0.3 + Math.random() * Math.random() * 1.7), dur = D.dur * (0.6 + Math.random() * 0.9);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.0012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      const p = ctx.createStereoPanner(); p.pan.value = Math.random() * 1.8 - 0.9;
+      src.connect(f).connect(g).connect(p).connect(rainBus); src.start(t, Math.random() * 0.9); src.stop(t + dur + 0.02);
+    }
+    function tick() {
+      const now = ctx.currentTime, until = now + 0.12;
+      if (next < now) next = now + 0.02;
+      while (next < until) { drop(next); next += -Math.log(1 - Math.random()) / DROPS.rate; }
     }
     return {
       want(v) { on = v; this.apply(); },
       apply() {
         if (!ctx) return;
-        // 0.2.0: un cuarto de lo que era (0,54). Con música y efectos en 8, la lluvia en 2 recién sonaba de fondo
-        const g = on && !set.mute ? vol.lluvia / 10 * 0.135 : 0;
+        // 0.5.0: con la lluvia nueva, 0,155 la deja frente a la música como en la prueba de sonido aprobada
+        const g = on && !set.mute ? vol.lluvia / 10 * 0.155 : 0;
         if (g > 0 && !built) build();
         rainBus.gain.setTargetAtTime(g, ctx.currentTime, 0.4);
+        if (g > 0 && !timer) timer = setInterval(tick, 40);
+        else if (g === 0 && timer) { clearInterval(timer); timer = null; }
       },
     };
   })();

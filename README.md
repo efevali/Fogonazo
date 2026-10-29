@@ -49,11 +49,12 @@ Hace falta Node 18 o más nuevo; para las capturas, `npm install` y, la primera 
 
 - `herramientas/capturas.js`: recorre la app como en el teléfono (sala, ajustes, Fogonazo, mapa, partida, pausa y vuelta), verifica el «atrás» de Android y que abra sin conexión, y saca una captura de cada pantalla en `dist/capturas/`. Se corre antes de publicar.
 - `herramientas/version.js`: sube la versión (`parche`, `menor` o `mayor`) en `sw.js`, con la fecha, y rehace la lista de archivos que el *service worker* guarda. Sin argumento, solo rehace la lista: hace falta cada vez que se suma o se quita un archivo de la app.
+- `herramientas/tema-a-wav.js`: exporta un tema de la colección a WAV, tal como suena en el juego y como bucle exacto (`node herramientas/tema-a-wav.js zen` da Siesta), para trabajarlo afuera.
 - `herramientas/iconos.py`: los íconos provisorios, la ventana con lluvia recortada de la imagen de la sala (Python con Pillow).
 - `herramientas/probar.js`: juega 180 partidas con el bot y 6 partidas zen de 300 jugadas, y verifica que la placa quede siempre consistente. Se corre después de tocar el motor de Fogonazo.
 - `herramientas/calibrar.js`: recalibra la dificultad de Fogonazo (`node herramientas/calibrar.js 400 0.62 16,17,18`: 400 partidas por nivel, con un bot que elige la mejor jugada el 62 % de las veces). Sin lista de niveles, recalibra los 30.
 - `herramientas/medir.js`, `modos.js`, `bots.js` y `ayuda_piezas.js`: la tasa de victoria con los valores actuales, cómo quedan los modos de dificultad, la comparación entre bots y el efecto de la ayuda de piezas del pedido.
-- `herramientas/sala/`: los dibujos con código de los bocetos (`escena-banco.html`, `escena-instrumento*.html`, `arte-s10.js`, `catalogo-s10.html`, `referencia-p005.html`, `boceto-s11.html`) y los recortes de las imágenes sobre magenta (`piezas.py` y `obstaculos.py`, con Python, Pillow, NumPy y SciPy).
+- `herramientas/sala/`: los dibujos con código de los bocetos (`escena-banco.html`, `escena-instrumento*.html`, `arte-s10.js`, `catalogo-s10.html`, `referencia-p005.html`) y los recortes de las imágenes sobre magenta (`piezas.py` y `obstaculos.py`, con Python, Pillow, NumPy y SciPy).
 
 ## Cómo se publica una versión
 
@@ -62,7 +63,7 @@ Hace falta Node 18 o más nuevo; para las capturas, `npm install` y, la primera 
 3. Se suma la versión a `CHANGELOG.md`.
 4. Se une el pull request de la versión a `main` en un solo commit cuyo título empieza con el número («0.2.0: …»). GitHub Pages la publica en un minuto o dos.
 
-En el teléfono, la versión nueva se baja sola y entra al cerrar la app del todo y volver a abrirla. Dónde mostrar la versión está por definir.
+En el teléfono, la versión nueva se baja sola y entra al cerrar la app del todo y volver a abrirla, o al tocar «Actualizar» en los ajustes de la sala, que muestran la versión instalada.
 
 ## Versiones
 

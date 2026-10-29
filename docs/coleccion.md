@@ -47,9 +47,9 @@ Sala ── banco de electrónica ──► Fogonazo
 ## Publicación
 
 - **En GitHub Pages**, en https://efevali.github.io/fogonazo/, la dirección del Fogonazo publicado. La colección lo **reemplazó directamente** con su 0.1.0, sin publicarse antes en paralelo: es lo que menos trabajo de mantenimiento exige. La app instalada en el teléfono es la colección en desarrollo.
-- **Numeración nueva**, desde la 0.1.0 (ver [CHANGELOG](../CHANGELOG.md)). La versión nueva se baja sola y entra al cerrar la app del todo.
+- **Numeración nueva**, desde la 0.1.0 (ver [CHANGELOG](../CHANGELOG.md)). La versión nueva se baja sola y entra al cerrar la app del todo, o al tocar «Actualizar» en los ajustes.
 - **Nombre e ícono provisorios:** «Minijuegos» y la ventana con lluvia de la sala. Los definitivos, cuando la colección tenga nombre.
-- **Ajustes de la colección:** en el panel del equipo de audio de la sala, el sonido y, en Chrome sin instalar, «Instalar» (boceto S-11). La versión nueva se aplica sola al cerrar la app del todo; dónde se muestra la versión está por definir.
+- **Ajustes de la colección:** un rack de audio que abre el equipo de audio de la sala (boceto S-14), con un módulo por tema: sonido, sistema (la versión instalada y «Actualizar» cuando hay una nueva) y, en Chrome sin instalar, «Instalar». Los ajustes que vengan suman su módulo.
 - **Un solo repositorio** para toda la colección. Se renombra cuando tenga nombre; la dirección de GitHub Pages no se redirige, y por eso conviene hacerlo mientras haya pocos jugadores.
 - **Público esperado:** Producto, su entorno y quizás unas cien personas de boca en boca, con una experiencia razonablemente sólida. Solo teléfonos, sin varios dispositivos por jugador.
 
@@ -59,4 +59,3 @@ Sala ── banco de electrónica ──► Fogonazo
 2. **El mahjong en horizontal**, con el mismo tratamiento, dentro de la app.
 3. **Los menús, y la sala como juego de buscar y encontrar.**
 4. **Los nombres** de la colección y de Fogonazo, el ícono definitivo y el nombre del repositorio.
-5. **Dónde se muestra la versión** y el aviso de versión nueva.

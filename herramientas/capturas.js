@@ -4,7 +4,7 @@
 
    Sirve el repositorio en un puerto local, abre la app en horizontal a 915 × 412 con densidad 2,625 (unos
    2400 × 1080 píxeles, como el teléfono de referencia) y verifica el camino y el «atrás» de Android:
-   sala → ajustes → Fogonazo → sonido → manual → mapa → partida → pausa → mapa → … → sala. Después abre partidas
+   sala → ajustes (LEDs y versión) → Fogonazo → sonido → manual → mapa → partida → pausa → mapa → … → sala. Después abre partidas
    puntuales (la nota, el contrarreloj, los obstáculos, los especiales, el fin de nivel y el zen) con un tablero fijo
    (?semilla=…). Al final prueba que la app abra sin conexión. Si algo no da lo esperado, lo dice y termina con error. */
 const fs = require('fs');
@@ -71,6 +71,18 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   await tocar('#hitAudio'); await espera(300);
   ok(await abierto('#sheetAudio'), 'el equipo de audio abre los ajustes');
   ok(await abierto('#instRow'), 'en el navegador, los ajustes ofrecen instalar'); await foto('02-sala-ajustes');
+  // el rack: un toque en el cuarto LED de la lluvia la deja en 4; otro toque en el mismo la baja a 3
+  const lluvia = () => pantalla().evaluate(() => +document.querySelector('.meter[data-vol=lluvia]').getAttribute('aria-valuenow'));
+  const antesLluvia = await lluvia();
+  const led = async i => { const m = await (await pantalla().$('.meter[data-vol=lluvia]')).boundingBox(), f = await (await pantalla().frameElement()).boundingBox();
+    await page.touchscreen.tap(f.x + m.x + m.width * (i - .5) / 10, f.y + m.y + m.height / 2); await espera(250); };
+  await led(4); const en4 = await lluvia(); await led(4);
+  ok(en4 === 4 && await lluvia() === 3, 'los LEDs del rack fijan el volumen y el más alto encendido se apaga con otro toque');
+  await pantalla().evaluate(v => App.sonido.setVolumen('lluvia', v), antesLluvia);
+  const versionSW = /const VERSION = '([\d.]+)'/.exec(fs.readFileSync(path.join(RAIZ, 'sw.js'), 'utf8'))[1];
+  await pantalla().waitForFunction(() => /\d/.test(document.getElementById('verTxt').textContent), null, { timeout: 5000 }).catch(() => {});
+  ok(await pantalla().evaluate(() => document.getElementById('verTxt').textContent) === 'VERSIÓN ' + versionSW, 'el módulo Sistema muestra la versión instalada (' + versionSW + ')');
+  ok(await pantalla().evaluate(() => document.getElementById('updBtn').disabled), 'sin versión nueva, «Actualizar» queda apagado');
   await tocar('#instBtn');
   ok(await abierto('#sheetSteps'), 'sin el cuadro de Chrome, «Instalar» abre los pasos'); await foto('03-sala-instalar');
   await atras(); ok(!(await abierto('#sheetSteps')) && await abierto('#sheetAudio'), '«atrás» cierra los pasos y vuelve a los ajustes');
@@ -90,7 +102,13 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   await tocar('#hitSound'); ok(await abierto('#sound'), 'la placa abre el sonido'); await foto('06-fogonazo-sonido');
   await atras(); ok(!(await abierto('#sound')) && ruta() === 'fogonazo/instrumento.html', '«atrás» cierra el sonido');
   await tocar('#hitManual'); ok(await abierto('#manual'), 'la revista abre el manual'); await foto('07-fogonazo-manual');
+  const choca = await pantalla().evaluate(() => { const a = document.getElementById('closeManual').getBoundingClientRect(), b = document.getElementById('back').getBoundingClientRect();
+    return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom; });
+  ok(!choca, '«Cerrar» no queda encima de «Volver»');
+  await tocar('[data-pg="2"]'); ok(await abierto('#pg2') && !(await abierto('#pg1')), 'el triangulito pasa a la segunda hoja'); await foto('07b-fogonazo-manual-2');
   await tocar('#closeManual'); ok(!(await abierto('#manual')), '«Cerrar» cierra el manual');
+  await tocar('#hitManual'); ok(await abierto('#pg1'), 'el manual vuelve a abrir en la primera hoja');
+  await tocar('#closeManual');
   await tocar('#hitScreen'); await listo();
   ok(ruta() === 'fogonazo/mapa.html', 'la pantalla del osciloscopio abre el mapa'); await foto('08-fogonazo-mapa');
   await tocar('.lvl[data-n="1"]'); await partida();

@@ -1,14 +1,15 @@
 /* Service worker de la colección.
    Guarda la app entera en el teléfono para que funcione sin conexión. Cuando se publica una versión nueva, el
-   teléfono la baja en segundo plano y la deja esperando: entra sola al cerrar la app del todo y volver a abrirla.
+   teléfono la baja en segundo plano y la deja esperando: entra sola al cerrar la app del todo y volver a abrirla, o
+   con «Actualizar» en los ajustes de la sala.
 
    Cualquier cambio en este archivo es lo que le avisa al teléfono que hay algo nuevo. La lista de archivos y el
    número los escribe herramientas/version.js; el número (MAYOR.MENOR.PARCHE) es para ordenarnos.
 
    El sitio, efevali.github.io, es el mismo de Kasa: lo guardado lleva el prefijo «coleccion-» y solo se borra lo
    propio, más lo que guardaba el Fogonazo publicado («fogonazo-»), al que esta versión reemplaza. */
-const VERSION = '0.4.0';
-const FECHA = '27/10/2026';
+const VERSION = '0.5.0';
+const FECHA = '29/10/2026';
 const CACHE = 'coleccion-v' + VERSION;
 const ARCHIVOS = [
   './',
@@ -81,8 +82,12 @@ self.addEventListener('activate', e => {
   );
 });
 
-// «Actualizar» del Fogonazo publicado (0.6.1): la versión que espera pasa a ser la activa
-self.addEventListener('message', e => { if (e.data === 'actualizar') self.skipWaiting(); });
+// «Actualizar» (los ajustes de la sala; antes, el Fogonazo publicado): la versión que espera pasa a ser la activa.
+// «version»: los ajustes preguntan el número de la instalada y de la que espera
+self.addEventListener('message', e => {
+  if (e.data === 'actualizar') self.skipWaiting();
+  if (e.data === 'version' && e.ports[0]) e.ports[0].postMessage({ version: VERSION, fecha: FECHA });
+});
 
 // Todo sale de lo guardado; la red solo si falta algo (por ejemplo, las páginas de docs/)
 self.addEventListener('fetch', e => {
