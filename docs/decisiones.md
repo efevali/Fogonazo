@@ -131,3 +131,6 @@ Por qué la colección es como es: cada decisión vigente con su fecha y su moti
 - **Tableros chicos para que las fichas se lean en vertical** (24/10): de 52 a 64 fichas. En horizontal entra la tortuga clásica de 144. *Descartados en vertical:* tableros de 76 a 86 fichas y la tortuga de 144.
 - **Las canciones de Fogonazo, como primas orientales** (24/10): que se note que son de la misma familia. *Descartada:* una primera versión que sonaba triste u oscura (acordes abiertos, un shakuhachi con mucho soplido, el doble de reverberación y la escala japonesa in).
 - **Puntaje: propuesta sin revisar** (24/10).
+- **La mesa ratona vista de cerca** (29/10): el mahjong toma la estética de la sala, como Fogonazo es el banco visto de cerca. Las fichas de hueso con dorso verde del juego que está en la sala, el estuche de madera con paño rojo y el nogal de la mesa. Las fichas siguen dibujadas con código. *Descartada:* la estética de Kasa, que lo dejaba ajeno a la colección.
+- **Directo a la partida** (29/10): de la mesa ratona se entra a jugar, sin pantalla intermedia.
+- **Solo zen, con tableros elegibles** (29/10), para la primera versión dentro de la app. Niveles o contrarreloj, más adelante si hacen falta.

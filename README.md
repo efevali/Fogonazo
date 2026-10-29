@@ -49,7 +49,6 @@ Hace falta Node 18 o más nuevo; para las capturas, `npm install` y, la primera 
 
 - `herramientas/capturas.js`: recorre la app como en el teléfono (sala, ajustes, Fogonazo, mapa, partida, pausa y vuelta), verifica el «atrás» de Android y que abra sin conexión, y saca una captura de cada pantalla en `dist/capturas/`. Se corre antes de publicar.
 - `herramientas/version.js`: sube la versión (`parche`, `menor` o `mayor`) en `sw.js`, con la fecha, y rehace la lista de archivos que el *service worker* guarda. Sin argumento, solo rehace la lista: hace falta cada vez que se suma o se quita un archivo de la app.
-- `herramientas/tema-a-wav.js`: exporta un tema de la colección a WAV, tal como suena en el juego y como bucle exacto (`node herramientas/tema-a-wav.js zen` da Siesta), para trabajarlo afuera.
 - `herramientas/iconos.py`: los íconos provisorios, la ventana con lluvia recortada de la imagen de la sala (Python con Pillow).
 - `herramientas/probar.js`: juega 180 partidas con el bot y 6 partidas zen de 300 jugadas, y verifica que la placa quede siempre consistente. Se corre después de tocar el motor de Fogonazo.
 - `herramientas/calibrar.js`: recalibra la dificultad de Fogonazo (`node herramientas/calibrar.js 400 0.62 16,17,18`: 400 partidas por nivel, con un bot que elige la mejor jugada el 62 % de las veces). Sin lista de niveles, recalibra los 30.
