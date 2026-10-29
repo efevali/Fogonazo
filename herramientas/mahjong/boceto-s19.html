@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Boceto S-19: el mahjong como la mesa ratona vista de cerca, al tamaño del teléfono (915 × 412).
+     ?v=a la partida con la tortuga clásica de 144 fichas (prueba de tamaño), ?v=b con un tablero de 88 (la pagoda),
+     ?v=c el estuche abierto como pausa, donde se elige el tablero.
+     Las fichas salen del dibujo del prototipo (docs/mahjong/prototipo.html), que se lee al cargar: sin copias.
+     El fondo de nogal es un dibujo con código; el definitivo sería un pedido a la IA de imágenes. -->
+<title>S-19 · mahjong en la mesa ratona</title>
+<style>
+@font-face { font-family: "Barlow Semi Condensed"; font-weight: 700; src: url(../../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: "Barlow Semi Condensed"; font-weight: 600; src: url(../../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Caveat; font-weight: 600; src: url(../../comun/fuentes/caveat-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Fraunces; font-weight: 100 900; src: url(../../comun/fuentes/fraunces-latin-soft-normal.woff2) format('woff2'); }
+:root { --walnut: #5a3520; --walnut-deep: #3a2214; --felt: #8e2a2a; --ivory: #f1e7d0; --bone: #e6d8b8; --back: #2f6b4a; --back-deep: #1f4a33;
+  --pencil: #3b3a36; --pen: #1d3a94; --label: "Barlow Semi Condensed", "Arial Narrow", sans-serif; }
+html, body { margin: 0; width: 915px; height: 412px; overflow: hidden; }
+/* the walnut top of the coffee table, seen from above, with the warm light of the arc lamp from the left */
+body { position: relative; font-family: var(--label);
+  background:
+    radial-gradient(ellipse 70% 90% at 18% 10%, rgba(255,214,150,.28), rgba(255,180,100,0) 60%),
+    radial-gradient(ellipse 120% 120% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,.45) 100%),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.06) 0 2px, rgba(255,255,255,.025) 2px 5px, rgba(0,0,0,.04) 5px 11px, rgba(255,255,255,.02) 11px 17px),
+    repeating-linear-gradient(90deg, rgba(40,20,8,.18) 0 1px, transparent 1px 73px),
+    linear-gradient(90deg, #6b3f24, #5c341d 30%, #6a3e22 55%, #58321b 80%, #64391f); }
+#board { position: absolute; left: 186px; top: 8px; width: 652px; height: 396px; }
+#board svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+/* the score pad, written in pencil */
+.pad { position: absolute; left: 18px; top: 14px; width: 150px; padding: 10px 12px 12px; box-sizing: border-box; transform: rotate(-1.6deg);
+  background: linear-gradient(rgba(170,150,120,.25) 1px, transparent 1px) 0 34px / 100% 24px, #f6f0e0; color: var(--pencil);
+  box-shadow: 0 6px 14px rgba(0,0,0,.4); font-family: Caveat, cursive; font-weight: 600; }
+.pad::before { content: ''; position: absolute; left: 0; right: 0; top: -6px; height: 12px; background: #b8322a; box-shadow: 0 2px 2px rgba(0,0,0,.25); }
+.pad .t { font: 700 13px var(--label); letter-spacing: .18em; color: #7a2a20; margin-top: 4px; }
+.pad .clock { font-size: 44px; line-height: 1; margin: 2px 0 2px; color: var(--pen); }
+.pad .row { font-size: 21px; line-height: 24px; }
+.pad .row b { font-weight: 600; color: var(--pen); }
+
+/* the actions: bone scoring sticks with the word engraved */
+.sticks { position: absolute; left: 20px; top: 222px; display: grid; gap: 10px; }
+.stick { width: 146px; height: 30px; border-radius: 15px; position: relative; display: grid; place-items: center;
+  background: linear-gradient(180deg, #fbf5e6, #e8dcc0 60%, #cfc1a0); box-shadow: 0 3px 0 #9c8a66, 0 5px 8px rgba(0,0,0,.4);
+  font: 700 14px var(--label); letter-spacing: .2em; color: #4a3a26; }
+.stick::before, .stick::after { content: ''; position: absolute; top: 11px; width: 8px; height: 8px; border-radius: 50%; background: #b8322a; box-shadow: 0 0 0 1px rgba(0,0,0,.25); }
+.stick::before { left: 12px; } .stick::after { right: 12px; }
+.stick.k::before, .stick.k::after { background: #1f4a33; }
+
+/* pause and back, as in Fogonazo */
+.pause { position: absolute; right: 29px; top: 14px; width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #4a4540, #1f1c1a);
+  box-shadow: 0 3px 6px rgba(0,0,0,.5), inset 0 0 0 3px #6d675f; }
+.pause::before, .pause::after { content: ''; position: absolute; top: 11px; width: 5px; height: 16px; background: #e9e1d3; border-radius: 1px; }
+.pause::before { left: 13px; } .pause::after { right: 13px; }
+.volver { position: absolute; right: 18px; bottom: 16px; width: 124px; height: 30px; transform: rotate(-1.5deg); }
+
+/* the case, open: the lid with red felt and the tray */
+.dim { position: absolute; inset: 0; background: rgba(12,7,4,.6); display: grid; place-items: center; }
+.case { width: 640px; height: 384px; border-radius: 10px; padding: 12px; box-sizing: border-box; display: grid; grid-template-rows: 1fr 10px 104px; gap: 0;
+  background: linear-gradient(180deg, #7a4a2a, #4a2a16); box-shadow: 0 18px 40px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.15); }
+.felt { border-radius: 4px; background: radial-gradient(ellipse at 40% 30%, #a43636, var(--felt) 60%, #6c1f1f); box-shadow: inset 0 2px 8px rgba(0,0,0,.5); color: var(--ivory); }
+.lid { padding: 12px 18px; display: grid; grid-template-rows: auto 1fr; gap: 8px; }
+.lid h2 { margin: 0; display: flex; justify-content: space-between; align-items: baseline; font: 600 26px/1 Fraunces, Georgia, serif; font-variation-settings: "SOFT" 100; }
+.lid h2 span { font: 700 12px var(--label); letter-spacing: .2em; opacity: .75; }
+.boards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.bd { border-radius: 4px; padding: 8px 6px 7px; display: grid; justify-items: center; align-content: start; gap: 4px; background: rgba(0,0,0,.14); text-align: center; }
+.bd.on { box-shadow: inset 0 0 0 2px #ffcf7a; background: rgba(255,207,122,.1); }
+.bd svg { width: 96px; height: 62px; }
+.bd b { font: 700 14px var(--label); letter-spacing: .1em; }
+.bd small { font: 600 13px var(--label); opacity: .85; }
+.bd i { font: 600 17px Caveat, cursive; font-style: normal; color: #ffe3a8; }
+.hinge { background: linear-gradient(90deg, transparent 18%, #c8a35a 18% 24%, transparent 24% 76%, #c8a35a 76% 82%, transparent 82%); }
+.tray { padding: 14px 18px; display: flex; align-items: center; gap: 14px; background: radial-gradient(ellipse at 50% 40%, #8e2a2a, #5e1a1a); }
+.tray .stick { width: 220px; letter-spacing: .14em; }
+.tray .stick.main { background: linear-gradient(180deg, #ffe7b0, #f2c76a 60%, #d9a443); box-shadow: 0 3px 0 #9a7428, 0 5px 8px rgba(0,0,0,.4); }
+.tray p { margin: 0 0 0 auto; font: 600 14px/1.3 var(--label); color: var(--ivory); opacity: .8; max-width: 190px; }
+.note { position: absolute; left: 18px; bottom: 10px; width: 150px; box-sizing: border-box; font: 600 12px/1.3 var(--label); color: #f3e6d0; background: rgba(0,0,0,.45); padding: 4px 8px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div id="board"></div>
+<div class="pad">
+  <div class="t" id="nombre">TORTUGA</div>
+  <div class="clock">12:48</div>
+  <div class="row">quedan <b id="pares">72</b> pares</div>
+  <div class="row">récord <b>9:12</b></div>
+  <div class="row">puntos <b>1.240</b></div>
+</div>
+<div class="sticks">
+  <div class="stick">DESHACER</div>
+  <div class="stick k">PISTA</div>
+  <div class="stick">BARAJAR</div>
+</div>
+<div class="pause"></div>
+<svg class="volver" viewBox="0 0 132 34"><path d="M2,4 h126 l-4,13 l4,13 h-126 l4,-13 z" fill="#1c1c1c"/><text x="66" y="23" text-anchor="middle" font-family="Barlow Semi Condensed" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">◀ VOLVER</text></svg>
+<div class="note" id="note"></div>
+
+<script>
+(async () => {
+  // the 42 faces, from the prototype (the same drawing, without copying it here)
+  const proto = await (await fetch('../../docs/mahjong/prototipo.html')).text();
+  const a = proto.indexOf('/* ============================================================ FICHAS DIBUJADAS */'), b = proto.indexOf('const fichaSVG');
+  const code = proto.slice(a, b).replace("'Noto Serif JP'", "'Noto Serif JP','Noto Serif CJK JP','Noto Serif CJK SC'");
+  const { FACES } = (0, eval)(code + ';({ FACES })');
+
+  const LAYOUTS = {
+    // the classic turtle: 87 at the base (with the three ends), 36, 16, 4 and 1 on top
+    tortuga: { nombre: 'TORTUGA', n: 144, capas: [
+      ['.############.', '...########...', '..##########..', '.############.', '.############.', '..##########..', '...########...', '.############.'],
+      ['..............', '....######....', '....######....', '....######....', '....######....', '....######....', '....######....', '..............'],
+      ['..............', '..............', '.....####.....', '.....####.....', '.....####.....', '.....####.....', '..............', '..............'],
+      ['..............', '..............', '..............', '......##......', '......##......', '..............', '..............', '..............']],
+      extra: [[0, 7, 0], [26, 7, 0], [28, 7, 0], [13, 7, 4]] },
+    // a pagoda of 88: 60, 24 and 4
+    pagoda: { nombre: 'PAGODA', n: 88, capas: [
+      Array(6).fill('##########'),
+      ['..........', '..######..', '..######..', '..######..', '..######..', '..........'],
+      ['..........', '..........', '....##....', '....##....', '..........', '..........']] },
+  };
+  const armar = L => { const P = []; L.capas.forEach((f, z) => f.forEach((row, r) => [...row].forEach((ch, c) => { if (ch === '#') P.push({ x: 2 * c, y: 2 * r, z }); }))); (L.extra || []).forEach(([x, y, z]) => P.push({ x, y, z })); return P.sort((p, q) => p.z - q.z || p.y - q.y || p.x - q.x); };
+
+  // a bone tile with a green back: the face in ivory, and the thickness (ivory over green) to the bottom right
+  const W = 36, H = 48, SX = 5, SY = 6, D = 4;
+  const symbols = FACES.map(f => `<symbol id="f-${f.id}" viewBox="0 0 36 48">${f.svg}</symbol>`).join('');
+  // the lower the layer, the more in the shade of the ones above: so the height reads at a glance
+  function tile(x, y, id, sel, shade) {
+    return `<g transform="translate(${x} ${y})">
+      <rect x="${D}" y="${D}" width="${W}" height="${H}" rx="5" fill="var(--back)"/>
+      <rect x="${D * .5}" y="${D * .5}" width="${W}" height="${H}" rx="5" fill="var(--bone)"/>
+      <rect width="${W}" height="${H}" rx="5" fill="url(#face)" stroke="${sel ? '#e0952c' : 'rgba(80,60,30,.45)'}" stroke-width="${sel ? 2.4 : .8}"/>
+      <svg x="2.5" y="3" width="31" height="42" viewBox="0 0 36 48" color="var(--ivory)"><use href="#f-${id}"/></svg>
+      ${shade ? `<rect width="${W}" height="${H}" rx="5" fill="rgba(70,40,15,${shade})"/>` : ''}
+      ${sel ? `<rect width="${W}" height="${H}" rx="5" fill="rgba(255,190,90,.28)"/>` : ''}</g>`;
+  }
+  function board(L) {
+    const P = armar(L), ids = FACES.flatMap(f => f.key === f.id ? [f.id, f.id, f.id, f.id] : [f.id]);
+    for (let i = ids.length - 1; i > 0; i--) { const j = (Math.sin(i * 99.7) * 1e4 % 1 + 1) % 1 * (i + 1) | 0; [ids[i], ids[j]] = [ids[j], ids[i]]; }
+    let minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
+    P.forEach(t => { const x = t.x * W / 2 - t.z * SX, y = t.y * H / 2 - t.z * SY; minX = Math.min(minX, x); minY = Math.min(minY, y); maxX = Math.max(maxX, x + W + D); maxY = Math.max(maxY, y + H + D); });
+    const bw = maxX - minX, bh = maxY - minY, el = document.getElementById('board'), s = Math.min(el.clientWidth / bw, el.clientHeight / bh);
+    const zmax = Math.max(...P.map(t => t.z));
+    const body = P.map((t, i) => tile(t.x * W / 2 - t.z * SX - minX, t.y * H / 2 - t.z * SY - minY, ids[i % ids.length], i === P.length - 9, (zmax - t.z) * .07)).join('');
+    el.innerHTML = `<svg viewBox="0 0 ${bw} ${bh}" preserveAspectRatio="xMidYMid meet"><defs>${symbols}
+      <linearGradient id="face" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stop-color="#fbf6ea"/><stop offset="1" stop-color="#e9dcbd"/></linearGradient>
+      <filter id="sh"><feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity=".45"/></filter></defs>
+      <g filter="url(#sh)">${body}</g></svg>`;
+    // the real size of a tile on the reference phone (915 CSS px ≈ 14.5 cm)
+    const mm = px => (px * 145 / 915).toFixed(1);
+    document.getElementById('note').textContent = `${L.n} fichas · cada una de ${Math.round(W * s)} × ${Math.round(H * s)} px, unos ${mm(W * s)} × ${mm(H * s)} mm en el teléfono`;
+    document.getElementById('nombre').textContent = L.nombre;
+    document.getElementById('pares').textContent = L.n / 2;
+    return P;
+  }
+  const v = new URLSearchParams(location.search).get('v') || 'a';
+  board(v === 'b' ? LAYOUTS.pagoda : LAYOUTS.tortuga);
+
+  if (v === 'c') {
+    document.getElementById('note').remove();
+    // a small silhouette of each board, seen from above
+    const mini = L => { const P = armar(L); let mx = 0, my = 0; P.forEach(t => { mx = Math.max(mx, t.x + 2); my = Math.max(my, t.y + 2); });
+      return `<svg viewBox="-1 -1 ${mx + 2} ${my + 2}" preserveAspectRatio="xMidYMid meet">${P.map(t => `<rect x="${t.x - t.z * .35}" y="${t.y - t.z * .45}" width="1.8" height="1.8" rx=".3" fill="${['#efe3c6', '#f6ecd4', '#fff6e2', '#fffaf0', '#fff'][t.z]}" stroke="rgba(60,20,10,.5)" stroke-width=".15"/>`).join('')}</svg>`; };
+    const proto2 = (0, eval)(proto.slice(proto.indexOf('const LAYOUTS = ['), proto.indexOf('// Posiciones en medias fichas')).replace('const LAYOUTS', 'LAYOUTS_P') + ';LAYOUTS_P');
+    const list = [[proto2[0], 'PIRÁMIDE', '—'], [proto2[2], 'MARIPOSA', '6:40'], [proto2[3], 'CASTILLO', '—'], [LAYOUTS.pagoda, 'PAGODA', '7:15'], [LAYOUTS.tortuga, 'TORTUGA', '12:48']];
+    document.body.insertAdjacentHTML('beforeend', `<div class="dim"><div class="case">
+      <div class="felt lid"><h2>Mahjong <span>ZEN · ELEGÍ EL TABLERO</span></h2>
+        <div class="boards">${list.map(([L, n, r], i) => `<div class="bd${i === 4 ? ' on' : ''}">${mini(L)}<b>${n}</b><small>${armar(L).length} fichas</small><i>récord ${r}</i></div>`).join('')}</div></div>
+      <div class="hinge"></div>
+      <div class="tray"><div class="stick main">SEGUIR</div><div class="stick">VOLVER A LA SALA</div><p>Tocá un tablero para empezarlo; el que está en juego se marca.</p></div>
+    </div></div>`);
+  }
+  document.body.dataset.listo = '1';
+})();
+</script>
+</body>
+</html>

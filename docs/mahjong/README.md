@@ -22,8 +22,15 @@ El segundo juego de la colección: mahjong solitario. Por ahora es un prototipo 
 
 - **Pasar a horizontal**, como toda la colección (referencia: el boceto [S-03e](bocetos/S-03e-mahjong-horizontal.png), que no se aprobó como diseño final). En horizontal entra la tortuga clásica de 144 fichas.
 - **Se abre desde la mesa ratona** de [la sala](../sala/README.md).
-- Falta decidir si el mahjong conserva la estética de Kasa o se acerca a la de la sala.
+- **La mesa ratona vista de cerca** (29/10): fichas de hueso con dorso verde, estuche con paño rojo, nogal. Se entra directo a la partida y se juega solo en zen, con tableros elegibles.
 - El nombre del juego, sin decidir.
+
+## Bocetos
+
+| Boceto | Qué es | Estado |
+|---|---|---|
+| [S-03e](bocetos/S-03e-mahjong-horizontal.png) | La tortuga de 144 en horizontal, sobre la estética de Kasa | Referencia, no aprobado |
+| S-19 | La mesa ratona vista de cerca, al tamaño del teléfono: [a · la partida con la tortuga de 144](bocetos/S-19a-partida-tortuga.jpg) (prueba de tamaño), [b · con la pagoda de 88](bocetos/S-19b-partida-pagoda.jpg) y [c · el estuche abierto como pausa](bocetos/S-19c-estuche-pausa.jpg), donde se elige el tablero. El nogal es un dibujo con código. Se genera con [`herramientas/mahjong/boceto-s19.html`](../../herramientas/mahjong/boceto-s19.html) | Por aprobar |
 
 ## Notas técnicas
 
