@@ -2,6 +2,11 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.8.0 — 29/10/2026
+
+- Mahjong: **una tortuga de 96 fichas**, con fichas del tamaño de las de los otros tableros (S-22). La clásica de 144 sigue, como «tortuga grande»; son seis tarjetas en el estuche y la última se alcanza deslizando la fila.
+- Mahjong: **se nota más qué se puede sacar** (S-23): las fichas libres, más claras; las bloqueadas, claramente más oscuras, y más diferencia entre las capas.
+
 ## 0.7.0 — 29/10/2026
 
 Llega el mahjong: la mesa ratona de la sala vista de cerca.

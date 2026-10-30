@@ -28,6 +28,22 @@ Cómo se piden, se revisan y se montan las imágenes de la colección. Las regla
 - **Se revisa antes de aprobar:** que respete la composición, el orden y los colores pedidos; la lógica de los objetos; que lo importante quede en la franja central; y, en las piezas, que el fondo sea parejo y el recorte salga limpio.
 - **Lo aprobado se guarda en la carpeta `arte/` de su parte**, y se cuenta en su README. Lo que reemplaza a otra imagen la reemplaza en el repositorio: la anterior queda en el historial de Git.
 
+## Pedidos en curso
+
+### P-007 · El ícono, con la lámpara más arriba
+
+Imágenes, en este orden: [el ícono actual](sala/bocetos/P-007-icono-actual.png) (el recorte de la ventana de la sala) y [el boceto](sala/bocetos/P-007-boceto-lampara.png), un retoque a mano con la lámpara subida (solo vale por la posición: tiene marcas del retoque). Texto:
+
+> Te mando dos imágenes. La primera es el ícono de mi app: una ventana de noche con lluvia, la ciudad atrás y una lámpara de arco dorada adelante. La segunda es un boceto hecho a mano que muestra dónde quiero la lámpara; el boceto tiene marcas del retoque, así que tomalo solo como guía de posición.
+>
+> Necesito la primera imagen con un solo cambio: la lámpara de arco (la pantalla dorada y su brazo curvo) subida hasta la altura del boceto, con la pantalla colgando un poco por debajo del travesaño del medio de la ventana.
+>
+> - Todo lo demás, exactamente igual: la ventana, el marco, el parante del medio, el travesaño, la lluvia, las gotas, los edificios, el cielo, los colores, la luz y el encuadre.
+> - Donde antes estaba la pantalla, abajo, tiene que verse la ventana como sigue en el resto: el marco de abajo, el parante del medio y los edificios.
+> - El brazo de la lámpara entra por el borde izquierdo y baja en curva hasta la pantalla, como en el boceto; el brazo viejo no tiene que quedar.
+> - Que la pantalla tire una luz cálida suave hacia abajo.
+> - Imagen cuadrada, sin texto ni marcos.
+
 ## Pedidos cerrados
 
 | Pedido | Qué | Con qué IA | Vigente |

@@ -14,8 +14,8 @@ la sala ── mesa ratona ──► el estuche (S-20) ── una tarjeta ──
 ```
 
 - **El estuche** (`estuche.html`): el estuche abierto sobre la mesa. En el paño de la tapa, una tarjeta por tablero con su silueta, sus fichas y su récord; el último jugado, marcado. Se toca una tarjeta y arranca. Si hay más tableros de los que entran, se desliza de costado. En la bandeja, las fichas guardadas. El anotador dice qué hacer y cuál fue el último tablero.
-- **Los tableros** (`tableros.js`): mariposa (92), fortaleza (80), puente (88) y pagoda (88), pensados para el teléfono en horizontal, y la tortuga clásica de 144, la más grande, con fichas de unos 5,8 × 7,8 mm.
-- **La partida** (`partida.html`): se juntan pares de fichas iguales que estén libres (sin otra encima y con un costado despejado); flores con flores y estaciones con estaciones. Las capas de abajo quedan a la sombra de las de arriba y una ficha bloqueada se ve un poco más oscura. En el anotador, en lápiz: el tablero, el reloj, los pares que quedan, el récord, los puntos y la cadena. Deshacer, Pista y Barajar van grabados en los palitos de puntaje, sin límite.
+- **Los tableros** (`tableros.js`): mariposa (92), fortaleza (80), puente (88), pagoda (88) y tortuga (96), pensados para el teléfono en horizontal, con fichas de unos 7,5 × 10 mm; y la tortuga grande, la clásica de 144, con fichas de unos 5,8 × 7,8 mm. Son seis tarjetas: la última asoma en el borde del estuche y se llega deslizando la fila.
+- **La partida** (`partida.html`): se juntan pares de fichas iguales que estén libres (sin otra encima y con un costado despejado); flores con flores y estaciones con estaciones. Las fichas libres se ven más claras, las bloqueadas claramente más oscuras y las capas de abajo, a la sombra de las de arriba (S-23). En el anotador, en lápiz: el tablero, el reloj, los pares que quedan, el récord, los puntos y la cadena. Deshacer, Pista y Barajar van grabados en los palitos de puntaje, sin límite.
 - **El reloj** arranca con el primer toque. **El puntaje:** 10 por par, con una cadena que multiplica hasta ×5 si el par siguiente llega antes de 5 segundos, y 100 por tablero limpio. Deshacer, Pista y Barajar cortan la cadena.
 - **Sin pares libres,** las fichas que quedan se barajan solas, siempre con salida.
 - **La pausa** (S-21a): una tarjeta con el tablero, el tiempo y los puntos, y Seguir, Repartir de nuevo u Otro tablero. **El final** (S-21b): «Tablero limpio», el tiempo, los puntos, el récord y el sello «Nuevo récord» si lo es; Otra vez u Otro tablero.
@@ -26,7 +26,6 @@ la sala ── mesa ratona ──► el estuche (S-20) ── una tarjeta ──
 ## Por revisar jugando
 
 - El puntaje, una propuesta de Desarrollo que todavía no se revisó.
-- La tortuga en el teléfono: si las fichas se tocan bien.
 - El carácter de la música y el balance de volúmenes.
 
 ## Lo que sigue
@@ -42,6 +41,8 @@ la sala ── mesa ratona ──► el estuche (S-20) ── una tarjeta ──
 | S-19 | La mesa ratona vista de cerca, al tamaño del teléfono: [a · la partida con la tortuga de 144](bocetos/S-19a-partida-tortuga.jpg) (prueba de tamaño) y [b · con la pagoda de 88](bocetos/S-19b-partida-pagoda.jpg). El nogal es un dibujo con código. Se genera con [`herramientas/mahjong/boceto-mahjong.html`](../../herramientas/mahjong/boceto-mahjong.html) | Aprobado (29/10) |
 | S-20 | [El estuche abierto como pantalla de entrada](bocetos/S-20-estuche-entrada.jpg), sobre el fondo del P-006. `boceto-mahjong.html?v=entrada` | Aprobado (29/10), con el estuche dibujado con código: no hace falta pintarlo |
 | S-21 | La pausa y el final, tarjetas de papel sobre la mesa con los botones como palitos de hueso: [a · la pausa](bocetos/S-21a-pausa.jpg) y [b · el tablero limpio](bocetos/S-21b-fin.jpg), con el sello de récord. Capturas de la app | Aprobado (29/10) |
+| S-22 | La tortuga de 96 fichas en seis filas, con fichas del tamaño de las de los otros tableros: [a · la partida](bocetos/S-22a-tortuga-96.jpg) y [b · el estuche con seis tarjetas](bocetos/S-22b-estuche-seis.jpg); la segunda palabra del nombre («grande») va escrita en birome en una esquina | Aprobado (29/10): quedan las dos tortugas |
+| S-23 | [Los brillos](bocetos/S-23-brillos.jpg): A, como estaba; B, las libres más claras, más distancia entre capas y las bloqueadas más oscuras; C, lo mismo más marcado | Aprobado (29/10) el B |
 | P-006 | El pedido del fondo: [referencia](bocetos/P-006-referencia-mesa.png) (la mesa ratona de la sala) y [composición](bocetos/P-006-composicion.png), de [`herramientas/mahjong/composicion-p006.html`](../../herramientas/mahjong/composicion-p006.html) (con `?guias`, la franja del teléfono y las zonas de la app); el texto, en [imágenes](../imagenes.md#un-pedido-que-salió-a-la-primera). [La entrega](arte/P-006_fondo-mesa.jpg), montada con las fichas: [tortuga](bocetos/P-006-montaje-tortuga.jpg) y [pagoda](bocetos/P-006-montaje-pagoda.jpg) (`boceto-mahjong.html?fondo=…`) | Aprobado (29/10), a la primera con Gemini |
 
 ## Notas técnicas

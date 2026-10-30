@@ -6,7 +6,7 @@
    2400 × 1080 píxeles, como el teléfono de referencia) y verifica el camino y el «atrás» de Android:
    sala → ajustes (LEDs y versión) → Fogonazo → sonido → manual → mapa → partida → pausa → mapa → … → sala. Después abre partidas
    puntuales (la nota, el contrarreloj, los obstáculos, los especiales, el fin de nivel y el zen) con un tablero fijo
-   (?semilla=…). Después, el mahjong: el estuche, la partida, la pausa, el final y la tortuga. Al final prueba que la
+   (?semilla=…). Después, el mahjong: el estuche, la partida, la pausa, el final y las dos tortugas. Al final prueba que la
    app abra sin conexión. Si algo no da lo esperado, lo dice y termina con error. */
 const fs = require('fs');
 const path = require('path');
@@ -197,11 +197,16 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   await tocar('#hitTable'); await listo();
   ok(ruta() === 'mahjong/estuche.html', 'la mesa ratona lleva al estuche');
   ok(await tema() === 'Taller oriental', 'en el estuche suena Taller oriental');
-  ok(await pantalla().evaluate(() => document.querySelectorAll('.tarjeta').length) === 5, 'el estuche ofrece los cinco tableros'); await foto('22-mahjong-estuche');
+  ok(await pantalla().evaluate(() => document.querySelectorAll('.tarjeta').length) === 6, 'el estuche ofrece los seis tableros'); await foto('22-mahjong-estuche');
+  ok(await pantalla().evaluate(() => { const f = document.getElementById('tarjetas').getBoundingClientRect(), u = document.querySelector('.tarjeta:last-child').getBoundingClientRect();
+    return u.left < f.right - 8 && u.right > f.right; }), 'la última tarjeta asoma en el borde: la fila se desliza');
   await tocar('.tarjeta[data-id="pagoda"]'); await mj();
   ok(ruta() === 'mahjong/partida.html' && (await mjEstado()).quedan === 88, 'la tarjeta de la pagoda abre su partida, con 88 fichas');
   ok(await tema() === 'Siesta oriental', 'en la partida suena Siesta oriental');
   ok(await pantalla().evaluate(() => document.fonts.check('700 20px "Mahjong JP"')), 'los ideogramas tienen su letra (Mahjong JP)');
+  ok(await pantalla().evaluate(() => { const f = [...document.querySelectorAll('.ficha')], a = e => +e.style.getPropertyValue('--a');
+    return f.some(e => e.classList.contains('libre') && a(e) === 0) && f.filter(e => !e.classList.contains('libre')).every(e => a(e) >= .18); }),
+    'las fichas libres, más claras; las bloqueadas, más oscuras (S-23)');
   const par = await pantalla().evaluate(() => window.__mahjong.parLibre());
   await tocar(`.ficha[data-i="${par[0]}"]`); await tocar(`.ficha[data-i="${par[1]}"]`);
   ok((await mjEstado()).quedan === 86, 'dos toques en un par libre lo juntan');
@@ -213,8 +218,12 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   ok(await abierto('#fin'), 'el tablero limpio muestra la tarjeta del final'); await foto('25-mahjong-fin');
   await atras(); await listo(); ok(ruta() === 'mahjong/estuche.html', 'desde el final, «atrás» vuelve al estuche');
   ok(await pantalla().evaluate(() => /\d:\d\d/.test(document.querySelector('.tarjeta[data-id="pagoda"] i').textContent)), 'la tarjeta de la pagoda anota su récord');
-  await tocar('.tarjeta[data-id="tortuga"]'); await mj(); await foto('26-mahjong-tortuga');
-  ok((await mjEstado()).quedan === 144, 'la tortuga tiene sus 144 fichas');
+  await tocar('.tarjeta[data-id="tortugamediana"]'); await mj(); await foto('26-mahjong-tortuga');
+  ok((await mjEstado()).quedan === 96, 'la tortuga tiene sus 96 fichas');
+  await tocar('#volver'); await listo();
+  await pantalla().evaluate(() => { const t = document.getElementById('tarjetas'); t.scrollLeft = t.scrollWidth; }); await espera(300);
+  await tocar('.tarjeta[data-id="tortuga"]'); await mj(); await foto('27-mahjong-tortuga-grande');
+  ok((await mjEstado()).quedan === 144, 'deslizando la fila, la tortuga grande, con sus 144 fichas');
   await tocar('#volver'); await listo(); ok(ruta() === 'mahjong/estuche.html', 'en la partida, «Volver» va al estuche sin pasar por la pausa');
   await atras(); await listo(); ok(ruta().startsWith('sala/'), 'desde el estuche, «atrás» vuelve a la sala');
   const enSala = await page.evaluate(() => history.state && history.state.i);

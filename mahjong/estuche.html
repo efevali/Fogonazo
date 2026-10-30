@@ -36,15 +36,18 @@ button:focus { outline: none; }
   background: radial-gradient(ellipse at 35% 25%, #a83a38, #8e2a2a 55%, #6a1d1d); box-shadow: inset 0 2rem 10rem rgba(0,0,0,.55); }
 .tapa h1 { margin: 0; text-align: center; font: 700 15rem Barlow; letter-spacing: .5em; color: var(--brass); text-shadow: 0 1rem 0 rgba(0,0,0,.5); }
 /* the cards; with more than fit, they slide sideways */
-.tarjetas { display: grid; grid-auto-flow: column; grid-auto-columns: 104rem; gap: 10rem; padding: 4rem 14rem 10rem; overflow-x: auto; overflow-y: hidden;
+.tarjetas { display: grid; grid-auto-flow: column; grid-auto-columns: 98rem; gap: 10rem; padding: 4rem 14rem 10rem; overflow-x: auto; overflow-y: hidden;
   scroll-snap-type: x proximity; scrollbar-width: none; align-items: start; }
 .tarjetas::-webkit-scrollbar { display: none; }
 .tarjeta { scroll-snap-align: start; background: linear-gradient(170deg, #f8f1df, #ece0c4); color: #3a2a1c; border-radius: 3rem; padding: 8rem 6rem 7rem;
   text-align: center; display: grid; justify-items: center; gap: 2rem; box-shadow: 0 4rem 7rem rgba(0,0,0,.45); transform: rotate(var(--r)); }
-.tarjeta svg { width: 92rem; height: 58rem; }
+.tarjeta svg { width: 86rem; height: 56rem; }
 .tarjeta b { font: 700 14rem Barlow; letter-spacing: .12em; margin-top: 3rem; text-transform: uppercase; }
 .tarjeta small { font: 600 12rem Barlow; opacity: .75; }
 .tarjeta i { font: 600 18rem/1 Caveat, cursive; font-style: normal; color: var(--pen); }
+.tarjeta { position: relative; }
+.tarjeta .nota { position: absolute; right: 4rem; top: 50rem; font: 600 17rem/1 Caveat, cursive; color: #c0392b; transform: rotate(-9deg);
+  background: rgba(248,241,223,.85); padding: 0 3rem; border-radius: 2rem; }
 .tarjeta.ultima { box-shadow: 0 0 0 2rem var(--brass), 0 4rem 9rem rgba(0,0,0,.5); }
 .tarjeta:active { transform: rotate(var(--r)) translateY(2rem); }
 .bisagra { background: linear-gradient(90deg, transparent 14%, #c8a35a 14% 21%, transparent 21% 79%, #c8a35a 79% 86%, transparent 86%); }
@@ -52,7 +55,7 @@ button:focus { outline: none; }
   display: grid; place-items: center; min-height: 0; }
 .bandeja svg { width: 100%; height: 100%; }
 .ficha .sombra { fill: rgba(20,8,0,.32); } .ficha .dorso { fill: #2f6b4a; } .ficha .canto { fill: #e6d8b8; }
-.ficha .cara { fill: url(#hueso); stroke: rgba(80,60,30,.45); stroke-width: .8; } .ficha .tinte { fill: none; }
+.ficha .cara { fill: url(#hueso); stroke: rgba(80,60,30,.45); stroke-width: .8; } .ficha .luz, .ficha .tinte { fill: none; }
 #volver { left: 773rem; top: 366rem; width: 124rem; height: 30rem; }
 #volver svg { width: 100%; height: 100%; display: block; transform: rotate(-1.5deg); }
 #rotate { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20,10,4,.82); color: #f3e6d0;
@@ -111,8 +114,10 @@ button:focus { outline: none; }
   const ROT = [-1.5, 1, -.5, 1.4, -1, .6, -1.2];
   $('tarjetas').innerHTML = T.LISTA.map((TB, i) => {
     const r = Est.record(TB.id);
+    // a two-word name keeps the card's size: the second word is written in pen on a corner («Tortuga», «grande»)
+    const [nombre1, ...mas] = TB.nombre.split(' '), resto = mas.join(' ');
     return `<button class="tarjeta${ult && ult.id === TB.id ? ' ultima' : ''}" type="button" role="listitem" data-id="${TB.id}" style="--r:${ROT[i % ROT.length]}deg"
-      aria-label="${TB.nombre}, ${TB.n} fichas${r.tiempo ? ', récord ' + fmtT(r.tiempo) : ''}">${silueta(TB)}<b>${TB.nombre}</b><small>${TB.n} fichas</small><i>récord ${r.tiempo ? fmtT(r.tiempo) : '—'}</i></button>`;
+      aria-label="${TB.nombre}, ${TB.n} fichas${r.tiempo ? ', récord ' + fmtT(r.tiempo) : ''}">${silueta(TB)}${resto ? `<span class="nota">${resto}</span>` : ''}<b>${nombre1}</b><small>${TB.n} fichas</small><i>récord ${r.tiempo ? fmtT(r.tiempo) : '—'}</i></button>`;
   }).join('');
   // the last one played, in view
   const marcada = document.querySelector('.tarjeta.ultima'); if (marcada) marcada.scrollIntoView({ inline: 'nearest', block: 'nearest' });

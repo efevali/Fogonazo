@@ -46,7 +46,10 @@ button:focus { outline: none; }
 .ficha .dorso { fill: #2f6b4a; }
 .ficha .canto { fill: #e6d8b8; }
 .ficha .cara { fill: url(#hueso); stroke: rgba(80,60,30,.45); stroke-width: .8; }
-/* lower layers in the shade of the upper ones, so the height reads; a blocked tile a little more */
+/* S-23: a free tile, brighter; lower layers in the shade of the upper ones, so the height reads; a blocked tile, clearly
+   darker */
+.ficha .luz { fill: none; }
+.ficha.libre .luz { fill: url(#huesoLuz); }
 .ficha .tinte { fill: rgb(70 40 15 / var(--a, 0)); transition: fill .2s; }
 .ficha.sel { transform: translateY(-2em); }
 .ficha.sel .cara { stroke: #e0952c; stroke-width: 2.4; }
@@ -203,7 +206,9 @@ button:focus { outline: none; }
   function marcarLibres() {
     for (const i of G.occ) {
       G.libre[i] = T.libre(i, G.occ, P);
-      el[i].style.setProperty('--a', ((zmax - P[i].z) * .07 + (G.libre[i] ? 0 : .12)).toFixed(2));
+      const capa = zmax ? (zmax - P[i].z) / zmax : 0;
+      el[i].style.setProperty('--a', (capa * .24 + (G.libre[i] ? 0 : .18)).toFixed(2));
+      el[i].classList.toggle('libre', G.libre[i]);
     }
   }
   function deseleccionar() { if (G.sel >= 0) el[G.sel].classList.remove('sel'); G.sel = -1; }

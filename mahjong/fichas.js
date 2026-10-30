@@ -6,7 +6,8 @@
    Fichas.defs(): los símbolos de las caras y el degradé del hueso, para poner una vez en la página.
    Fichas.cuerpo(id): el dibujo de una ficha de hueso con dorso verde (S-19): la cara, y el grosor (hueso sobre
    verde) hacia abajo a la derecha, y una sombra corta. Medidas en unidades de ficha: 36 × 48, más 4 de grosor.
-   Los colores van por CSS en cada pantalla (.sombra, .dorso, .canto, .cara, .tinte). */
+   Los colores van por CSS en cada pantalla (.sombra, .dorso, .canto, .cara, .luz, .tinte): .luz es la cara más clara
+   de una ficha libre (S-23); .tinte, la sombra de las capas de abajo y de las bloqueadas. */
 window.Fichas = (() => {
   'use strict';
   const AI = '#2B4C7E', SHU = '#B8392B', MID = '#2F6A52', INK = '#1F2A44';
@@ -79,12 +80,14 @@ window.Fichas = (() => {
   const defs = () => `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
     ${FACES.map(f => `<symbol id="f-${f.id}" viewBox="0 0 36 48">${f.svg}</symbol>`).join('')}
     <linearGradient id="hueso" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stop-color="#fbf6ea"/><stop offset="1" stop-color="#e9dcbd"/></linearGradient>
+    <linearGradient id="huesoLuz" x1="0" y1="0" x2=".6" y2="1"><stop offset="0" stop-color="#fffdf6"/><stop offset="1" stop-color="#f6eedb"/></linearGradient>
   </defs></svg>`;
   // the body of a tile; the face is a <use>, so a shuffle only changes its href
   const cuerpo = id => `<rect class="sombra" x="${D + 1.5}" y="${D + 3}" width="${W}" height="${H}" rx="6"/>
     <rect class="dorso" x="${D}" y="${D}" width="${W}" height="${H}" rx="5"/>
     <rect class="canto" x="${D / 2}" y="${D / 2}" width="${W}" height="${H}" rx="5"/>
     <rect class="cara" width="${W}" height="${H}" rx="5"/>
+    <rect class="luz" width="${W}" height="${H}" rx="5"/>
     <svg class="dibujo" x="2.5" y="3" width="31" height="42" viewBox="0 0 36 48"><use href="#f-${id}"/></svg>
     <rect class="tinte" width="${W}" height="${H}" rx="5"/>`;
   return { FACES, FACE, W, H, D, defs, cuerpo };

@@ -1,8 +1,8 @@
 /* Los tableros del mahjong y sus reglas: qué ficha está libre y cómo se reparte para que siempre haya salida.
 
    Cada tablero se define por capas, en medias fichas: cada ficha ocupa 2 × 2 y z es la capa. «extra» suma fichas
-   sueltas, como las tres puntas y la de arriba de la tortuga. Los cuatro de 80 a 100 fichas están pensados para el
-   teléfono en horizontal (S-20); la tortuga clásica de 144 es la más grande, con fichas más chicas. El orden de la
+   sueltas, como las puntas y la de arriba de las tortugas. Los de 80 a 100 fichas están pensados para el teléfono en
+   horizontal (S-20, S-22); la tortuga grande, la clásica de 144, tiene fichas más chicas. El orden de la
    lista es el de las tarjetas del estuche; para sumar tableros se agregan acá (en el estuche se desliza de costado).
 
    Una ficha está libre si no tiene otra encima y le queda un costado despejado. El reparto quita pares libres al azar
@@ -27,8 +27,15 @@ window.Tableros = (() => {
       Array(6).fill('##########'),
       ['..........', '..######..', '..######..', '..######..', '..######..', '..........'],
       ['..........', '..........', '....##....', '....##....', '..........', '..........']] },
-    // la tortuga clásica: 87 abajo (con las tres puntas), 36, 16, 4 y una arriba de todo
-    { id: 'tortuga', nombre: 'Tortuga', capas: [
+    // una tortuga de 96 en seis filas, para que las fichas tengan el tamaño de las de los otros tableros (S-22)
+    { id: 'tortugamediana', nombre: 'Tortuga', capas: [
+      ['.##########.', '..########..', '.##########.', '.##########.', '..########..', '.##########.'],
+      ['............', '...######...', '...######...', '...######...', '...######...', '............'],
+      ['............', '............', '....####....', '....####....', '............', '............'],
+      ['............', '............', '.....##.....', '.....##.....', '............', '............']],
+      extra: [[0, 5, 0], [22, 5, 0], [24, 5, 0], [11, 5, 4]] },
+    // la tortuga clásica: 87 abajo (con las tres puntas), 36, 16, 4 y una arriba de todo; con fichas más chicas
+    { id: 'tortuga', nombre: 'Tortuga grande', capas: [
       ['.############.', '...########...', '..##########..', '.############.', '.############.', '..##########..', '...########...', '.############.'],
       ['..............', '....######....', '....######....', '....######....', '....######....', '....######....', '....######....', '..............'],
       ['..............', '..............', '.....####.....', '.....####.....', '.....####.....', '.....####.....', '..............', '..............'],
