@@ -28,11 +28,19 @@ Cómo se piden, se revisan y se montan las imágenes de la colección. Las regla
 - **Se revisa antes de aprobar:** que respete la composición, el orden y los colores pedidos; la lógica de los objetos; que lo importante quede en la franja central; y, en las piezas, que el fondo sea parejo y el recorte salga limpio.
 - **Lo aprobado se guarda en la carpeta `arte/` de su parte**, y se cuenta en su README. Lo que reemplaza a otra imagen la reemplaza en el repositorio: la anterior queda en el historial de Git.
 
-## Pedidos en curso
+## Pedidos cerrados
 
-### P-006 · El fondo de la partida del mahjong
+| Pedido | Qué | Con qué IA | Vigente |
+|---|---|---|---|
+| P-001 | Corrección del mahjong de la sala | Gemini | [`sala/arte/sala-v2.png`](sala/arte/sala-v2.png) |
+| P-002 y P-003 | Las siete piezas de Fogonazo; el P-003 rehízo la resistencia | Gemini | [`fogonazo/arte/P-003_piezas-fogonazo.jpg`](fogonazo/arte/P-003_piezas-fogonazo.jpg) |
+| P-004 | La escena de la pantalla-instrumento de Fogonazo | ChatGPT (con Gemini se apartó del boceto) | [`fogonazo/arte/P-004_escena-instrumento.png`](fogonazo/arte/P-004_escena-instrumento.png) |
+| P-005 | Especiales y obstáculos de Fogonazo | Gemini, ya en una conversación común | [`fogonazo/arte/P-005_especiales-obstaculos.jpg`](fogonazo/arte/P-005_especiales-obstaculos.jpg) |
+| P-006 | El fondo de la partida del mahjong: la mesa ratona desde arriba | Gemini, a la primera | [`mahjong/arte/P-006_fondo-mesa.jpg`](mahjong/arte/P-006_fondo-mesa.jpg) |
 
-Imágenes, en este orden: [la referencia](mahjong/bocetos/P-006-referencia-mesa.png) (la mesa ratona de la sala) y [la composición](mahjong/bocetos/P-006-composicion.png). Texto:
+## Un pedido que salió a la primera
+
+El P-006, como modelo: Gemini lo resolvió en el primer intento con las dos imágenes y este texto, pegado tal cual. Imágenes, en este orden: [la referencia](mahjong/bocetos/P-006-referencia-mesa.png) (la mesa ratona de la sala) y [la composición](mahjong/bocetos/P-006-composicion.png). Texto:
 
 > Necesito una ilustración para el fondo de un juego de mahjong solitario para celular, en horizontal. Es la tapa de una mesa ratona de nogal de los años 70 vista exactamente desde arriba. Las fichas del mahjong las dibuja el juego encima, así que el centro de la mesa tiene que quedar vacío.
 >
@@ -50,12 +58,3 @@ Imágenes, en este orden: [la referencia](mahjong/bocetos/P-006-referencia-mesa.
 > - A la derecha, a media altura, la tetera marrón de cerámica de la referencia, vista desde arriba: la tapa con su perilla y el pico apuntando hacia arriba. Cortada por el borde derecho de la imagen.
 > - Todo lo demás, solo madera: nada en el centro, ni en la esquina de arriba a la derecha ni en la de abajo a la derecha.
 > - Sin texto ni letras, sin fichas de mahjong, sin personas ni manos, sin marcos.
-
-## Pedidos cerrados
-
-| Pedido | Qué | Con qué IA | Vigente |
-|---|---|---|---|
-| P-001 | Corrección del mahjong de la sala | Gemini | [`sala/arte/sala-v2.png`](sala/arte/sala-v2.png) |
-| P-002 y P-003 | Las siete piezas de Fogonazo; el P-003 rehízo la resistencia | Gemini | [`fogonazo/arte/P-003_piezas-fogonazo.jpg`](fogonazo/arte/P-003_piezas-fogonazo.jpg) |
-| P-004 | La escena de la pantalla-instrumento de Fogonazo | ChatGPT (con Gemini se apartó del boceto) | [`fogonazo/arte/P-004_escena-instrumento.png`](fogonazo/arte/P-004_escena-instrumento.png) |
-| P-005 | Especiales y obstáculos de Fogonazo | Gemini, ya en una conversación común | [`fogonazo/arte/P-005_especiales-obstaculos.jpg`](fogonazo/arte/P-005_especiales-obstaculos.jpg) |

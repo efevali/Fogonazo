@@ -2,6 +2,7 @@
 
 El segundo juego de la colección: mahjong solitario. Por ahora es un prototipo para evaluar la idea, todavía en vertical, sin issues ni versión. Cómo se ve y cómo suena está en la [guía de estilo](../estilo.md#el-mahjong); por qué es así, en el [registro de decisiones](../decisiones.md#el-mahjong).
 
+- **Arte vigente**, en [`arte/`](arte/): el fondo de la partida, la mesa ratona de nogal desde arriba con el anotador, los palitos de puntaje, los dados y la tetera ([P-006](arte/P-006_fondo-mesa.jpg), de 2576 × 1438; en el teléfono se recorta arriba y abajo).
 - **Prototipo:** [prototipo.html](prototipo.html), que se abre en Chrome en https://efevali.github.io/fogonazo/docs/mahjong/prototipo.html. Es la misma página que el artefacto «Mahjong zen» de claude.ai (versión 3, 24/10/2026).
 
 ## Qué tiene el prototipo
@@ -31,7 +32,7 @@ El segundo juego de la colección: mahjong solitario. Por ahora es un prototipo 
 |---|---|---|
 | [S-03e](bocetos/S-03e-mahjong-horizontal.png) | La tortuga de 144 en horizontal, sobre la estética de Kasa | Referencia, no aprobado |
 | S-19 | La mesa ratona vista de cerca, al tamaño del teléfono: [a · la partida con la tortuga de 144](bocetos/S-19a-partida-tortuga.jpg) (prueba de tamaño), [b · con la pagoda de 88](bocetos/S-19b-partida-pagoda.jpg) y [c · el estuche abierto como pausa](bocetos/S-19c-estuche-pausa.jpg), donde se elige el tablero. El nogal es un dibujo con código. Se genera con [`herramientas/mahjong/boceto-s19.html`](../../herramientas/mahjong/boceto-s19.html) | Aprobado (29/10) la partida (a y b). El estuche va como pantalla de entrada, con boceto propio |
-| P-006 | El pedido del fondo de la partida: [referencia](bocetos/P-006-referencia-mesa.png) (la mesa ratona de la sala) y [composición](bocetos/P-006-composicion.png), de [`herramientas/mahjong/composicion-p006.html`](../../herramientas/mahjong/composicion-p006.html) (con `?guias`, la franja del teléfono y las zonas de la app). El texto, en [imágenes](../imagenes.md#pedidos-en-curso). [La entrega](bocetos/P-006-entrega.jpg), de 2576 × 1438, montada con las fichas: [tortuga](bocetos/P-006-montaje-tortuga.jpg) y [pagoda](bocetos/P-006-montaje-pagoda.jpg) (`boceto-s19.html?fondo=…`) | Entregado (29/10), en revisión |
+| P-006 | El pedido del fondo de la partida: [referencia](bocetos/P-006-referencia-mesa.png) (la mesa ratona de la sala) y [composición](bocetos/P-006-composicion.png), de [`herramientas/mahjong/composicion-p006.html`](../../herramientas/mahjong/composicion-p006.html) (con `?guias`, la franja del teléfono y las zonas de la app). El texto, en [imágenes](../imagenes.md#pedidos-en-curso). [La entrega](arte/P-006_fondo-mesa.jpg), de 2576 × 1438, montada con las fichas: [tortuga](bocetos/P-006-montaje-tortuga.jpg) y [pagoda](bocetos/P-006-montaje-pagoda.jpg) (`boceto-s19.html?fondo=…`) | Aprobado (29/10), a la primera con Gemini |
 
 ## Notas técnicas
 
