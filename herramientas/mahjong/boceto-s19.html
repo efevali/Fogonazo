@@ -74,6 +74,12 @@ body { position: relative; font-family: var(--label);
 .tray .stick { width: 220px; letter-spacing: .14em; }
 .tray .stick.main { background: linear-gradient(180deg, #ffe7b0, #f2c76a 60%, #d9a443); box-shadow: 0 3px 0 #9a7428, 0 5px 8px rgba(0,0,0,.4); }
 .tray p { margin: 0 0 0 auto; font: 600 14px/1.3 var(--label); color: var(--ivory); opacity: .8; max-width: 190px; }
+/* over the painted background (P-006): only the words, placed on the painted pad and sticks */
+.pintado .pad { background: none; box-shadow: none; transform: none; left: 16px; top: 22px; width: 156px; height: 186px; padding: 8px 14px; }
+.pintado .pad::before { display: none; }
+.pintado .sticks { left: 21px; top: 223px; gap: 11px; }
+.pintado .stick { width: 145px; height: 29px; background: none; box-shadow: none; color: #5a4630; text-shadow: 0 1px 0 rgba(255,255,255,.55), 0 -1px 0 rgba(60,40,20,.25); }
+.pintado .stick::before, .pintado .stick::after { display: none; }
 .note { position: absolute; left: 18px; bottom: 10px; width: 150px; box-sizing: border-box; font: 600 12px/1.3 var(--label); color: #f3e6d0; background: rgba(0,0,0,.45); padding: 4px 8px; border-radius: 3px; }
 </style>
 </head>
@@ -152,6 +158,10 @@ body { position: relative; font-family: var(--label);
     return P;
   }
   const v = new URLSearchParams(location.search).get('v') || 'a';
+  // ?fondo=…: a painted background (P-006) under the tiles; the pad and the sticks are the painted ones and only
+  // their words are drawn. The image covers the phone (915 wide) and loses the same amount above and below.
+  const fondo = new URLSearchParams(location.search).get('fondo');
+  if (fondo) document.body.classList.add('pintado'), document.body.style.background = `#4a2a16 url(${fondo}) center / cover no-repeat`;
   board(v === 'b' ? LAYOUTS.pagoda : LAYOUTS.tortuga);
 
   if (v === 'c') {
