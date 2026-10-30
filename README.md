@@ -10,7 +10,7 @@ Una colección de minijuegos para el celular, en horizontal, que se instala desd
 ## Estado
 
 - **Publicada** en https://efevali.github.io/fogonazo/, que se abre en Chrome y se instala desde los ajustes de la sala (el equipo de audio) o desde el menú ⋮ → «Instalar app». Funciona sin conexión. La 0.1.0 reemplazó a Fogonazo como juego único (0.6.1); qué trae cada versión está en el [registro de cambios](CHANGELOG.md).
-- **Qué tiene:** la sala con sus objetos activos; Fogonazo jugable (instrumento, mapa, los 30 niveles hechos a mano con sus especiales y obstáculos, y el zen), con su música y sus efectos; los ajustes de sonido comunes y la instalación. Nombre e ícono son provisorios.
+- **Qué tiene:** la sala con sus objetos activos; Fogonazo jugable (instrumento, mapa, los 30 niveles hechos a mano con sus especiales y obstáculos, y el zen); el mahjong en la mesa ratona (el estuche y seis tableros, en zen), cada juego con su música y sus efectos; los ajustes comunes (sonido, versión e instalación). Nombre e ícono son provisorios.
 - **Lo que sigue**, en [la colección](docs/coleccion.md#lo-que-sigue).
 
 ## Dónde está cada cosa
@@ -51,7 +51,7 @@ Hace falta Node 18 o más nuevo; para las capturas, `npm install` y, la primera 
 - `herramientas/capturas.js`: recorre la app como en el teléfono (sala, ajustes, Fogonazo, mapa, partida, pausa y vuelta), verifica el «atrás» de Android y que abra sin conexión, y saca una captura de cada pantalla en `dist/capturas/`. Se corre antes de publicar.
 - `herramientas/version.js`: sube la versión (`parche`, `menor` o `mayor`) en `sw.js`, con la fecha, y rehace la lista de archivos que el *service worker* guarda. Sin argumento, solo rehace la lista: hace falta cada vez que se suma o se quita un archivo de la app.
 - `herramientas/mahjong/probar.js`: verifica los tableros del mahjong y juega cada reparto al azar, para dar una idea de la dificultad. `herramientas/mahjong/boceto-mahjong.html` y `composicion-p006.html`: los bocetos S-19 y S-20 y la composición del P-006.
-- `herramientas/iconos.py`: los íconos provisorios, la ventana con lluvia recortada de la imagen de la sala (Python con Pillow).
+- `herramientas/iconos.py`: los íconos provisorios, desde la imagen del P-007, la ventana con la lámpara (Python con Pillow).
 - `herramientas/probar.js`: juega 180 partidas con el bot y 6 partidas zen de 300 jugadas, y verifica que la placa quede siempre consistente. Se corre después de tocar el motor de Fogonazo.
 - `herramientas/calibrar.js`: recalibra la dificultad de Fogonazo (`node herramientas/calibrar.js 400 0.62 16,17,18`: 400 partidas por nivel, con un bot que elige la mejor jugada el 62 % de las veces). Sin lista de niveles, recalibra los 30.
 - `herramientas/medir.js`, `modos.js`, `bots.js` y `ayuda_piezas.js`: la tasa de victoria con los valores actuales, cómo quedan los modos de dificultad, la comparación entre bots y el efecto de la ayuda de piezas del pedido.

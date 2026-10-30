@@ -28,22 +28,6 @@ Cómo se piden, se revisan y se montan las imágenes de la colección. Las regla
 - **Se revisa antes de aprobar:** que respete la composición, el orden y los colores pedidos; la lógica de los objetos; que lo importante quede en la franja central; y, en las piezas, que el fondo sea parejo y el recorte salga limpio.
 - **Lo aprobado se guarda en la carpeta `arte/` de su parte**, y se cuenta en su README. Lo que reemplaza a otra imagen la reemplaza en el repositorio: la anterior queda en el historial de Git.
 
-## Pedidos en curso
-
-### P-007 · El ícono, con la lámpara más arriba
-
-Imágenes, en este orden: [el ícono actual](sala/bocetos/P-007-icono-actual.png) (el recorte de la ventana de la sala) y [el boceto](sala/bocetos/P-007-boceto-lampara.png), un retoque a mano con la lámpara subida (solo vale por la posición: tiene marcas del retoque). Texto:
-
-> Te mando dos imágenes. La primera es el ícono de mi app: una ventana de noche con lluvia, la ciudad atrás y una lámpara de arco dorada adelante. La segunda es un boceto hecho a mano que muestra dónde quiero la lámpara; el boceto tiene marcas del retoque, así que tomalo solo como guía de posición.
->
-> Necesito la primera imagen con un solo cambio: la lámpara de arco (la pantalla dorada y su brazo curvo) subida hasta la altura del boceto, con la pantalla colgando un poco por debajo del travesaño del medio de la ventana.
->
-> - Todo lo demás, exactamente igual: la ventana, el marco, el parante del medio, el travesaño, la lluvia, las gotas, los edificios, el cielo, los colores, la luz y el encuadre.
-> - Donde antes estaba la pantalla, abajo, tiene que verse la ventana como sigue en el resto: el marco de abajo, el parante del medio y los edificios.
-> - El brazo de la lámpara entra por el borde izquierdo y baja en curva hasta la pantalla, como en el boceto; el brazo viejo no tiene que quedar.
-> - Que la pantalla tire una luz cálida suave hacia abajo.
-> - Imagen cuadrada, sin texto ni marcos.
-
 ## Pedidos cerrados
 
 | Pedido | Qué | Con qué IA | Vigente |
@@ -53,6 +37,7 @@ Imágenes, en este orden: [el ícono actual](sala/bocetos/P-007-icono-actual.png
 | P-004 | La escena de la pantalla-instrumento de Fogonazo | ChatGPT (con Gemini se apartó del boceto) | [`fogonazo/arte/P-004_escena-instrumento.png`](fogonazo/arte/P-004_escena-instrumento.png) |
 | P-005 | Especiales y obstáculos de Fogonazo | Gemini, ya en una conversación común | [`fogonazo/arte/P-005_especiales-obstaculos.jpg`](fogonazo/arte/P-005_especiales-obstaculos.jpg) |
 | P-006 | El fondo de la partida del mahjong: la mesa ratona desde arriba | Gemini, a la primera | [`mahjong/arte/P-006_fondo-mesa.jpg`](mahjong/arte/P-006_fondo-mesa.jpg) |
+| P-007 | El ícono con la lámpara más arriba | Gemini: subió la lámpara, pero rehízo la imagen con un encuadre más abierto (ver abajo) | [`sala/arte/P-007_icono.jpg`](sala/arte/P-007_icono.jpg) |
 
 ## Un pedido que salió a la primera
 
@@ -74,3 +59,17 @@ El P-006, como modelo: Gemini lo resolvió en el primer intento con las dos imá
 > - A la derecha, a media altura, la tetera marrón de cerámica de la referencia, vista desde arriba: la tapa con su perilla y el pico apuntando hacia arriba. Cortada por el borde derecho de la imagen.
 > - Todo lo demás, solo madera: nada en el centro, ni en la esquina de arriba a la derecha ni en la de abajo a la derecha.
 > - Sin texto ni letras, sin fichas de mahjong, sin personas ni manos, sin marcos.
+
+## Un pedido de cambio puntual que se rehízo
+
+El P-007 pedía cambiar una sola cosa y dejar todo lo demás igual. Gemini subió la lámpara, pero rehízo la imagen: abrió el encuadre (la barra de la cortina, las cortinas, el sillón), redibujó la ciudad y la lluvia, apoyó la pantalla sobre el travesaño y sumó un cono de luz. El resultado se aprobó igual. Para un cambio que de verdad tiene que dejar todo idéntico, conviene pedirlo sobre la imagen grande (como el P-001, sobre la sala) y no sobre un recorte. Imágenes, en este orden: [el ícono actual](sala/bocetos/P-007-icono-actual.png) (el recorte de la ventana de la sala) y [el boceto](sala/bocetos/P-007-boceto-lampara.png), un retoque a mano con la lámpara subida (solo vale por la posición: tiene marcas del retoque). Texto:
+
+> Te mando dos imágenes. La primera es el ícono de mi app: una ventana de noche con lluvia, la ciudad atrás y una lámpara de arco dorada adelante. La segunda es un boceto hecho a mano que muestra dónde quiero la lámpara; el boceto tiene marcas del retoque, así que tomalo solo como guía de posición.
+>
+> Necesito la primera imagen con un solo cambio: la lámpara de arco (la pantalla dorada y su brazo curvo) subida hasta la altura del boceto, con la pantalla colgando un poco por debajo del travesaño del medio de la ventana.
+>
+> - Todo lo demás, exactamente igual: la ventana, el marco, el parante del medio, el travesaño, la lluvia, las gotas, los edificios, el cielo, los colores, la luz y el encuadre.
+> - Donde antes estaba la pantalla, abajo, tiene que verse la ventana como sigue en el resto: el marco de abajo, el parante del medio y los edificios.
+> - El brazo de la lámpara entra por el borde izquierdo y baja en curva hasta la pantalla, como en el boceto; el brazo viejo no tiene que quedar.
+> - Que la pantalla tire una luz cálida suave hacia abajo.
+> - Imagen cuadrada, sin texto ni marcos.

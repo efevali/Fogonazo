@@ -2,6 +2,10 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.8.1 — 29/10/2026
+
+- **Ícono nuevo:** la ventana con lluvia, ahora con la lámpara de arco encendida en el medio (P-007). En el teléfono, Chrome cambia el ícono de la app instalada cuando le toca, y eso puede tardar unos días.
+
 ## 0.8.0 — 29/10/2026
 
 - Mahjong: **una tortuga de 96 fichas**, con fichas del tamaño de las de los otros tableros (S-22). La clásica de 144 sigue, como «tortuga grande»; son seis tarjetas en el estuche y la última se alcanza deslizando la fila.
