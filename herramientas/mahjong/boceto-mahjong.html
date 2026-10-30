@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Bocetos del mahjong como la mesa ratona vista de cerca, al tamaño del teléfono (915 × 412).
      S-19: ?v=a la partida con la tortuga clásica de 144 fichas (prueba de tamaño), ?v=b con un tablero de 88 (la
-     pagoda), ?v=c el estuche abierto como pausa (descartado: pasó a ser la entrada).
+     pagoda).
      S-20: ?v=entrada el estuche abierto como pantalla de entrada, sobre el fondo del P-006, donde se elige el tablero.
      ?fondo=… pone debajo una imagen pintada (el P-006); en la entrada va siempre.
-     Las fichas salen del dibujo del prototipo (docs/mahjong/prototipo.html), que se lee al cargar: sin copias.
+     Las fichas son las del juego (mahjong/fichas.js).
      El fondo de nogal es un dibujo con código; el definitivo sería un pedido a la IA de imágenes. -->
 <title>Bocetos del mahjong en la mesa ratona</title>
 <style>
 @font-face { font-family: "Barlow Semi Condensed"; font-weight: 700; src: url(../../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
 @font-face { font-family: "Barlow Semi Condensed"; font-weight: 600; src: url(../../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
 @font-face { font-family: Caveat; font-weight: 600; src: url(../../comun/fuentes/caveat-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: "Mahjong JP"; font-weight: 700; src: url(../../comun/fuentes/noto-serif-jp-mahjong-700.woff2) format('woff2'); }
 @font-face { font-family: Fraunces; font-weight: 100 900; src: url(../../comun/fuentes/fraunces-latin-soft-normal.woff2) format('woff2'); }
 :root { --walnut: #5a3520; --walnut-deep: #3a2214; --felt: #8e2a2a; --ivory: #f1e7d0; --bone: #e6d8b8; --back: #2f6b4a; --back-deep: #1f4a33;
   --pencil: #3b3a36; --pen: #1d3a94; --label: "Barlow Semi Condensed", "Arial Narrow", sans-serif; }
@@ -56,26 +57,6 @@ body { position: relative; font-family: var(--label);
 .pause::before { left: 13px; } .pause::after { right: 13px; }
 .volver { position: absolute; right: 18px; bottom: 16px; width: 124px; height: 30px; transform: rotate(-1.5deg); }
 
-/* the case, open: the lid with red felt and the tray */
-.dim { position: absolute; inset: 0; background: rgba(12,7,4,.6); display: grid; place-items: center; }
-.case { width: 640px; height: 384px; border-radius: 10px; padding: 12px; box-sizing: border-box; display: grid; grid-template-rows: 1fr 10px 104px; gap: 0;
-  background: linear-gradient(180deg, #7a4a2a, #4a2a16); box-shadow: 0 18px 40px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.15); }
-.felt { border-radius: 4px; background: radial-gradient(ellipse at 40% 30%, #a43636, var(--felt) 60%, #6c1f1f); box-shadow: inset 0 2px 8px rgba(0,0,0,.5); color: var(--ivory); }
-.lid { padding: 12px 18px; display: grid; grid-template-rows: auto 1fr; gap: 8px; }
-.lid h2 { margin: 0; display: flex; justify-content: space-between; align-items: baseline; font: 600 26px/1 Fraunces, Georgia, serif; font-variation-settings: "SOFT" 100; }
-.lid h2 span { font: 700 12px var(--label); letter-spacing: .2em; opacity: .75; }
-.boards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-.bd { border-radius: 4px; padding: 8px 6px 7px; display: grid; justify-items: center; align-content: start; gap: 4px; background: rgba(0,0,0,.14); text-align: center; }
-.bd.on { box-shadow: inset 0 0 0 2px #ffcf7a; background: rgba(255,207,122,.1); }
-.bd svg { width: 96px; height: 62px; }
-.bd b { font: 700 14px var(--label); letter-spacing: .1em; }
-.bd small { font: 600 13px var(--label); opacity: .85; }
-.bd i { font: 600 17px Caveat, cursive; font-style: normal; color: #ffe3a8; }
-.hinge { background: linear-gradient(90deg, transparent 18%, #c8a35a 18% 24%, transparent 24% 76%, #c8a35a 76% 82%, transparent 82%); }
-.tray { padding: 14px 18px; display: flex; align-items: center; gap: 14px; background: radial-gradient(ellipse at 50% 40%, #8e2a2a, #5e1a1a); }
-.tray .stick { width: 220px; letter-spacing: .14em; }
-.tray .stick.main { background: linear-gradient(180deg, #ffe7b0, #f2c76a 60%, #d9a443); box-shadow: 0 3px 0 #9a7428, 0 5px 8px rgba(0,0,0,.4); }
-.tray p { margin: 0 0 0 auto; font: 600 14px/1.3 var(--label); color: var(--ivory); opacity: .8; max-width: 190px; }
 /* over the painted background (P-006): only the words, placed on the painted pad and sticks */
 .pintado .pad { background: none; box-shadow: none; transform: none; left: 16px; top: 22px; width: 156px; height: 186px; padding: 8px 14px; }
 .pintado .pad::before { display: none; }
@@ -107,6 +88,7 @@ body { position: relative; font-family: var(--label);
 </style>
 </head>
 <body>
+<script src="../../mahjong/fichas.js"></script>
 <div id="board"></div>
 <div class="pad">
   <div class="t" id="nombre">TORTUGA</div>
@@ -126,11 +108,8 @@ body { position: relative; font-family: var(--label);
 
 <script>
 (async () => {
-  // the 42 faces, from the prototype (the same drawing, without copying it here)
-  const proto = await (await fetch('../../docs/mahjong/prototipo.html')).text();
-  const a = proto.indexOf('/* ============================================================ FICHAS DIBUJADAS */'), b = proto.indexOf('const fichaSVG');
-  const code = proto.slice(a, b).replace("'Noto Serif JP'", "'Noto Serif JP','Noto Serif CJK JP','Noto Serif CJK SC'");
-  const { FACES } = (0, eval)(code + ';({ FACES })');
+  // the 42 faces, the game's own (mahjong/fichas.js)
+  const { FACES } = window.Fichas;
 
   const LAYOUTS = {
     // the classic turtle: 87 at the base (with the three ends), 36, 16, 4 and 1 on top
@@ -224,17 +203,6 @@ body { position: relative; font-family: var(--label);
     </div>`);
   }
 
-  if (v === 'c') {
-    document.getElementById('note').remove();
-    const proto2 = (0, eval)(proto.slice(proto.indexOf('const LAYOUTS = ['), proto.indexOf('// Posiciones en medias fichas')).replace('const LAYOUTS', 'LAYOUTS_P') + ';LAYOUTS_P');
-    const list = [[proto2[0], 'PIRÁMIDE', '—'], [proto2[2], 'MARIPOSA', '6:40'], [proto2[3], 'CASTILLO', '—'], [LAYOUTS.pagoda, 'PAGODA', '7:15'], [LAYOUTS.tortuga, 'TORTUGA', '12:48']];
-    document.body.insertAdjacentHTML('beforeend', `<div class="dim"><div class="case">
-      <div class="felt lid"><h2>Mahjong <span>ZEN · ELEGÍ EL TABLERO</span></h2>
-        <div class="boards">${list.map(([L, n, r], i) => `<div class="bd${i === 4 ? ' on' : ''}">${mini(L)}<b>${n}</b><small>${armar(L).length} fichas</small><i>récord ${r}</i></div>`).join('')}</div></div>
-      <div class="hinge"></div>
-      <div class="tray"><div class="stick main">SEGUIR</div><div class="stick">VOLVER A LA SALA</div><p>Tocá un tablero para empezarlo; el que está en juego se marca.</p></div>
-    </div></div>`);
-  }
   document.body.dataset.listo = '1';
 })();
 </script>

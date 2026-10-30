@@ -22,10 +22,6 @@
   --ink: #2a211b;
   --amber: #ffb648;
   --dial: #7fe3ff;
-  --kit: #e8a52c;          /* electronics kit box */
-  --kit-deep: #c9771c;
-  --felt: #8e2a2a;         /* mahjong case lining */
-  --ivory: #f3ead6;
   --chip: rgba(18, 12, 10, .55);
   --chip-fg: #f3e6d0;
   --display: "Fraunces", Georgia, "Times New Roman", serif;
@@ -182,32 +178,6 @@ ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622
 .face p.say { margin: 0; font-size: 16px; line-height: 1.35; font-weight: 500; }
 .ghost { background: none; border: 1px solid currentColor; color: inherit; }
 
-/* Fogonazo: lid of a 70s electronics kit box */
-.kit { width: min(520px, 100%); background: var(--kit); color: var(--ink); border-radius: 8px; overflow: hidden;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, .55); display: grid; grid-template-columns: 1fr 120px; }
-.kit .txt { padding: 18px 20px 16px; display: grid; gap: 8px; align-content: start; }
-.kit .eyebrow { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
-.kit h2 { margin: 0; font: 900 40px/0.95 var(--display); font-variation-settings: "SOFT" 100; letter-spacing: .01em; text-transform: uppercase; }
-.kit p { margin: 0; font-size: 16px; line-height: 1.35; max-width: 34ch; }
-.kit .soon { display: inline-block; justify-self: start; background: var(--ink); color: var(--kit); padding: 3px 9px; border-radius: 3px;
-  font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
-.kit .stripes { background: repeating-linear-gradient(-55deg, var(--ink) 0 14px, var(--kit-deep) 14px 28px, var(--kit) 28px 42px); }
-.kit .btn { justify-self: start; margin-top: 4px; }
-
-/* Mahjong: open case, red felt inside a walnut frame */
-.case { width: min(500px, 100%); border-radius: 10px; padding: 12px; background: linear-gradient(180deg, #6e4128, var(--walnut-deep));
-  box-shadow: 0 18px 40px rgba(0, 0, 0, .55), 0 1px 0 rgba(255, 255, 255, .12) inset; }
-.felt { background: radial-gradient(ellipse at 40% 30%, #a43636, var(--felt) 60%, #6c1f1f); color: var(--ivory); border-radius: 4px;
-  padding: 18px 20px 16px; display: grid; gap: 8px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, .45); }
-.felt .eyebrow { font-size: 13px; letter-spacing: .16em; text-transform: uppercase; opacity: .8; }
-.felt h2 { margin: 0; font: 600 38px/1 var(--display); font-variation-settings: "SOFT" 100; }
-.felt p { margin: 0; font-size: 16px; line-height: 1.35; max-width: 36ch; }
-.tiles { display: flex; gap: 6px; margin: 4px 0 2px; }
-.tile { width: 30px; height: 40px; border-radius: 4px; background: linear-gradient(180deg, #fbf5e6, #e9dfc6); box-shadow: 0 3px 0 #3f7a5b, 0 4px 3px rgba(0, 0, 0, .35);
-  display: grid; place-items: center; font: 600 20px/1 "Noto Serif SC", "Songti SC", serif; color: #b0302a; }
-.tile.g { color: #2e7d4f; }
-.tile.b { color: #1f3a60; }
-.felt .btn { justify-self: start; border-color: var(--ivory); color: var(--ivory); }
 </style>
 </head>
 <body>
@@ -325,7 +295,7 @@ ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622
     <!-- tap zones -->
     <path class="hit" id="hitBench" data-href="fogonazo/instrumento.html" data-hl="hlBench" role="button" tabindex="0" aria-label="Abrir Fogonazo"
       d="M160,490H606V1072H160Z M238,905H362V1148H238Z"/>
-    <path class="hit" id="hitTable" data-open="sheetTable" data-hl="hlTable" role="button" tabindex="0" aria-label="Abrir Mahjong"
+    <path class="hit" id="hitTable" data-href="mahjong/estuche.html" data-hl="hlTable" role="button" tabindex="0" aria-label="Abrir Mahjong"
       d="M834,960H1102V878H1262V988H1358V1234H834Z"/>
     <path class="hit" id="hitAudio" data-open="sheetAudio" data-hl="hlAudio" role="button" tabindex="0" aria-label="Abrir ajustes"
       d="M1495,652H2250V1052H1495Z"/>
@@ -341,20 +311,6 @@ ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622
     <svg viewBox="0 0 132 34" aria-hidden="true"><g transform="rotate(-1.5 66 17)"><path d="M2,4 h126 l-4,13 l4,13 h-126 l4,-13 z" fill="#1c1c1c"/><text x="66" y="23" text-anchor="middle" font-family="Barlow Semi Condensed" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">SALIR ▶</text></g></svg>
   </button>
   <div class="aviso" id="avisoSalir" role="status" hidden>Para salir, deslizá desde el costado de la pantalla.</div>
-
-  <!-- Mahjong -->
-  <div class="sheet" id="sheetTable" hidden>
-    <div class="case" role="dialog" aria-modal="true" aria-labelledby="tTable">
-      <div class="felt">
-        <span class="eyebrow">Modo zen</span>
-        <h2 id="tTable">Mahjong</h2>
-        <div class="tiles" aria-hidden="true"><span class="tile">中</span><span class="tile g">發</span><span class="tile b">東</span><span class="tile">萬</span></div>
-        <p>Emparejá fichas libres hasta vaciar la mesa, sin apuro y sin límite de movimientos.</p>
-        <span class="eyebrow">Próximamente</span>
-        <button class="btn ghost" type="button" data-close>Volver</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Settings: a 70s audio rack with sound, system and install (S-14) -->
   <div class="sheet" id="sheetAudio" hidden>

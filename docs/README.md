@@ -8,6 +8,6 @@
 | [decisiones.md](decisiones.md) | Por qué se decidió cada cosa y qué se descartó, para no volver a discutirlo. |
 | [sala/](sala/README.md) | La sala, la pantalla de inicio: estado, imagen, objetos activos y prototipo. |
 | [fogonazo/](fogonazo/README.md) | Fogonazo: estructura, reglas, niveles, dificultad, cómo está hecho, bocetos y arte. |
-| [mahjong/](mahjong/README.md) | El mahjong: estado, prototipo y lo que sigue. |
+| [mahjong/](mahjong/README.md) | El mahjong: cómo es, bocetos, arte y lo que sigue. |
 
 El método de trabajo está en [CONTRIBUTING.md](../CONTRIBUTING.md).

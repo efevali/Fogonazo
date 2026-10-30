@@ -2,6 +2,17 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.7.0 — 29/10/2026
+
+Llega el mahjong: la mesa ratona de la sala vista de cerca.
+
+- **La mesa ratona lleva al mahjong.** Se entra por el estuche abierto (S-20), donde se elige el tablero: mariposa, fortaleza, puente, pagoda y la tortuga clásica de 144, la más grande. Cada tarjeta anota su récord; el último jugado queda marcado.
+- **La partida** (S-19), sobre la mesa ratona de nogal pintada (P-006): fichas de hueso con dorso verde, las capas de abajo a la sombra y las bloqueadas un poco más oscuras. En el anotador, en lápiz, el reloj, los pares que quedan, el récord, los puntos y la cadena. Deshacer, Pista y Barajar, grabados en los palitos de puntaje. Sin pares libres, se barajan solas.
+- **La pausa y el final** (S-21), tarjetas de cartulina; el récord, con un sello rojo.
+- **Sonido:** Taller oriental en el estuche y Siesta oriental en la partida, primas de las de Fogonazo, con koto, flauta, bloque de madera y tamborcito.
+- «Atrás», como en Fogonazo: en la partida abre la pausa; desde ahí, vuelve al estuche, y desde el estuche, a la sala.
+- Anda sin conexión, también los ideogramas de las fichas.
+
 ## 0.6.0 — 29/10/2026
 
 - Fogonazo: **la batería brilla con siete rayitos**, uno por cada color de los componentes, que giran a su alrededor (S-18). Era el especial más poderoso y casi no tenía animación.

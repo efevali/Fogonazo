@@ -1,11 +1,13 @@
 /* El sonido de la colección, sintetizado con WebAudio: sin archivos de audio.
    - Voces básicas (pulso, triangular, ruido y FM de dos operadores), con las que se arman los efectos y la música.
    - Los efectos y los cuatro temas de Fogonazo (Placa, Taller, Urgente y Siesta), su sonido de siempre.
+   - Los del mahjong: voces orientales (koto, flauta, bloque de madera, tamborcito y campana), sus efectos y Siesta y
+     Taller como primas orientales: mismo tempo, ritmo, acordes y bajo, la melodía en do pentatónica mayor.
    - La lluvia de la sala: un colchón de ruido rosa apagado y gotitas en el vidrio.
    - Un solo juego de volúmenes para toda la colección (música, efectos y lluvia, de 0 a 10), guardado en Chrome.
    Vive en la página contenedora (index.html), así que no se corta al pasar de una pantalla a otra. */
 const Sound = (() => {
-  let ctx = null, master, sfxBus, musicBus, rainBus, noiseBuf;
+  let ctx = null, master, sfxBus, musicBus, rainBus, noiseBuf, revIn;
   // volúmenes de 0 a 10; con los de entrada, los efectos y la música suenan como en el Fogonazo publicado (70 y 35 %)
   // y la lluvia queda de fondo
   const CLAVE = 'coleccion.sonido';
@@ -37,6 +39,12 @@ const Sound = (() => {
       for (let k = 1; k < n; k++) { re[k] = Math.sin(2 * Math.PI * k * duty) / (Math.PI * k); im[k] = (1 - Math.cos(2 * Math.PI * k * duty)) / (Math.PI * k); }
       pulseWaves[duty] = ctx.createPeriodicWave(re, im);
     }
+    // una sala chica, para las primas orientales del mahjong
+    const len = Math.floor(ctx.sampleRate * 1.5), ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const c = ir.getChannelData(ch); for (let i = 0; i < len; i++) c[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.6); }
+    const conv = ctx.createConvolver(); conv.buffer = ir;
+    revIn = ctx.createGain(); const revOut = ctx.createGain(); revOut.gain.value = 0.8;
+    revIn.connect(conv); conv.connect(revOut); revOut.connect(musicBus);
     apply();
     return true;
   }
@@ -122,8 +130,58 @@ const Sound = (() => {
     car.start(t); mod.start(t); car.stop(t + o.dur + rel + 0.05); mod.stop(t + o.dur + rel + 0.05);
   }
 
+  // ------------------------------------------------------------ voces orientales (mahjong)
+  // koto: cuerda pulsada FM con una leve caída de afinación al atacar
+  function koto(f, t, vol, dest, pan, send, len) {
+    const L = len || 1.1;
+    fm({ at: t, f: f * 1.008, f2: f, slide: 0.05, ratio: 1, index: 2.6, indexEnd: 0.06, indexTime: 0.16, dur: L, vol, attack: 0.002, dec: L, sus: 0.03, rel: 0.08, pan, dest, send });
+    fm({ at: t, f: f * 3, ratio: 1, index: 0.7, indexEnd: 0.05, indexTime: 0.05, dur: 0.22, vol: vol * 0.3, attack: 0.001, dec: 0.22, sus: 0.02, rel: 0.03, pan, dest });
+    noise({ at: t, dur: 0.016, vol: vol * 0.45, filter: 'bandpass', freq: 3800, q: 1.2, dest, pan });
+  }
+  // flauta tipo dizi: ataque limpio, una nota de adorno desde arriba y vibrato liviano
+  function flauta(f, t, d, vol, dest, pan, send) {
+    const o1 = ctx.createOscillator(), o2 = ctx.createOscillator(), o3 = ctx.createOscillator();
+    const g = ctx.createGain(), g2 = ctx.createGain(), g3 = ctx.createGain(), o = out(dest || sfxBus, pan);
+    o1.type = 'sine'; o2.type = 'triangle'; o3.type = 'sine'; g2.gain.value = 0.45; g3.gain.value = 0.12;
+    const adorno = d > 0.3;
+    [[o1, 1], [o2, 1], [o3, 2]].forEach(([osc, m]) => {
+      if (adorno) { osc.frequency.setValueAtTime(f * m * 1.1225, t); osc.frequency.setValueAtTime(f * m, t + 0.05); }
+      else osc.frequency.setValueAtTime(f * m, t);
+    });
+    o1.connect(g); o2.connect(g2); g2.connect(g); o3.connect(g3); g3.connect(g);
+    if (d > 0.35) {
+      const l = ctx.createOscillator(), lg = ctx.createGain(); l.frequency.value = 5.8;
+      lg.gain.setValueAtTime(0, t); lg.gain.setValueAtTime(0, t + 0.18); lg.gain.linearRampToValueAtTime(f * 0.006, t + Math.min(d, 0.5));
+      l.connect(lg); lg.connect(o1.frequency); lg.connect(o2.frequency); l.start(t); l.stop(t + d + 0.3);
+    }
+    env(g, t, 0.025, vol, 0.3, 0.8, t + d, 0.12);
+    g.connect(o); if (send) g.connect(send);
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = Math.min(f * 3, 8000); bp.Q.value = 2;
+    const ng = ctx.createGain(), hold = Math.max(d, 0.12);
+    ng.gain.setValueAtTime(0.0001, t); ng.gain.exponentialRampToValueAtTime(vol * 0.3, t + 0.015);
+    ng.gain.exponentialRampToValueAtTime(vol * 0.05, t + 0.1); ng.gain.setValueAtTime(vol * 0.05, t + hold); ng.gain.exponentialRampToValueAtTime(0.0001, t + hold + 0.1);
+    src.connect(bp); bp.connect(ng); ng.connect(o);
+    src.start(t, Math.random() * 0.4); src.stop(t + d + 0.3);
+    for (const x of [o1, o2, o3]) { x.start(t); x.stop(t + d + 0.25); }
+  }
+  // pon: tamborcito de mano, para darle rebote
+  function pon(t, f, vol, dest) {
+    tone({ at: t, f, f2: f * 0.7, slide: 0.12, dur: 0.22, vol, type: 'sine', dest });
+    noise({ at: t, dur: 0.02, vol: vol * 0.5, filter: 'lowpass', freq: 1500, dest });
+  }
+  function madera(t, f, vol, dest, pan) {
+    tone({ at: t, f, f2: f * 0.88, slide: 0.05, dur: 0.07, vol, type: 'sine', dest, pan });
+    noise({ at: t, dur: 0.012, vol: vol * 0.7, filter: 'bandpass', freq: f * 2.3, q: 3, dest, pan });
+  }
+  function rin(t, f, vol, dest) {
+    fm({ at: t, f, ratio: 2.76, index: 0.9, indexEnd: 0.05, indexTime: 1.4, dur: 2.4, vol, attack: 0.003, dec: 2.4, sus: 0.01, rel: 0.3, dest });
+    fm({ at: t, f: f * 2.02, ratio: 1, index: 0.2, indexEnd: 0.01, dur: 1.2, vol: vol * 0.35, attack: 0.003, dec: 1.2, sus: 0.01, rel: 0.2, dest });
+  }
+
   // ------------------------------------------------------------ efectos
   const PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.7, 1318.5, 1568];
+  const MJ_SEMI = [0, 2, 4, 7, 9, 12, 14, 16, 19], MJ_PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];
   const FX8 = {
     click() { tone({ f: 1400, dur: 0.03, vol: 0.06 }); },
     swap() { tone({ f: 520, f2: 820, dur: 0.07, vol: 0.07, duty: 0.25 }); },
@@ -151,6 +209,36 @@ const Sound = (() => {
     warn() { tone({ f: 1760, dur: 0.05, vol: 0.05, duty: 0.5 }); },
     bonus(i) { tone({ f: 660 * Math.pow(1.06, i || 0), dur: 0.06, vol: 0.05, duty: 0.125 }); },
     goal() { tone({ f: 1318.5, dur: 0.08, vol: 0.06, duty: 0.25 }); tone({ f: 1760, t: 0.08, dur: 0.12, vol: 0.06, duty: 0.25 }); },
+
+    // mahjong: primos de los de Fogonazo, tocados con koto, madera y campana
+    toc() { const t = ctx.currentTime; noise({ at: t, dur: 0.028, vol: 0.12, filter: 'bandpass', freq: 2700, q: 1.8 }); fm({ at: t, f: 2100, ratio: 1.41, index: 1.5, indexEnd: 0.2, indexTime: 0.03, dur: 0.035, vol: 0.045 }); },
+    suelta() { noise({ dur: 0.022, vol: 0.06, filter: 'bandpass', freq: 1900, q: 1.8 }); },
+    boton() { madera(ctx.currentTime, 1250, 0.05); },
+    // el «Bip» de Fogonazo (dos notas a una quinta, que suben con la cadena), tocado por un koto
+    par(c) {
+      const t = ctx.currentTime, k = Math.pow(2, MJ_SEMI[Math.min(MJ_SEMI.length - 1, (c || 1) - 1)] / 12);
+      noise({ at: t, dur: 0.02, vol: 0.1, filter: 'bandpass', freq: 3000, q: 2 });
+      noise({ at: t + 0.025, dur: 0.02, vol: 0.08, filter: 'bandpass', freq: 2500, q: 2 });
+      koto(659.25 * k, t, 0.085, null, -0.1, null, 0.7);
+      koto(987.77 * k, t + 0.05, 0.075, null, 0.1, null, 0.8);
+    },
+    mal() { const t = ctx.currentTime; fm({ at: t, f: 190, ratio: 1.41, index: 3, indexEnd: 1, indexTime: 0.08, dur: 0.09, vol: 0.09, car: 'triangle' }); fm({ at: t + 0.1, f: 150, ratio: 1.41, index: 3, indexEnd: 1, indexTime: 0.08, dur: 0.12, vol: 0.09, car: 'triangle' }); },
+    baraja() {
+      const t = ctx.currentTime;
+      for (let i = 0; i < 10; i++) noise({ at: t + Math.random() * 0.45, dur: 0.022, vol: 0.06 + Math.random() * 0.05, filter: 'bandpass', freq: 1800 + Math.random() * 1600, q: 2, pan: Math.random() * 1.2 - 0.6 });
+      MJ_PENTA.forEach((f, i) => koto(f, t + 0.08 + i * 0.045, 0.04, null, (i - 2.5) * 0.12, null, 0.6));
+    },
+    reparte() { const t = ctx.currentTime; for (let i = 0; i < 16; i++) noise({ at: t + i * 0.045 + Math.random() * 0.02, dur: 0.02, vol: 0.05 + Math.random() * 0.04, filter: 'bandpass', freq: 2000 + Math.random() * 1400, q: 2, pan: Math.random() * 1.2 - 0.6 }); },
+    pista() { rin(ctx.currentTime, 1568, 0.035); },
+    deshacer() { const t = ctx.currentTime; koto(987.77, t, 0.06, null, 0, null, 0.5); koto(659.25, t + 0.06, 0.055, null, 0, null, 0.6); },
+    limpio() {
+      const t = ctx.currentTime;
+      MJ_PENTA.forEach((f, i) => koto(f, t + i * 0.07, 0.07, null, (i - 2.5) * 0.1, null, 0.9));
+      flauta(1046.5, t + 0.45, 0.9, 0.05, sfxBus, 0, null);
+      rin(t + 0.42, 1318.5, 0.045);
+      fm({ at: t + 0.42, f: 98, ratio: 1.4, index: 2, indexEnd: 0.2, indexTime: 0.6, dur: 1.4, vol: 0.06, dec: 1.4, sus: 0.05, rel: 0.2 });
+    },
+    record() { const t = ctx.currentTime; [1046.5, 1318.5, 1568].forEach((f, i) => koto(f, t + i * 0.09, 0.065, null, 0, null, 0.9)); rin(t + 0.3, 2093, 0.035); },
   };
 
   function play(name, arg, gap) {
@@ -210,6 +298,21 @@ const Sound = (() => {
         [48, 'D5', 4], [52, 'E5', 2], [54, 'G5', 2], [56, 'E5', 6]],
     },
   };
+  // Primas orientales para el mahjong: mismo tempo, ritmo, acordes y bajo que Siesta y Taller. La melodía pasa a do
+  // pentatónica mayor (sin fa ni si) cambiando solo esas notas por la vecina. El color oriental lo dan el koto, la
+  // flauta, la madera, el tamborcito y el glissando de cierre (ver ARR.jp y schedJp).
+  Object.assign(SONGS, {
+    zenO: { name: 'Siesta oriental', bpm: 104, jp: true, leadInst: 'flauta', arpVol: 0.024, hatVol: 0.02, ponVol: 0.045, pon: [0, 8], rin: 2093,
+      chords: [['F3', 'A3', 'C4', 'E4'], ['E3', 'G3', 'B3', 'D4'], ['D3', 'F3', 'A3', 'C4'], ['C3', 'E3', 'G3', 'D4']], roots: ['F2', 'E2', 'D2', 'C2'],
+      bass: [0, 10], bassLen: 5, octave: [], arpEvery: 2, hats: [4, 12], hatAccent: [],
+      lead: [[0, 'A5', 6], [8, 'G5', 2], [10, 'E5', 4], [16, 'D5', 6], [24, 'E5', 2], [26, 'G5', 4],
+        [32, 'A5', 6], [40, 'E5', 2], [42, 'C5', 4], [48, 'D5', 4], [52, 'E5', 2], [54, 'G5', 2], [56, 'E5', 6]] },
+    mapO: { name: 'Taller oriental', bpm: 92, jp: true, leadInst: 'koto', arpVol: 0.026, hatVol: 0.022, ponVol: 0.05, pon: [0, 8], rin: 2093,
+      chords: [['C4', 'E4', 'G4'], ['G3', 'B3', 'D4'], ['A3', 'C4', 'E4'], ['F3', 'A3', 'C4']], roots: ['C3', 'G2', 'A2', 'F2'],
+      bass: [0, 6, 8, 14], bassLen: 1.8, octave: [], arpEvery: 2, hats: [2, 6, 10, 14], hatAccent: [],
+      lead: [[0, 'E5', 4], [4, 'G5', 2], [6, 'E5', 2], [8, 'D5', 4], [12, 'C5', 4], [16, 'D5', 2], [18, 'A4', 2], [20, 'D5', 4], [24, 'G5', 6],
+        [32, 'C5', 2], [34, 'E5', 2], [36, 'A5', 4], [40, 'G5', 2], [42, 'E5', 2], [44, 'C5', 4], [48, 'A4', 2], [50, 'C5', 2], [52, 'G5', 4], [56, 'E5', 3], [60, 'D5', 4]] },
+  });
   function defineSong(id, s) {
     s.chordsM = s.chords.map(c => c.map(N));
     s.rootsM = s.roots.map(N);
@@ -244,6 +347,13 @@ const Sound = (() => {
       lead(f, t, d, dest) { pluck(f, t, d, 0.045, 'square', dest); },
     },
     // suave (modo zen): bajo triangular, arpegio de pulso fino tipo caja de música, melodía de pulso al 25 %
+    jp: {
+      bass(f, t, d, dest) { const L = Math.min(d, 1.0); fm({ at: t, f, ratio: 1, index: 1.5, indexEnd: 0.25, indexTime: 0.12, dur: L, vol: 0.08, dec: L, sus: 0.12, rel: 0.06, dest }); },
+      arp(f, t, d, dest, k, s) { koto(f, t, s.arpVol, dest, k % 4 < 2 ? -0.3 : 0.3, null, Math.max(0.5, d * 1.8)); },
+      hat(t, acc, dest, s) { madera(t, acc ? 1320 : 1000, acc ? s.hatVol * 1.5 : s.hatVol, dest, 0.22); },
+      drum(t, acc, dest, s) { pon(t, acc ? 330 : 262, s.ponVol * (acc ? 1 : 0.75), dest); },
+      lead(f, t, d, dest, send, s) { if (s.leadInst === 'koto') koto(f, t, 0.06, dest, -0.1, send, Math.max(0.9, d * 1.4)); else flauta(f, t, d, 0.05, dest, -0.1, send); },
+    },
     '8s': {
       bass(f, t, d, dest) { pluck(f, t, Math.min(d, 1.2), 0.13, 'triangle', dest); },
       arp(f, t, d, dest) { pluck(f, t, d * 1.6, 0.022, null, dest, 0.125); },
@@ -256,15 +366,30 @@ const Sound = (() => {
   const Music = (() => {
     let timer = null, cur = null, step = 0, nextT = 0, want = null;
     const st = { ducked: false };
-    function makeBus() {
+    function makeBus(song) {
       const b = ctx.createGain(); b.gain.value = 1;
       b.connect(musicBus);
       const d = ctx.createDelay(1), fb = ctx.createGain(), wet = ctx.createGain(), lp = ctx.createBiquadFilter();
       lp.type = 'lowpass'; lp.frequency.value = 2400; fb.gain.value = 0.22; wet.gain.value = 0.14;
       d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(wet); wet.connect(b);
+      // las orientales: eco a tres semicorcheas y un poco de sala
+      if (song && song.jp) { d.delayTime.value = (60 / song.bpm / 4) * 3; const s = ctx.createGain(); s.gain.value = 0.14; b.connect(s); s.connect(revIn); }
       return { b, echoIn: d, delay: d };
     }
+    function schedJp(c, t, S) {
+      const song = c.song, A = ARR.jp, dest = c.bus.b, k = step % 64, bar = (k / 16) | 0, b = k % 16;
+      const chord = song.chordsM[bar], root = song.rootsM[bar];
+      if (song.bass.includes(b)) A.bass(mtof(root + (song.octave.includes(b) ? 12 : 0)), t, S * song.bassLen, dest);
+      if (b % song.arpEvery === 0) A.arp(mtof(chord[(b / song.arpEvery) % chord.length] + 12), t, S * song.arpEvery * 0.9, dest, b, song);
+      if (song.hats.includes(b)) A.hat(t, song.hatAccent.includes(b), dest, song);
+      if (song.pon.includes(b)) A.drum(t, b === 0, dest, song);
+      if (step % 128 === 0) rin(t, song.rin, 0.022, dest);
+      // glissando de koto al cierre de la vuelta sin melodía
+      if (k === 56 && ((step / 64) | 0) % 2 === 0) MJ_PENTA.forEach((f, i) => koto(f, t + i * S * 0.5, 0.03, dest, (i - 2.5) * 0.12, null, 0.7));
+      if (((step / 64) | 0) % 2 === 1) { const L = song.leadByStep.get(k); if (L) A.lead(mtof(L[0]), t, S * L[1] * 0.95, dest, c.bus.echoIn, song); }
+    }
     function schedStep(c, t, S) {
+      if (c.song.jp) { schedJp(c, t, S); return; }
       const song = c.song, A = ARR[song.soft ? '8s' : '8'], dest = c.bus.b, k = step % 64, bar = (k / 16) | 0, b = k % 16;
       const chord = song.chordsM[bar], root = song.rootsM[bar];
       if (song.bass.includes(b)) A.bass(mtof(root + (song.octave.includes(b) ? 12 : 0)), t, S * song.bassLen, dest);
@@ -287,7 +412,7 @@ const Sound = (() => {
       if (!ctx) return;
       if (cur && cur.track === track) return;
       stopNow(0.25);
-      cur = { track, song: SONGS[track], bus: makeBus() };
+      cur = { track, song: SONGS[track], bus: makeBus(SONGS[track]) };
       step = 0; nextT = ctx.currentTime + 0.08;
       if (!timer) timer = setInterval(tick, 30);
     }

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3a2010">
+<title>Mahjong · el estuche</title>
+<style>
+/* The way into the mahjong (S-20): the case, open on the coffee table (P-006). On the red felt of the lid, a card per
+   board with its silhouette, its tiles and its record; touching one starts it. More boards slide in from the side.
+   In the tray, the tiles kept in their rows. The pad says what to do and which board was played last.
+   Design space: 915 x 412, as in the match. */
+@font-face { font-family: Barlow; font-weight: 600; src: url(../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2'); }
+@font-face { font-family: Caveat; font-weight: 600; src: url(../comun/fuentes/caveat-latin-600-normal.woff2) format('woff2'); }
+@font-face { font-family: "Mahjong JP"; font-weight: 700; src: url(../comun/fuentes/noto-serif-jp-mahjong-700.woff2) format('woff2'); }
+:root { --wood: #4a2a16; --pen: #1d3a94; --pencil: #3b3a36; --label: #7a2a20; --brass: #e2b867; }
+html, body { margin: 0; height: 100%; background: var(--wood); overflow: hidden; }
+body { font-family: Barlow, "Arial Narrow", sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; border: 0; background: none; padding: 0; margin: 0; cursor: pointer; }
+button:focus { outline: none; }
+#stage { position: fixed; left: 0; top: 0; font-size: 1px; width: 915em; height: 412em; overflow: clip; }
+#stage > * { position: absolute; }
+#bg { left: 0; top: -49.4em; width: 915em; height: 510.8em; display: block; pointer-events: none; }
+
+#pad { left: 16rem; top: 22rem; width: 156rem; height: 186rem; box-sizing: border-box; padding: 8rem 14rem; color: var(--pencil); font: 600 21rem/24rem Caveat, cursive; pointer-events: none; }
+#pad .t { font: 700 13rem/1 Barlow; letter-spacing: .18em; color: var(--label); margin: 4rem 0 6rem; }
+#pad b { font-weight: 600; color: var(--pen); }
+
+/* the case, open; it leaves the teapot and «Volver» in view */
+.estuche { left: 190rem; top: 10rem; width: 616rem; height: 350rem; border-radius: 8rem; padding: 10rem; box-sizing: border-box;
+  display: grid; grid-template-rows: 214rem 8rem 1fr; background: linear-gradient(160deg, #7a4a2a, #4a2a16 70%, #3a2010);
+  box-shadow: 0 16rem 30rem rgba(0,0,0,.55), inset 0 1rem 0 rgba(255,255,255,.15), inset 0 0 0 2rem rgba(0,0,0,.25); }
+.tapa { border-radius: 4rem; padding: 10rem 0 12rem; display: grid; grid-template-rows: auto 1fr; gap: 8rem; min-width: 0;
+  background: radial-gradient(ellipse at 35% 25%, #a83a38, #8e2a2a 55%, #6a1d1d); box-shadow: inset 0 2rem 10rem rgba(0,0,0,.55); }
+.tapa h1 { margin: 0; text-align: center; font: 700 15rem Barlow; letter-spacing: .5em; color: var(--brass); text-shadow: 0 1rem 0 rgba(0,0,0,.5); }
+/* the cards; with more than fit, they slide sideways */
+.tarjetas { display: grid; grid-auto-flow: column; grid-auto-columns: 104rem; gap: 10rem; padding: 4rem 14rem 10rem; overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x proximity; scrollbar-width: none; align-items: start; }
+.tarjetas::-webkit-scrollbar { display: none; }
+.tarjeta { scroll-snap-align: start; background: linear-gradient(170deg, #f8f1df, #ece0c4); color: #3a2a1c; border-radius: 3rem; padding: 8rem 6rem 7rem;
+  text-align: center; display: grid; justify-items: center; gap: 2rem; box-shadow: 0 4rem 7rem rgba(0,0,0,.45); transform: rotate(var(--r)); }
+.tarjeta svg { width: 92rem; height: 58rem; }
+.tarjeta b { font: 700 14rem Barlow; letter-spacing: .12em; margin-top: 3rem; text-transform: uppercase; }
+.tarjeta small { font: 600 12rem Barlow; opacity: .75; }
+.tarjeta i { font: 600 18rem/1 Caveat, cursive; font-style: normal; color: var(--pen); }
+.tarjeta.ultima { box-shadow: 0 0 0 2rem var(--brass), 0 4rem 9rem rgba(0,0,0,.5); }
+.tarjeta:active { transform: rotate(var(--r)) translateY(2rem); }
+.bisagra { background: linear-gradient(90deg, transparent 14%, #c8a35a 14% 21%, transparent 21% 79%, #c8a35a 79% 86%, transparent 86%); }
+.bandeja { border-radius: 4rem; padding: 10rem 14rem; background: radial-gradient(ellipse at 50% 30%, #8a2828, #5a1818); box-shadow: inset 0 3rem 10rem rgba(0,0,0,.6);
+  display: grid; place-items: center; min-height: 0; }
+.bandeja svg { width: 100%; height: 100%; }
+.ficha .sombra { fill: rgba(20,8,0,.32); } .ficha .dorso { fill: #2f6b4a; } .ficha .canto { fill: #e6d8b8; }
+.ficha .cara { fill: url(#hueso); stroke: rgba(80,60,30,.45); stroke-width: .8; } .ficha .tinte { fill: none; }
+#volver { left: 773rem; top: 366rem; width: 124rem; height: 30rem; }
+#volver svg { width: 100%; height: 100%; display: block; transform: rotate(-1.5deg); }
+#rotate { position: fixed; inset: 0; display: none; place-items: center; background: rgba(20,10,4,.82); color: #f3e6d0;
+  font: 600 18px/1.4 Barlow, sans-serif; text-align: center; padding: 24px; z-index: 5; }
+@media (orientation: portrait) { #rotate { display: grid; } }
+</style>
+</head>
+<body>
+<div id="stage">
+  <img id="bg" src="fondo.webp" alt="" draggable="false">
+  <div id="pad"></div>
+  <div class="estuche">
+    <div class="tapa"><h1>MAHJONG</h1><div class="tarjetas" id="tarjetas" role="list" aria-label="Tableros"></div></div>
+    <div class="bisagra"></div>
+    <div class="bandeja" id="bandeja" aria-hidden="true"></div>
+  </div>
+  <button id="volver" type="button" aria-label="Volver a la sala"><svg viewBox="0 0 132 34" aria-hidden="true"><path d="M2,4 h126 l-4,13 l4,13 h-126 l4,-13 z" fill="#1c1c1c"/><text x="66" y="23" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">◀ VOLVER</text></svg></button>
+</div>
+<div id="rotate">Girá el teléfono para verlo en horizontal</div>
+
+<script src="../comun/pantalla.js"></script>
+<script src="fichas.js"></script>
+<script src="tableros.js"></script>
+<script src="estado.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const Est = window.Estado, T = window.Tableros, F = window.Fichas;
+  const fx = n => App.sonido.fx(n);
+  const fmtT = s => { s = Math.floor(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  document.body.insertAdjacentHTML('afterbegin', F.defs());
+
+  const stage = $('stage');
+  function fit() {
+    const vv = window.visualViewport;
+    const w = document.documentElement.clientWidth || innerWidth, h = (vv && vv.height) || innerHeight;
+    const s = Math.min(w / 915, h / 412);
+    stage.style.fontSize = s + 'px'; document.documentElement.style.fontSize = s + 'px';
+    stage.style.left = ((w - 915 * s) / 2) + 'px'; stage.style.top = ((h - 412 * s) / 2) + 'px';
+  }
+  addEventListener('resize', fit); if (window.visualViewport) visualViewport.addEventListener('resize', fit);
+  fit();
+
+  // the pad: what to do, and the last board played
+  const ult = Est.ultimo, nombreDe = id => T.porId(id).nombre.toLowerCase();
+  $('pad').innerHTML = `<div class="t">MAHJONG · ZEN</div><div>Elegí un tablero</div><div>en el estuche.</div>` +
+    (ult ? `<div style="margin-top:24rem">el último:</div><div><b>${nombreDe(ult.id)}${ult.tiempo ? ', ' + fmtT(ult.tiempo) : ''}</b></div>` : '');
+
+  // a small silhouette of each board, seen from above, in ink
+  const TINTA = ['#c9b48c', '#b39c72', '#9a825a', '#7f6844', '#644f30'];
+  function silueta(TB) {
+    let mx = 0, my = 0; TB.P.forEach(t => { mx = Math.max(mx, t.x + 2); my = Math.max(my, t.y + 2); });
+    return `<svg viewBox="-1 -1 ${mx + 2} ${my + 2}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${TB.P.map(t => `<rect x="${t.x - t.z * .35}" y="${t.y - t.z * .45}" width="1.8" height="1.8" rx=".3" fill="${TINTA[t.z]}" stroke="#3a2a1c" stroke-width=".2"/>`).join('')}</svg>`;
+  }
+  const ROT = [-1.5, 1, -.5, 1.4, -1, .6, -1.2];
+  $('tarjetas').innerHTML = T.LISTA.map((TB, i) => {
+    const r = Est.record(TB.id);
+    return `<button class="tarjeta${ult && ult.id === TB.id ? ' ultima' : ''}" type="button" role="listitem" data-id="${TB.id}" style="--r:${ROT[i % ROT.length]}deg"
+      aria-label="${TB.nombre}, ${TB.n} fichas${r.tiempo ? ', récord ' + fmtT(r.tiempo) : ''}">${silueta(TB)}<b>${TB.nombre}</b><small>${TB.n} fichas</small><i>récord ${r.tiempo ? fmtT(r.tiempo) : '—'}</i></button>`;
+  }).join('');
+  // the last one played, in view
+  const marcada = document.querySelector('.tarjeta.ultima'); if (marcada) marcada.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+
+  // the tiles kept in the tray, face up, in two rows
+  const ids = F.FACES.map(f => f.id), fila = 20;
+  let tray = '';
+  for (let r = 0; r < 2; r++) for (let c = 0; c < fila; c++) tray += `<g class="ficha" transform="translate(${c * 36} ${r * 56})">${F.cuerpo(ids[(r * 131 + c * 37 + c * c * 3) % ids.length])}</g>`;
+  $('bandeja').innerHTML = `<svg viewBox="-2 -2 ${fila * 36 + 8} 116" preserveAspectRatio="xMidYMid meet">${tray}</svg>`;
+
+  // touching a card starts that board; the match keeps one step of history for its pause
+  $('tarjetas').addEventListener('click', e => {
+    const b = e.target.closest('.tarjeta'); if (!b) return;
+    fx('boton'); App.ir('mahjong/partida.html?tablero=' + b.dataset.id, 1);
+  });
+  $('volver').addEventListener('click', () => { fx('boton'); App.volver(1 + App.extra); });
+})();
+</script>
+</body>
+</html>

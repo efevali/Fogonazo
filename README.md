@@ -5,7 +5,7 @@ Una colección de minijuegos para el celular, en horizontal, que se instala desd
 | Juego | Qué es | Estado |
 |---|---|---|
 | [Fogonazo](docs/fogonazo/README.md) | Juntar tres con componentes electrónicos sobre una protoboard, en el banco de la sala | Jugable dentro de la app: los 30 primeros niveles y el zen |
-| [Mahjong](docs/mahjong/README.md) | Mahjong solitario, en modo zen | Prototipo, todavía en vertical |
+| [Mahjong](docs/mahjong/README.md) | Mahjong solitario, en modo zen, sobre la mesa ratona | En la app desde la 0.7.0 |
 
 ## Estado
 
@@ -32,12 +32,13 @@ La app no se arma: lo que está en el repositorio es lo que publica GitHub Pages
 | Carpeta o archivo | Qué es |
 |---|---|
 | `index.html` | La página contenedora: muestra una pantalla por vez y resuelve lo común (ver `comun/app.js`). |
-| `comun/` | Lo común a toda la colección: `app.js` (pantallas, «atrás» de Android, sonido por pantalla, instalación), `pantalla.js` (lo que cada pantalla usa de la contenedora), `sonido.js` (el sonido sintetizado: voces, efectos y temas de Fogonazo, lluvia y volúmenes) y `fuentes/` (las tipografías, con sus licencias). |
+| `comun/` | Lo común a toda la colección: `app.js` (pantallas, «atrás» de Android, sonido por pantalla, instalación), `pantalla.js` (lo que cada pantalla usa de la contenedora), `sonido.js` (el sonido sintetizado: voces, efectos y temas de Fogonazo y del mahjong, lluvia y volúmenes) y `fuentes/` (las tipografías, con sus licencias). |
 | `sala/` | La sala: la página, la imagen, la copia aclarada para el brillo y las máscaras de los objetos activos. |
 | `fogonazo/` | Fogonazo: la pantalla-instrumento, el mapa, la partida, el avance (`estado.js`), las escenas, los fondos de la partida y las piezas recortadas. |
+| `mahjong/` | El mahjong: el estuche, la partida, las fichas (`fichas.js`), los tableros (`tableros.js`), el avance (`estado.js`) y el fondo. |
 | `codigo/` | El motor de Fogonazo (`engine.js`), los 30 niveles (`levels.js`) y su calibración (`calibrated.json`), que usa la partida. Corren igual en el navegador y en Node. |
 | `manifest.webmanifest`, `sw.js`, `iconos/` | La ficha de instalación (Minijuegos, en horizontal, a pantalla completa), el *service worker* que guarda la app en el teléfono para que ande sin conexión, y los íconos provisorios. |
-| `docs/` | La documentación, los bocetos, el arte vigente y el prototipo del mahjong. Lo que está en `docs/` también se publica, pero no forma parte de la app. |
+| `docs/` | La documentación, los bocetos y el arte vigente. Lo que está en `docs/` también se publica, pero no forma parte de la app. |
 | `herramientas/` | Pruebas, capturas, versión, íconos, calibración y los dibujos con código de los bocetos (ver abajo). |
 | `.github/` | Las plantillas de issue y de pull request. |
 | `package.json` | Los comandos y las dependencias de las herramientas (Playwright). La app no tiene dependencias. |
@@ -49,6 +50,7 @@ Hace falta Node 18 o más nuevo; para las capturas, `npm install` y, la primera 
 
 - `herramientas/capturas.js`: recorre la app como en el teléfono (sala, ajustes, Fogonazo, mapa, partida, pausa y vuelta), verifica el «atrás» de Android y que abra sin conexión, y saca una captura de cada pantalla en `dist/capturas/`. Se corre antes de publicar.
 - `herramientas/version.js`: sube la versión (`parche`, `menor` o `mayor`) en `sw.js`, con la fecha, y rehace la lista de archivos que el *service worker* guarda. Sin argumento, solo rehace la lista: hace falta cada vez que se suma o se quita un archivo de la app.
+- `herramientas/mahjong/probar.js`: verifica los tableros del mahjong y juega cada reparto al azar, para dar una idea de la dificultad. `herramientas/mahjong/boceto-mahjong.html` y `composicion-p006.html`: los bocetos S-19 y S-20 y la composición del P-006.
 - `herramientas/iconos.py`: los íconos provisorios, la ventana con lluvia recortada de la imagen de la sala (Python con Pillow).
 - `herramientas/probar.js`: juega 180 partidas con el bot y 6 partidas zen de 300 jugadas, y verifica que la placa quede siempre consistente. Se corre después de tocar el motor de Fogonazo.
 - `herramientas/calibrar.js`: recalibra la dificultad de Fogonazo (`node herramientas/calibrar.js 400 0.62 16,17,18`: 400 partidas por nivel, con un bot que elige la mejor jugada el 62 % de las veces). Sin lista de niveles, recalibra los 30.

@@ -47,10 +47,13 @@ Las reglas vigentes de cómo se ve y cómo suena la colección. Por qué se deci
 
 ## El mahjong
 
-Por ahora conserva la estética de Kasa; si se acerca a la de la sala está por decidir.
+La mesa ratona de la sala vista de cerca, desde arriba, como Fogonazo es el banco visto de cerca.
 
-- La paleta verde papel y tinta azul, bordes gruesos con sombra sólida, Zen Kaku Gothic New y Shippori Mincho. Solo tema claro.
-- Las fichas se dibujan con código, porque cada una pide una cantidad exacta de círculos o bambúes y su ideograma correcto: los círculos y los bambúes se dibujan (el uno de bambú es el pajarito tradicional); los caracteres, los vientos y los dragones llevan su ideograma; las flores y las estaciones, su ideograma y un dibujito.
+- **El fondo** (P-006): el nogal lustrado con la luz cálida de la lámpara desde arriba a la izquierda; a la izquierda, el anotador con lomo rojo, los tres palitos de puntaje de hueso y los dados; a la derecha, la tetera de cerámica, cortada por el borde. El centro queda para las fichas.
+- **Las fichas** (S-19): de hueso con dorso verde, como las del juego de la sala, dibujadas con código porque cada una pide una cantidad exacta de círculos o bambúes y su ideograma correcto: los círculos y los bambúes se dibujan (el uno de bambú es el pajarito tradicional); los caracteres, los vientos y los dragones llevan su ideograma (Noto Serif CJK JP Bold); las flores y las estaciones, su ideograma y un dibujito. Cada capa de abajo, un poco más a la sombra; una ficha bloqueada, un poco más oscura; la elegida, con borde ámbar y levantada.
+- **Lo escrito:** en el anotador, en lápiz y birome (Caveat), con el rótulo en Barlow rojo ladrillo; en los palitos, la palabra grabada en Barlow.
+- **El estuche** (S-20): de madera con bisagras de bronce, abierto sobre la mesa; en el paño rojo de la tapa, las tarjetas de los tableros, de cartulina, un poco torcidas, con la silueta en tinta, el nombre, las fichas y el récord en birome; en la bandeja, las fichas guardadas.
+- **La pausa y el final** (S-21): tarjetas de cartulina sobre la mesa, con el título en Barlow rojo ladrillo, lo demás en birome y los botones como palitos de hueso; el principal, dorado. El récord, con un sello rojo.
 
 ## Sonido
 
@@ -58,7 +61,7 @@ Todo se sintetiza en el navegador, sin archivos de audio, con `comun/sonido.js`.
 
 - **La sala:** una lluvia leve escuchada desde adentro, detrás del vidrio: un colchón de ruido rosa grave y apagado y unas 34 gotitas por segundo, cortas y apagadas, que pegan en el vidrio al azar y repartidas en el estéreo. Sin música.
 - **Fogonazo:** el sonido de siempre, el mismo del juego publicado. Cuatro temas: **Placa**, el original, en los niveles por movimientos (la menor, Am F C G, 104 ppm); **Taller**, fuera de la partida (do mayor, C G Am F, arpegio a corcheas, 92 ppm); **Urgente**, en el contrarreloj (la menor con final en mi mayor, Am F Dm E, 144 ppm), y **Siesta**, en el zen (fa mayor, Fmaj7 Em7 Dm7 C, 104 ppm). Bajo cuadrado, arpegio triangular, hi-hats de ruido y una melodía cuadrada que entra cada dos vueltas en Placa y Taller. Siesta usa instrumentos suaves (bajo triangular, arpegio de pulso fino y melodía de pulso al 25 %) y va unos 2 dB por debajo de Placa. La música baja al terminar un nivel para que se escuche la fanfarria.
-- **El mahjong:** las canciones de Fogonazo como primas orientales, que se note que son de la misma familia: mismo tempo, ritmo, acordes y bajo, con la melodía en do pentatónica mayor (fa y si pasan a la nota vecina). Koto, flauta tipo dizi, bloque de madera y tamborcito de mano, con un glissando de koto al cerrar la vuelta sin melodía. Siesta en la partida, Taller en el inicio y Placa para elegir. Los efectos también son primos: el sonido de línea, tocado con koto, sube con la cadena igual que en Fogonazo.
+- **El mahjong:** las canciones de Fogonazo como primas orientales, que se note que son de la misma familia: mismo tempo, ritmo, acordes y bajo, con la melodía en do pentatónica mayor (fa y si pasan a la nota vecina). Koto, flauta tipo dizi, bloque de madera y tamborcito de mano, con un glissando de koto al cerrar la vuelta sin melodía. Taller oriental en el estuche y Siesta oriental en la partida. Los efectos también son primos: el sonido de línea, tocado con koto, sube con la cadena igual que en Fogonazo.
 
 ## Textos
 

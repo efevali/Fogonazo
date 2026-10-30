@@ -19,12 +19,15 @@
   const base = new URL('./', location.href).pathname;
 
   // ------------------------------------------------------------ ambiente de cada pantalla
-  // lluvia: la de la sala; música: el tema de Fogonazo de cada lugar (Taller fuera de la partida). En la partida la
+  // lluvia: la de la sala; música: el tema de cada lugar (en Fogonazo, Taller fuera de la partida). En la partida la
   // elige la pantalla (Placa, Urgente en el contrarreloj o Siesta en el zen), con App.sonido.musica.
   const AMBIENTE = [
     [/^sala\//, { lluvia: true, musica: null }],
     [/^fogonazo\/partida\.html/, { lluvia: false, musica: 'pantalla' }],
     [/^fogonazo\//, { lluvia: false, musica: 'map' }],
+    // el mahjong: las primas orientales, Taller en el estuche y Siesta en la partida
+    [/^mahjong\/partida\.html/, { lluvia: false, musica: 'zenO' }],
+    [/^mahjong\//, { lluvia: false, musica: 'mapO' }],
   ];
   function ambiente(url) {
     const a = (AMBIENTE.find(([re]) => re.test(url)) || [null, { lluvia: false, musica: null }])[1];

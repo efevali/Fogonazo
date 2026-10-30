@@ -6,7 +6,8 @@
    2400 × 1080 píxeles, como el teléfono de referencia) y verifica el camino y el «atrás» de Android:
    sala → ajustes (LEDs y versión) → Fogonazo → sonido → manual → mapa → partida → pausa → mapa → … → sala. Después abre partidas
    puntuales (la nota, el contrarreloj, los obstáculos, los especiales, el fin de nivel y el zen) con un tablero fijo
-   (?semilla=…). Al final prueba que la app abra sin conexión. Si algo no da lo esperado, lo dice y termina con error. */
+   (?semilla=…). Después, el mahjong: el estuche, la partida, la pausa, el final y la tortuga. Al final prueba que la
+   app abra sin conexión. Si algo no da lo esperado, lo dice y termina con error. */
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
@@ -87,8 +88,6 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   ok(await abierto('#sheetSteps'), 'sin el cuadro de Chrome, «Instalar» abre los pasos'); await foto('03-sala-instalar');
   await atras(); ok(!(await abierto('#sheetSteps')) && await abierto('#sheetAudio'), '«atrás» cierra los pasos y vuelve a los ajustes');
   await atras(); ok(!(await abierto('#sheetAudio')), '«atrás» cierra los ajustes');
-  await tocar('#hitTable'); await espera(300); ok(await abierto('#sheetTable'), 'la mesa ratona abre «próximamente»'); await foto('04-sala-mahjong');
-  await tocar('#sheetTable [data-close]'); ok(!(await abierto('#sheetTable')), '«Volver» cierra la tarjeta');
 
   console.log('Fogonazo');
   await tocar('#hitBench'); await listo();
@@ -192,6 +191,35 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   ok(ruta() === 'fogonazo/instrumento.html' && await pantalla().evaluate(() => /RÉCORD\s+[\d.]+ · \d+:\d\d/.test(document.getElementById('screen').textContent)), 'el instrumento muestra el récord del zen');
   await atras(); await listo(); ok(ruta().startsWith('sala/'), 'del instrumento, «atrás» vuelve a la sala');
 
+  console.log('Mahjong');
+  const mj = async () => { await listo(); await pantalla().waitForFunction(() => window.__mahjong && document.querySelectorAll('.ficha').length > 0, null, { timeout: 8000 }); await espera(1000); };
+  const mjEstado = () => pantalla().evaluate(() => window.__mahjong.state());
+  await tocar('#hitTable'); await listo();
+  ok(ruta() === 'mahjong/estuche.html', 'la mesa ratona lleva al estuche');
+  ok(await tema() === 'Taller oriental', 'en el estuche suena Taller oriental');
+  ok(await pantalla().evaluate(() => document.querySelectorAll('.tarjeta').length) === 5, 'el estuche ofrece los cinco tableros'); await foto('22-mahjong-estuche');
+  await tocar('.tarjeta[data-id="pagoda"]'); await mj();
+  ok(ruta() === 'mahjong/partida.html' && (await mjEstado()).quedan === 88, 'la tarjeta de la pagoda abre su partida, con 88 fichas');
+  ok(await tema() === 'Siesta oriental', 'en la partida suena Siesta oriental');
+  ok(await pantalla().evaluate(() => document.fonts.check('700 20px "Mahjong JP"')), 'los ideogramas tienen su letra (Mahjong JP)');
+  const par = await pantalla().evaluate(() => window.__mahjong.parLibre());
+  await tocar(`.ficha[data-i="${par[0]}"]`); await tocar(`.ficha[data-i="${par[1]}"]`);
+  ok((await mjEstado()).quedan === 86, 'dos toques en un par libre lo juntan');
+  await tocar('#b-deshacer'); ok((await mjEstado()).quedan === 88, '«Deshacer» devuelve el par');
+  await tocar('#b-pista'); ok(await pantalla().evaluate(() => document.querySelectorAll('.ficha.pista').length === 2), '«Pista» marca un par libre'); await foto('23-mahjong-partida');
+  await atras(); ok(await abierto('#menu') && ruta() === 'mahjong/partida.html', 'en la partida, «atrás» abre la pausa'); await foto('24-mahjong-pausa');
+  await tocar('#menu [data-act="seguir"]'); ok(!(await abierto('#menu')), '«Seguir» cierra la pausa');
+  await pantalla().evaluate(() => window.__mahjong.limpiar()); await espera(2000);
+  ok(await abierto('#fin'), 'el tablero limpio muestra la tarjeta del final'); await foto('25-mahjong-fin');
+  await atras(); await listo(); ok(ruta() === 'mahjong/estuche.html', 'desde el final, «atrás» vuelve al estuche');
+  ok(await pantalla().evaluate(() => /\d:\d\d/.test(document.querySelector('.tarjeta[data-id="pagoda"] i').textContent)), 'la tarjeta de la pagoda anota su récord');
+  await tocar('.tarjeta[data-id="tortuga"]'); await mj(); await foto('26-mahjong-tortuga');
+  ok((await mjEstado()).quedan === 144, 'la tortuga tiene sus 144 fichas');
+  await tocar('#volver'); await listo(); ok(ruta() === 'mahjong/estuche.html', 'en la partida, «Volver» va al estuche sin pasar por la pausa');
+  await atras(); await listo(); ok(ruta().startsWith('sala/'), 'desde el estuche, «atrás» vuelve a la sala');
+  const enSala = await page.evaluate(() => history.state && history.state.i);
+  ok(enSala === 0, 'en la sala no quedan pasos del mahjong en el historial');
+
   console.log('Sonido');
   const volFog = await pantalla().evaluate(() => App.sonido.volumen('musica'));
   ok(Number.isInteger(volFog), 'los volúmenes vienen de la colección (música ' + volFog + ')');
@@ -203,6 +231,9 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   await ctx.setOffline(true);
   await page.reload(); await listo();
   ok(ruta().startsWith('sala/'), 'sin conexión, la app abre en la sala');
+  await tocar('#hitTable'); await listo(); await tocar('.tarjeta[data-id="mariposa"]'); await mj();
+  ok(ruta() === 'mahjong/partida.html' && await pantalla().evaluate(() => document.fonts.check('700 20px "Mahjong JP"')), 'sin conexión, el mahjong abre, con su letra');
+  await tocar('#volver'); await listo(); await atras(); await listo();
   await tocar('#hitBench'); await listo();
   ok(ruta() === 'fogonazo/instrumento.html', 'sin conexión, Fogonazo abre');
   await ctx.setOffline(false);

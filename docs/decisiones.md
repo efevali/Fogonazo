@@ -125,13 +125,13 @@ Por qué la colección es como es: cada decisión vigente con su fecha y su moti
 ## El mahjong
 
 - **Mahjong solitario** (24/10): se juntan pares de fichas libres. *Descartado:* el de cuatro jugadores (riichi), que pide rivales con inteligencia artificial y reglas largas.
-- **Por ahora, un prototipo, solo en modo zen** (24/10), con los criterios del zen de Fogonazo.
-- **La estética de Kasa, solo en tema claro** (24/10), hasta decidir si se acerca a la sala. La primera versión seguía el modo oscuro del teléfono y se veía demasiado oscura.
 - **Fichas dibujadas** (24/10). *Descartado:* los palos como texto (筒, 索).
-- **Tableros chicos para que las fichas se lean en vertical** (24/10): de 52 a 64 fichas. En horizontal entra la tortuga clásica de 144. *Descartados en vertical:* tableros de 76 a 86 fichas y la tortuga de 144.
 - **Las canciones de Fogonazo, como primas orientales** (24/10): que se note que son de la misma familia. *Descartada:* una primera versión que sonaba triste u oscura (acordes abiertos, un shakuhachi con mucho soplido, el doble de reverberación y la escala japonesa in).
-- **Puntaje: propuesta sin revisar** (24/10).
+- **Puntaje: propuesta sin revisar** (24/10): 10 por par, cadena hasta ×5 si el par siguiente llega antes de 5 segundos, 100 por tablero limpio.
 - **La mesa ratona vista de cerca** (29/10): el mahjong toma la estética de la sala, como Fogonazo es el banco visto de cerca. Las fichas de hueso con dorso verde del juego que está en la sala, el estuche de madera con paño rojo y el nogal de la mesa. Las fichas siguen dibujadas con código. *Descartada:* la estética de Kasa, que lo dejaba ajeno a la colección.
 - **El estuche, pantalla de entrada** (29/10): de la mesa ratona se entra al estuche abierto, donde se elige el tablero, como el osciloscopio en Fogonazo. *Descartados:* entrar directo a la partida y el estuche solo como pausa (S-19c).
 - **Solo zen, con tableros elegibles** (29/10), para la primera versión dentro de la app: cuatro tableros de 80 a 100 fichas pensados para horizontal y la tortuga clásica de 144, la más grande; más adelante, más tableros, deslizando de costado. Niveles o contrarreloj, más adelante si hacen falta. *Descartados:* los tableros de 52 a 64 fichas del prototipo, pensados para vertical.
 - **La partida de S-19** (29/10): el nogal visto desde arriba, el tanteador en lápiz y Deshacer, Pista y Barajar como palitos de puntaje de hueso. En la tortuga de 144, la ficha mide unos 5,8 × 7,8 mm en el teléfono; en los tableros de 88, unos 7,7 × 10,3 mm.
+- **El estuche, dibujado con código** (29/10): no hace falta pedirlo pintado; con tantos elementos, el estuche fino no desentona.
+- **Dentro de la app** (29/10, 0.7.0): Taller oriental en el estuche y Siesta oriental en la partida, fijas. *Descartados:* elegir la canción y escuchar las originales de Fogonazo, del prototipo. El récord de cada tablero es el menor tiempo para limpiarlo; el reloj arranca con el primer toque, como en el zen de Fogonazo. Las fichas bloqueadas, un poco más oscuras, como en el prototipo.
+- **Los ideogramas, en un subconjunto local de Noto Serif CJK JP** (29/10): solo los 27 de las fichas, 7 KB, para que ande sin conexión. *Descartado:* tomarlos de Google Fonts, como el prototipo.

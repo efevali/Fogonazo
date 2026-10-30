@@ -56,6 +56,5 @@ Sala ── banco de electrónica ──► Fogonazo
 ## Lo que sigue
 
 1. **Fogonazo, los niveles generados** del 31 en adelante.
-2. **El mahjong en horizontal**, con el mismo tratamiento, dentro de la app.
-3. **Los menús, y la sala como juego de buscar y encontrar.**
-4. **Los nombres** de la colección y de Fogonazo, el ícono definitivo y el nombre del repositorio.
+2. **Los menús, y la sala como juego de buscar y encontrar.**
+3. **Los nombres** de la colección y de Fogonazo, el ícono definitivo y el nombre del repositorio.
