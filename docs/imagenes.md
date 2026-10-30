@@ -28,6 +28,29 @@ Cómo se piden, se revisan y se montan las imágenes de la colección. Las regla
 - **Se revisa antes de aprobar:** que respete la composición, el orden y los colores pedidos; la lógica de los objetos; que lo importante quede en la franja central; y, en las piezas, que el fondo sea parejo y el recorte salga limpio.
 - **Lo aprobado se guarda en la carpeta `arte/` de su parte**, y se cuenta en su README. Lo que reemplaza a otra imagen la reemplaza en el repositorio: la anterior queda en el historial de Git.
 
+## Pedidos en curso
+
+### P-006 · El fondo de la partida del mahjong
+
+Imágenes, en este orden: [la referencia](mahjong/bocetos/P-006-referencia-mesa.png) (la mesa ratona de la sala) y [la composición](mahjong/bocetos/P-006-composicion.png). Texto:
+
+> Necesito una ilustración para el fondo de un juego de mahjong solitario para celular, en horizontal. Es la tapa de una mesa ratona de nogal de los años 70 vista exactamente desde arriba. Las fichas del mahjong las dibuja el juego encima, así que el centro de la mesa tiene que quedar vacío.
+>
+> Te mando dos imágenes:
+> 1. Referencia de estilo: la mesa ratona del juego, con su juego de mahjong, la tetera y los dados. La imagen nueva tiene que ser del mismo mundo: el mismo estilo de ilustración pintada, la misma madera de nogal, la misma luz cálida de atardecer y los mismos objetos.
+> 2. Boceto de composición: dónde va cada cosa y de qué tamaño. Respetá las posiciones y las proporciones. El boceto es plano y esquemático; la terminación tiene que ser la de la referencia.
+>
+> Lo que tiene que tener:
+> - Formato horizontal 16:9. El teléfono recorta un poco arriba y abajo: todo lo importante, dentro de la franja central, como en el boceto.
+> - Vista cenital estricta, desde arriba y sin perspectiva. La madera ocupa toda la imagen: sin bordes de la mesa, sin piso, sin alfombra.
+> - Nogal lustrado, con la veta horizontal y suave, sin nudos ni manchas fuertes. Luz cálida de lámpara que entra desde arriba a la izquierda, con un brillo suave en esa zona, y los bordes de la imagen un poco más oscuros.
+> - Arriba a la izquierda, un anotador de papel color crema, un poco torcido, con un lomo rojo arriba y renglones finos. En blanco: sin nada escrito.
+> - Debajo del anotador, tres palitos de puntaje de mahjong, de hueso, horizontales, uno debajo del otro. Cada uno con un puntito de color cerca de cada punta (rojo en el primero y en el tercero, verde en el del medio) y el centro liso, sin marcas.
+> - Abajo a la izquierda, dos dados de hueso chicos, como los de la referencia.
+> - A la derecha, a media altura, la tetera marrón de cerámica de la referencia, vista desde arriba: la tapa con su perilla y el pico apuntando hacia arriba. Cortada por el borde derecho de la imagen.
+> - Todo lo demás, solo madera: nada en el centro, ni en la esquina de arriba a la derecha ni en la de abajo a la derecha.
+> - Sin texto ni letras, sin fichas de mahjong, sin personas ni manos, sin marcos.
+
 ## Pedidos cerrados
 
 | Pedido | Qué | Con qué IA | Vigente |
