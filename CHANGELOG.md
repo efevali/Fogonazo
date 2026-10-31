@@ -2,6 +2,10 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.9.1 — 31/10/2026
+
+- Fogonazo: **el bonus final se cuenta mientras pasa.** Al completar el pedido, los puntos y la aguja del vúmetro ya no saltan al total con el primer rayo para quedarse quietos después: suben con cada rayo, cada especial y cada combo que explota. Los movimientos (o el reloj) bajan como antes.
+
 ## 0.9.0 — 31/10/2026
 
 Fogonazo no se termina en el 30: del 31 en adelante, los niveles se generan sin fin.

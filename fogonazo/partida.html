@@ -774,7 +774,9 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     if (ZEN) og.insertAdjacentHTML('beforeend', `<text x="742" y="176" font-family="Caveat" font-weight="600" font-size="20" fill="#c8402c" transform="rotate(-3 742 176)">optativo · +${def.order.bonus}</text>`);
   }
   let movesShown = 0;
+  let shown = null;   // the last score the animation has reached: the engine adds up a whole move at once, the board shows it as it happens
   function hud(snap) {
+    if (snap) shown = snap;
     const score = snap ? snap.score : g.score, have = snap ? snap.have : g.goals.map(o => o.have);
     if (ZEN) showClock(elapsed);
     else if (g.mode === 'time') showClock(Math.ceil(timeLeft));
@@ -790,11 +792,11 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
       if (ZEN && el.ic) el.ic.setAttribute('href', `piezas/pieza${o.color}.png`);
     });
   }
-  function onSnap(sn) { if (sn && !ended) hud(sn); }
+  function onSnap(sn) { if (sn) hud(sn); }   // also in the final bonus: each lightning and each combo adds up as it goes off
   function bonusTick() {
     if (g.mode === 'moves') movesShown = Math.max(0, movesShown - 1);
     else timeLeft = Math.max(0, timeLeft - 5);
-    hud();
+    hud(shown);   // only the moves (or the clock) go down: the score waits for the explosions
   }
 
   // ============================================================ the notebook note (S-08c)
@@ -871,7 +873,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     }
     playing = true; busy = false; paused = false; ended = false; started = false;
     timeLeft = def.time || 0; timeUp = false; idle = def.tip === 'swap' ? 4000 : 0; warned = 99;
-    movesShown = g.moves;
+    movesShown = g.moves; shown = null;
     resetView();
     // the scoreboard of each kind of match: moves, time (the label engraved as «TIEMPO») or zen
     $('bg').src = ZEN ? 'fondo-zen.webp' : g.mode === 'time' ? 'fondo-tiempo.webp' : 'fondo.webp';
