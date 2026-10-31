@@ -10,7 +10,7 @@ Una colección de minijuegos para el celular, en horizontal, que se instala desd
 ## Estado
 
 - **Publicada** en https://efevali.github.io/fogonazo/, que se abre en Chrome y se instala desde los ajustes de la sala (el equipo de audio) o desde el menú ⋮ → «Instalar app». Funciona sin conexión. La 0.1.0 reemplazó a Fogonazo como juego único (0.6.1); qué trae cada versión está en el [registro de cambios](CHANGELOG.md).
-- **Qué tiene:** la sala con sus objetos activos; Fogonazo jugable (instrumento, mapa, los 30 niveles hechos a mano con sus especiales y obstáculos, y el zen); el mahjong en la mesa ratona (el estuche y seis tableros, en zen), cada juego con su música y sus efectos; los ajustes comunes (sonido, versión e instalación). Nombre e ícono son provisorios.
+- **Qué tiene:** la sala con sus objetos activos; Fogonazo jugable (instrumento, mapa, los 30 niveles hechos a mano y los generados sin fin, con sus especiales y obstáculos, y el zen); el mahjong en la mesa ratona (el estuche y seis tableros, en zen), cada juego con su música y sus efectos; los ajustes comunes (sonido, versión e instalación). Nombre e ícono son provisorios.
 - **Lo que sigue**, en [la colección](docs/coleccion.md#lo-que-sigue).
 
 ## Dónde está cada cosa
@@ -36,7 +36,7 @@ La app no se arma: lo que está en el repositorio es lo que publica GitHub Pages
 | `sala/` | La sala: la página, la imagen, la copia aclarada para el brillo y las máscaras de los objetos activos. |
 | `fogonazo/` | Fogonazo: la pantalla-instrumento, el mapa, la partida, el avance (`estado.js`), las escenas, los fondos de la partida y las piezas recortadas. |
 | `mahjong/` | El mahjong: el estuche, la partida, las fichas (`fichas.js`), los tableros (`tableros.js`), el avance (`estado.js`) y el fondo. |
-| `codigo/` | El motor de Fogonazo (`engine.js`), los 30 niveles (`levels.js`) y su calibración (`calibrated.json`), que usa la partida. Corren igual en el navegador y en Node. |
+| `codigo/` | El motor de Fogonazo (`engine.js`), los niveles (`levels.js`: los 30 hechos a mano y el generador del 31 en adelante) y la calibración de los hechos a mano (`calibrated.json`), que usa la partida. Corren igual en el navegador y en Node. |
 | `manifest.webmanifest`, `sw.js`, `iconos/` | La ficha de instalación (Minijuegos, en horizontal, a pantalla completa), el *service worker* que guarda la app en el teléfono para que ande sin conexión, y los íconos provisorios. |
 | `docs/` | La documentación, los bocetos y el arte vigente. Lo que está en `docs/` también se publica, pero no forma parte de la app. |
 | `herramientas/` | Pruebas, capturas, versión, íconos, calibración y los dibujos con código de los bocetos (ver abajo). |

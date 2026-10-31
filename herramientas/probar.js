@@ -1,9 +1,9 @@
-// Prueba del motor: juega 180 partidas con el bot (6 por nivel) y verifica después de cada jugada que el
+// Prueba del motor: juega 180 partidas con el bot (6 por nivel hecho a mano) y 120 en los generados del 31 al 90 (2 por nivel) y verifica después de cada jugada que el
 // tablero quede consistente: sin piezas en huecos, sin ids repetidos, la placa quieta y los únicos lugares
 // vacíos, los tapados por quemados o cinta.
 // node herramientas/probar.js
 const E = require('../codigo/engine.js');
-const { LEVELS, ZEN } = require('../codigo/levels.js');
+const { LEVELS, ZEN, generated, levelAt } = require('../codigo/levels.js');
 
 let emptySeen = 0;
 function checkBoard(g, where) {
@@ -21,10 +21,18 @@ function checkBoard(g, where) {
 
 const skill = { best: 0.65, second: 0.2 };
 let t0 = Date.now(), games = 0, moves = 0, shuffles = 0;
-for (let li = 0; li < LEVELS.length; li++) {
-  const L = Object.assign({}, LEVELS[li]);
+// los generados, con la calibración de la fórmula: que la meta sea razonable
+for (let n = LEVELS.length + 1; n <= 1000; n++) {
+  const d = levelAt(n);
+  if (d.time ? d.time < 30 || d.time > 180 : d.moves < 10 || d.moves > 60) throw new Error(`N${n}: ${d.time || d.moves} fuera de rango`);
+  if (!(d.stars[1] > 0 && d.stars[2] > d.stars[1])) throw new Error(`N${n}: estrellas ${d.stars}`);
+  if (generated(n).layout && generated(n).layout.join('') !== levelAt(n).layout.join('')) throw new Error(`N${n}: no es siempre el mismo`);
+}
+const TODOS = [...LEVELS, ...Array.from({ length: 60 }, (_, i) => generated(LEVELS.length + 1 + i))];
+for (let li = 0; li < TODOS.length; li++) {
+  const L = Object.assign({}, TODOS[li]);
   if (!L.time) L.moves = 60;
-  for (let s = 1; s <= 6; s++) {
+  for (let s = 1; s <= (li < LEVELS.length ? 6 : 2); s++) {
     const g = E.createGame(L, s * 7919 + li);
     checkBoard(g, 'init L' + (li + 1));
     const rnd = E.rngFrom(s * 31 + 5);

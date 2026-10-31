@@ -66,7 +66,7 @@ svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
   $('totalTxt').textContent = `${M.total()} · ${M.MODES[M.modo]}`;
 
   // ---------- the signal ----------
-  const cur = M.next(), last = Math.min(cur + 8, M.ULTIMO), step = 74, x0 = 96, ax = 44, ay = 206;
+  const cur = M.next(), last = cur + 8, step = 74, x0 = 96, ax = 44, ay = 206;
   const xOf = n => x0 + (n - 1) * step;
   const y = x => ay - (62 + 14 * Math.sin((x - ax) / 900 * Math.PI * 2)) * Math.cos((x - x0) / (2 * step) * Math.PI * 2) - 4 * Math.sin((x - ax) / 19 * Math.PI * 2);
   const width = xOf(last) + 200, curX = xOf(cur);

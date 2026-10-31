@@ -160,7 +160,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   const E = window.Engine, Est = window.Estado;
   const Q = new URLSearchParams(location.search);
   const ZEN = Q.get('zen') === '1';
-  const N = ZEN ? 0 : Math.min(Est.ULTIMO, Math.max(1, parseInt(Q.get('nivel'), 10) || Est.next()));
+  const N = ZEN ? 0 : Math.max(1, parseInt(Q.get('nivel'), 10) || Est.next());
   const SEED = parseInt(Q.get('semilla'), 10) || 0;   // for the captures: the same board every time
   const { W, H, K, X, Y } = E, NC = E.N;
   const C = 45, PS = 43, MG = 12;                     // cell, piece and canvas margin, in design units
@@ -849,16 +849,9 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   let timeLeft = 0, timeUp = false, idle = 0, warned = 99, elapsed = 0, savedAt = 0, recShown = false;
   let CAL = {};
   function levelDef(n) {
-    const base = window.LEVELS[n - 1], cal = CAL[n] || {}, M = window.MODES[Est.modo];
-    const d = Object.assign({}, base);
-    d.goals = base.goals.map(o => Object.assign({}, o));
-    if (cal.moves) d.moves = cal.moves;
-    if (cal.time) d.time = cal.time;
-    if (base.tune === 'score') d.goals[0].n = cal.scoreTarget || 1000;
-    d.stars = (cal.stars || [0, 1000, 2000]).slice();
-    if (d.time) d.moves = 0;
-    window.applyMode(d, M);
-    d.n = n;
+    // the made-by-hand ones with their calibration; from 31 on, generated from their number (codigo/levels.js)
+    const d = window.levelAt(n, CAL);
+    window.applyMode(d, window.MODES[Est.modo]);
     return d;
   }
   function zenDef() {
@@ -990,9 +983,8 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     const title = `Nivel ${N} · ${NOMBRE_MODO}`, extra = g.score - before;
     const lines = g.won && bonusLabel && extra > 0 ? [['Jugada', before], [bonusLabel, '+' + fmt(extra)], ['Total', g.score]] : [['Puntos', g.score]];
     if (g.won) {
-      const last = N >= Est.ULTIMO;
-      showTag({ title, stars, stamp: 'APROBADA', lines, say: last ? 'Terminaste los 30 niveles. Pronto vienen más.' : '',
-        keys: last ? [['OTRA VEZ ▶', 'restart', true], ['◀ MAPA', 'map']] : [['SIGUIENTE ▶', 'next', true], ['OTRA VEZ', 'restart'], ['◀ MAPA', 'map']] });
+      showTag({ title, stars, stamp: 'APROBADA', lines, say: '',
+        keys: [['SIGUIENTE ▶', 'next', true], ['OTRA VEZ', 'restart'], ['◀ MAPA', 'map']] });
     } else {
       showTag({ title, stars: 0, stamp: 'RECHAZADA', blue: true, say: faltan(), lines, keys: [['OTRA VEZ ▶', 'restart', true], ['◀ MAPA', 'map']] });
     }

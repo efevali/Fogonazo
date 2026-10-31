@@ -4,7 +4,7 @@ window.Estado = (() => {
   'use strict';
   const KEY = 'coleccion.fogonazo';
   const MODES = ['Fácil', 'Normal', 'Difícil'];   // the same order as the engine's modes (codigo/levels.js)
-  const ULTIMO = 30;                                // the levels made by hand; from 31 on they will be generated
+  const ULTIMO = 30;                                // the last level made by hand; from 31 on they are generated, without end
   const blank = () => ({ modo: 1, vista: 0, niveles: [{}, {}, {}], puntos: [{}, {}, {}], zen: { puntos: 0, tiempo: 0 } });
   let st = blank();
   try {
@@ -25,8 +25,8 @@ window.Estado = (() => {
     stars: (n, modo = st.modo) => st.niveles[modo][n] || 0,
     total: (modo = st.modo) => Object.values(st.niveles[modo]).reduce((a, b) => a + b, 0),
     maxLevel: (modo = st.modo) => { let n = 0; for (const k in st.niveles[modo]) if (st.niveles[modo][k] > 0) n = Math.max(n, +k); return n; },
-    next: () => Math.min(ULTIMO, maxPassed() + 1),
-    open: n => n >= 1 && n <= ULTIMO && n <= maxPassed() + 1,
+    next: () => maxPassed() + 1,
+    open: n => n >= 1 && n <= maxPassed() + 1,
     best,
     puntos: (n, modo = st.modo) => st.puntos[modo][n] || 0,
     // stars and score of a finished level in the current mode; returns the best score it had before

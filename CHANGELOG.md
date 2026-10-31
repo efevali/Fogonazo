@@ -2,6 +2,16 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.9.0 — 31/10/2026
+
+Fogonazo no se termina en el 30: del 31 en adelante, los niveles se generan sin fin.
+
+- **Cada nivel sale de su número**, así que es siempre el mismo para cualquiera y reintentarlo es jugar el mismo nivel. Combinan lo que ya existe: piezas, pads, quemados, cinta, válvulas y puntaje, sin novedades ni nota de cuaderno.
+- **En bloques de cinco**, como los hechos a mano: arrancan amables y cierran con uno exigente, de dos o tres pedidos; el cuarto es contrarreloj, y uno de cada dos bloques es un respiro.
+- **El mapa sigue sin fin** (S-24), sin marca en el paso del 30 al 31, y abre siempre en el nivel siguiente.
+- Los movimientos, el tiempo y las estrellas salen de una fórmula ajustada con el bot, no calibrados uno por uno: algunos niveles salen más fáciles o más difíciles de lo esperado.
+- Al ganar el 30, la etiqueta ya no dice que se terminaron los niveles: ofrece el siguiente.
+
 ## 0.8.1 — 29/10/2026
 
 - **Ícono nuevo:** la ventana con lluvia, ahora con la lámpara de arco encendida en el medio (P-007). En el teléfono, Chrome cambia el ícono de la app instalada cuando le toca, y eso puede tardar unos días.

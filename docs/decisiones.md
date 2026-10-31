@@ -87,6 +87,8 @@ Por qué la colección es como es: cada decisión vigente con su fecha y su moti
 
 - **Un camino continuo, sin títulos** (26/10), como en Candy Crush, para poder sumar niveles sin ampliar una estructura de capítulos. Híbrido: los 30 actuales a mano y, del 31 en adelante, generados por número de nivel, sin fin. Producto: 30 es el mínimo. *Descartados:* seguir con capítulos y nombres de circuitos, y solo niveles a mano.
 - **Sin nombres ni textos por nivel; contrarreloj uno de cada cinco** (26/10), también en los generados.
+- **Los generados, con una fórmula y no calibrados uno por uno** (31/10). Producto prefiere gastar poco cálculo y que algunos niveles salgan más fáciles o más difíciles de lo buscado. La fórmula supone que los pedidos combinados avanzan a la vez, salvo las válvulas con quemados, que esperan sobre ellos. *Descartado:* calibrar con el bot del 31 al 330, una hora y pico de cálculo, y la fórmula después.
+- **Respiro cada diez niveles** (31/10): uno de cada dos bloques de cinco, porque en una sesión de 5 a 10 niveles un respiro cada veinte no se notaría. *Descartado:* cada cuatro bloques.
 - **El mapa no marca dónde empiezan los generados** (31/10, S-24): la señal sigue igual del 30 al 31, y el mapa abre siempre en el nivel actual. *Descartados:* una hoja nueva pegada con cinta cada 30 niveles, que se leería como un capítulo y delataría dónde terminan los hechos a mano, y por ahora un salto al principio: si hace falta, se suma como botón.
 - **Novedades con una nota de cuaderno** (26/10). *Descartados:* el nivel 1 como tutorial guiado (#16) y descubrir la antena sin aviso.
 - **Las formas de jugar se ordenan en la pantalla-instrumento** (26/10). Resuelve el #20: antes, niveles, zen y ajustes estaban mezclados en el mapa.
