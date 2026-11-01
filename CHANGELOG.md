@@ -2,6 +2,10 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.10.2 — 31/10/2026
+
+- Fogonazo: **el marcador ya no se adelanta en las jugadas con combos largos.** Al mover, los puntos y la aguja saltaban al resultado de toda la jugada y después bajaban para volver a subir con cada combo (se notaba sobre todo con una batería y una antena). Ahora arrancan de lo que había y suben con cada combo.
+
 ## 0.10.1 — 31/10/2026
 
 - Fogonazo: **el mapa de niveles desliza con inercia.** Al soltar el papel con impulso, sigue y frena de a poco, como cualquier lista del teléfono, en vez de clavarse donde se levanta el dedo. Un toque mientras desliza lo frena sin abrir un nivel.

@@ -913,11 +913,12 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   function nudge(i) { const p = g.p[i]; const pv = p && pieces.get(p.id); if (pv) { pv.nudge = performance.now(); pv.flash = performance.now(); } }
   async function move(a, b) {
     if (!canInput()) return;
+    const pre = { score: g.score, have: g.goals.map(o => o.have) };   // the engine adds up the whole move at once
     const r = E.trySwap(g, a, b);
     if (r.blocked) { nudge(E.swappable(g.p[a]) ? b : a); fx('bad'); return; }
     if (!r.steps.length) return;
     busy = true; touch(); sel = -1;
-    if (r.valid && g.mode === 'moves') { movesShown = g.moves; hud(); }
+    if (r.valid && g.mode === 'moves') { movesShown = g.moves; hud(pre); }   // only the moves go down: the score follows the combos
     await play(r.steps);
     if (!r.valid) { busy = false; return; }
     hud();
