@@ -3,15 +3,9 @@
 // node herramientas/medir.js 16,17,18 [partidas]
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const E = require('../codigo/engine.js');
-const { LEVELS, resumen } = require('../codigo/levels.js');
+const { LEVELS, resumen, levelAt } = require('../codigo/levels.js');
 const CAL = require('../codigo/calibrated.json');
-function def(id) {
-  const b = LEVELS[id - 1], c = CAL[id]; const d = Object.assign({}, b);
-  d.goals = b.goals.map(o => Object.assign({}, o));
-  if (c.moves) d.moves = c.moves; if (c.time) d.time = c.time;
-  if (b.tune === 'score') d.goals[0].n = c.scoreTarget;
-  return d;
-}
+const def = id => levelAt(id, CAL);   // Difícil, como se juega
 function play(L, seed) {
   const g = E.createGame(L, seed); const rnd = E.rngFrom(seed * 2654435761 >>> 0); let time = 0;
   while (!g.over) {

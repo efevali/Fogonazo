@@ -1,26 +1,16 @@
 /* Mide los modos de dificultad con el bot de calibración (62 % mejor jugada): para cada nivel y cada modo,
-   cuántas partidas gana, cuántas llegan a dos estrellas y cuántas a tres. Sirve para ajustar los factores de
-   MODES en codigo/levels.js; la calibración de base (Difícil) sigue saliendo de calibrar.js.
+   cuántas partidas gana, cuántas llegan a dos estrellas y cuántas a tres, con las estrellas de S-28 (calibrar.js).
+   Con semillas distintas de las de la calibración, así sirve de control.
    node herramientas/modos.js [partidas] [niveles]    Ejemplo: node herramientas/modos.js 150 1,2,3 */
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const E = require('../codigo/engine.js');
-const { LEVELS, MODES, applyMode, resumen } = require('../codigo/levels.js');
+const { LEVELS, MODES, applyMode, estrellasDe, levelAt, resumen } = require('../codigo/levels.js');
 const CAL = require('../codigo/calibrated.json');
 
-function def(id, M) {   // cómo se arma un nivel en un modo de dificultad, con los valores calibrados
-  const b = LEVELS[id - 1], c = CAL[id] || {};
-  const d = Object.assign({}, b);
-  d.goals = b.goals.map(o => Object.assign({}, o));
-  if (c.moves) d.moves = c.moves;
-  if (c.time) d.time = c.time;
-  if (b.tune === 'score') d.goals[0].n = c.scoreTarget || 1000;
-  d.stars = c.stars || [0, 1000, 2000];
-  if (d.time) d.moves = 0;
-  return applyMode(d, M);
-}
-function play(L, seed) {   // devuelve las estrellas (0 a 3), como Game.finish
+const def = (id, M) => applyMode(levelAt(id, CAL), M);   // el nivel como se juega en un modo
+function play(L, seed) {   // devuelve las estrellas (0 a 3), como la partida
   const g = E.createGame(L, seed), rnd = E.rngFrom(seed * 2654435761 >>> 0);
-  let time = 0;
+  let time = 0, usadas = null, segundos = null;
   while (!g.over) {
     const m = E.botChoose(g, rnd, { best: 0.62, second: 0.2 });
     if (!m) break;
@@ -28,11 +18,10 @@ function play(L, seed) {   // devuelve las estrellas (0 a 3), como Game.finish
     time += 1.7 + rnd() * 1.4;
     for (const s of r.steps) time += E.stepDuration(s) / 1000;
     if (g.mode === 'time') { g.timeLeft = L.time - time; E.evaluateEnd(g, time >= L.time); } else E.evaluateEnd(g);
+    if (g.won && usadas === null) { usadas = g.movesUsed; segundos = time; }
   }
-  let won = g.won;
-  if (won) E.bonus(g);
-  if (!won) return 0;
-  return g.score >= L.stars[2] ? 3 : g.score >= L.stars[1] ? 2 : 1;
+  if (g.won) E.bonus(g);
+  return estrellasDe(L, { won: g.won, usadas, segundos, puntos: g.score });
 }
 
 if (isMainThread) {

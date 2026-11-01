@@ -86,12 +86,15 @@ const GEN = {
   // movimientos para una tasa t = mediana × razon(t), interpolado
   razon: [[0.3, 0.85], [0.4, 0.93], [0.5, 1], [0.6, 1.07], [0.7, 1.19], [0.8, 1.28], [0.9, 1.44]],
   segundosPorJugada: 3.5,
-  // puntos: por jugada (meta de los niveles de puntaje) y estrellas como múltiplos de la mediana de los ganadores
+  // puntos: por jugada, para la primera meta de los niveles de puntos (la que se gana con la tasa buscada)
   puntosPorJugada: { 5: 630, 6: 420, 7: 270 }, razonPuntos: [[0.3, 1.23], [0.5, 1], [0.7, 0.84], [0.9, 0.67]],
-  // estrellas de los niveles con pedido: la segunda, la mediana de los puntos de quien gana; la tercera, × 1,35
-  estrellaPorJugada: { 5: 1100, 6: 550, 7: 280 }, estrellaPorValvula: 0, terceraEstrella: 1.35,
-  // estrellas de los de puntaje, como múltiplos de la meta: la mediana de los puntos de quien gana y el 86 %
-  estrellasPuntaje: [1.43, 1.67],
+  // estrellas (S-28), en cada modo. De pedido: la cantidad máxima de movidas (o de segundos) para dos y tres estrellas,
+  // como fracción del límite del modo, según la tasa buscada (a + b × tasa). De puntos: la segunda y la tercera meta,
+  // como múltiplos de la primera. Ajustado con herramientas/generados.js (medir y estrellas).
+  umbrales: { facil: [[1.013, -0.401], [0.882, -0.526]], normal: [[1.016, -0.391], [0.894, -0.51]], dificil: [[1.068, -0.467], [0.977, -0.647]] },
+  metas: { facil: [1.7, 2.27], normal: [1.61, 2.13], dificil: [1.5, 2] },
+  // el fondo de escala del vúmetro en los de pedido: puntos por jugada del límite, según los colores
+  escalaPorJugada: { 5: 1360, 6: 670, 7: 350 },
 };
 const r01 = seed => () => { seed = (seed + 0x6D2B79F5) >>> 0; let t = seed; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 const interp = (tab, x) => { if (x <= tab[0][0]) return tab[0][1]; for (let i = 1; i < tab.length; i++) if (x <= tab[i][0]) { const [a, b] = tab[i - 1], [c, d] = tab[i]; return b + (d - b) * (x - a) / (c - a); } return tab[tab.length - 1][1]; };
@@ -224,23 +227,40 @@ function medianMoves(L, G = GEN, f = features(L)) {
 }
 const r100 = v => { const st = v > 20000 ? 500 : 100; return Math.max(st, Math.round(v / st) * st); };
 
-// La calibración de un generado, en el formato de calibrated.json, sin jugar nada.
+// La calibración de un generado, en el formato de calibrated.json, sin jugar nada: el límite de Difícil (movimientos,
+// tiempo o primera meta) y, para cada modo, las estrellas y el fondo de escala del vúmetro.
 function calOf(L) {
-  const out = { tune: L.tune, target: L.target };
+  const out = { tune: L.tune, target: L.target, modos: {} };
   if (L.tune === 'score') {
     const jug = L.time ? L.time / GEN.segundosPorJugada : L.moves;
     const meta = r100(GEN.puntosPorJugada[L.colors] * jug * interp(GEN.razonPuntos, L.target));
     out.scoreTarget = meta;
-    const s2 = Math.max(meta + 100, r100(meta * GEN.estrellasPuntaje[0]));
-    out.stars = [meta, s2, Math.max(s2 + 100, r100(meta * GEN.estrellasPuntaje[1]))];
     if (L.time) out.time = L.time; else out.moves = L.moves;
+    for (const M of MODES) {
+      const m1 = r100(meta * M.meta), k = GEN.metas[M.id];
+      const s2 = Math.max(m1 + 100, r100(m1 * k[0]));
+      out.modos[M.id] = { estrellas: [m1, s2, Math.max(s2 + 100, r100(m1 * k[1]))] };
+    }
     return out;
   }
   const mov = Math.max(10, Math.round(medianMoves(L) * interp(GEN.razon, L.target)));
   if (L.tune === 'time') out.time = Math.max(30, 5 * Math.round(mov * GEN.segundosPorJugada / 5)); else out.moves = mov;
-  const s2 = r100(GEN.estrellaPorJugada[L.colors] * mov + GEN.estrellaPorValvula * (L.tubes ? L.tubes.n : 0));
-  out.stars = [0, s2, Math.max(s2 + 100, r100(s2 * GEN.terceraEstrella))];
+  for (const M of MODES) {
+    const lim = L.tune === 'time' ? Math.round(out.time * M.moves) : Math.round(mov * M.moves);
+    const [u2, u3] = GEN.umbrales[M.id].map(([a, b]) => a + b * L.target);
+    const est = umbralesDe(lim, lim * u2, lim * u3, L.tune === 'time' ? 5 : 1);
+    const jug = L.tune === 'time' ? lim / GEN.segundosPorJugada : lim;
+    out.modos[M.id] = { estrellas: est, escala: r100(GEN.escalaPorJugada[L.colors] * jug) };
+  }
   return out;
+}
+// Las estrellas de un nivel de pedido: [límite, máximo para dos, máximo para tres], de a `paso` (1 movida o 5 segundos),
+// siempre en orden y con lugar entre una y otra.
+function umbralesDe(lim, u2, u3, paso) {
+  const r = v => paso * Math.round(v / paso);
+  const t2 = Math.min(lim - paso, Math.max(2 * paso, r(u2)));
+  const t3 = Math.min(t2 - paso, Math.max(paso, r(u3)));
+  return [lim, t2, t3];
 }
 
 // Un nivel cualquiera, con su calibración (la del archivo para los hechos a mano, la fórmula para los generados),
@@ -253,9 +273,10 @@ function levelAt(n, CAL) {
   if (cal.moves) d.moves = cal.moves;
   if (cal.time) { d.time = cal.time; d.moves = 0; }
   if (base.tune === 'score') d.goals[0].n = cal.scoreTarget || 1000;
-  d.stars = (cal.stars || [0, 1000, 2000]).slice();
+  d.starsBy = base.tune === 'score' ? 'score' : d.time ? 'time' : 'moves';
+  d.cal = cal;
   d.n = n;
-  return d;
+  return applyMode(d, MODES[MODES.length - 1]);   // Difícil, hasta que se le aplique otro modo
 }
 
 // Para las herramientas: qué pide un nivel, en pocas palabras (antes lo decía su nombre)
@@ -272,26 +293,52 @@ const ZEN = { name: 'Libre', colors: 6, zen: true, goals: [{ type: 'collect', co
   order: { bonus: 500, min: 12, max: 20, step: 2 } };
 
 /* Modos de dificultad (la perilla «Dificultad» de la pantalla-instrumento). La estrella vale lo mismo en cualquier modo; cada modo guarda sus propios
-   récords. Difícil es la calibración de calibrated.json tal cual; los otros dos multiplican los movimientos
-   (o el tiempo) y los umbrales de estrellas. Se miden con herramientas/modos.js. */
+   récords. Difícil es la calibración de calibrated.json tal cual; los otros dos multiplican los movimientos (o el tiempo)
+   y, en los niveles de puntos, la primera meta (meta), y dan más ayuda de piezas del pedido (ayuda: la fracción mínima de
+   piezas nuevas que sale de los colores que faltan; en Difícil, la de siempre). Las estrellas de cada modo se calibran por
+   separado (calibrated.json, `modos`), para que de quienes ganan con el bot lleguen a dos estrellas o más y a tres las
+   fracciones de `reparto`; se miden con herramientas/modos.js. */
 const MODES = [
-  { id: 'facil', name: 'Fácil', moves: 1.3, stars: 0.8 },
-  { id: 'normal', name: 'Normal', moves: 1.12, stars: 0.9 },
-  { id: 'dificil', name: 'Difícil', moves: 1, stars: 1 },
+  { id: 'facil', name: 'Fácil', moves: 1.3, meta: 0.8, ayuda: 0.16, reparto: [0.8, 0.4] },
+  { id: 'normal', name: 'Normal', moves: 1.12, meta: 0.9, ayuda: 0.1, reparto: [0.65, 0.25] },
+  { id: 'dificil', name: 'Difícil', moves: 1, meta: 1, ayuda: 0, reparto: [0.5, 0.15] },
 ];
 const modeOf = id => MODES.find(m => m.id === id) || MODES[1];
-// Aplica un modo a la definición calibrada de un nivel (d.moves o d.time, d.stars y, si se juega por puntaje, la meta).
+// Aplica un modo a un nivel de levelAt (que trae su calibración en d.cal): los movimientos o el tiempo, la ayuda, las
+// estrellas (d.stars: en pedido [límite, máximo para dos, máximo para tres], en movidas o segundos según d.starsBy; en
+// puntos, las tres metas) y el fondo de escala del vúmetro (d.escala, solo en pedido). Siempre parte de los valores de Difícil.
 function applyMode(d, M) {
-  const r50 = v => { const st = v > 20000 ? 500 : 100; return Math.max(st, Math.round(v / st) * st); };
-  if (M.moves !== 1) { if (d.time) d.time = Math.round(d.time * M.moves); else d.moves = Math.round(d.moves * M.moves); }
-  if (M.stars !== 1) {
-    d.stars = d.stars.map((v, k) => k ? r50(v * M.stars) : v);
-    if (d.tune === 'score') { d.goals[0].n = r50(d.goals[0].n * M.stars); d.stars[0] = d.goals[0].n; }
+  const cal = d.cal || {};
+  const lim0 = cal.time || cal.moves || d.time || d.moves;
+  if (d.time) d.time = Math.round(lim0 * M.moves); else d.moves = Math.round(lim0 * M.moves);
+  d.ayuda = M.ayuda;
+  const c = cal.modos && cal.modos[M.id];
+  if (d.starsBy === 'score') {
+    const m1 = r100((cal.scoreTarget || d.goals[0].n) * M.meta);
+    d.stars = c ? c.estrellas.slice() : [m1, m1 * 1.5, m1 * 1.8];
+    d.goals[0].n = d.stars[0];
+    d.escala = 0;
+  } else {
+    const lim = d.time || d.moves;
+    d.stars = c ? c.estrellas.slice() : umbralesDe(lim, lim * 0.6, lim * 0.45, d.time ? 5 : 1);
+    d.stars[0] = lim;
+    d.escala = c && c.escala || 1000 * lim;
   }
   d.mode = M.id;
   return d;
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { LEVELS, ZEN, MODES, modeOf, applyMode, resumen, GEN, generated, features, medianMoves, calOf, levelAt, targetOf };
-else { root.LEVELS = LEVELS; root.ZEN = ZEN; root.MODES = MODES; root.modeOf = modeOf; root.applyMode = applyMode; root.resumen = resumen; root.levelAt = levelAt; root.generated = generated; }
+// Las estrellas de una partida terminada (S-28). r: { won, usadas (movidas al completar el pedido), segundos (tiempo
+// jugado al completarlo, en contrarreloj), puntos (los del final, con el bonus) }. En pedido salen de en cuántas movidas
+// (o en cuánto tiempo) se completó y el bonus no cuenta; en puntos, de las metas, con el bonus incluido.
+function estrellasDe(d, r) {
+  if (!r.won) return 0;
+  const s = d.stars;
+  if (d.starsBy === 'score') return r.puntos >= s[2] ? 3 : r.puntos >= s[1] ? 2 : 1;
+  const u = d.starsBy === 'time' ? r.segundos : r.usadas;
+  return u <= s[2] ? 3 : u <= s[1] ? 2 : 1;
+}
+
+if (typeof module !== 'undefined' && module.exports) module.exports = { LEVELS, ZEN, MODES, modeOf, applyMode, estrellasDe, umbralesDe, resumen, GEN, generated, features, medianMoves, calOf, levelAt, targetOf };
+else { root.LEVELS = LEVELS; root.ZEN = ZEN; root.MODES = MODES; root.modeOf = modeOf; root.applyMode = applyMode; root.resumen = resumen; root.levelAt = levelAt; root.generated = generated; root.estrellasDe = estrellasDe; }
 })(typeof window !== 'undefined' ? window : this);

@@ -47,6 +47,29 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
 #nota b { display: block; font-size: 19.5rem; font-weight: 600; line-height: 1; }
 #nota svg { display: block; height: 23rem; margin: 3rem 0 2rem; overflow: visible; }
 
+/* the order note (S-28): a lined sheet taped over the bench, with what the level asks for and, below, how many moves (or
+   seconds) each star allows, crossed out live when it is out of reach; in the points levels, «Metas» with the three
+   scores, ticked when reached. It covers the order card painted in the background, which the zen still uses */
+#metas { left: 714rem; top: 47rem; width: 184rem; min-height: 200rem; box-sizing: border-box; padding: 8rem 12rem 8rem 15rem; transform: rotate(1deg);
+  color: #2a2620; font: 600 21rem/var(--fila) Caveat, cursive; pointer-events: none; --fila: 25rem;
+  background: repeating-linear-gradient(transparent 0 calc(var(--fila) - 1rem), #cfdcea calc(var(--fila) - 1rem) var(--fila)) 0 41rem / 100% calc(100% - 41rem) no-repeat,
+              linear-gradient(90deg, transparent 10rem, rgba(200,64,44,.35) 10rem 11.2rem, transparent 11.2rem), #f9f5e9;
+  box-shadow: 0 4rem 10rem rgba(0,0,0,.38); }
+#metas.apretada { --fila: 22rem; font-size: 19.5rem; }
+#metas::before { content: ''; position: absolute; left: 64rem; top: -8rem; width: 60rem; height: 16rem; background: rgba(236,226,196,.82);
+  transform: rotate(-2deg); box-shadow: 0 1rem 2rem rgba(0,0,0,.15); }
+#metas h3 { margin: 0 0 6rem; height: 33rem; font: 600 28rem/33rem Caveat, cursive; color: #221e18; }
+#metas .l { position: relative; display: flex; align-items: center; gap: 7rem; height: var(--fila); white-space: nowrap; }
+#metas .l img { width: 22rem; height: 22rem; object-fit: contain; }
+#metas .l svg.st { width: 44rem; height: 15rem; flex: none; overflow: visible; }
+#metas .pz { color: var(--pen); }
+#metas .l.ok { color: #8a8174; }
+#metas .l .tic { position: absolute; right: 2rem; top: 50%; width: 22rem; height: 18rem; margin-top: -11rem; visibility: hidden; overflow: visible; }
+#metas .l.ok .tic { visibility: visible; }
+#metas .l.x > * { opacity: .5; }
+#metas .l.x::after { content: ''; position: absolute; left: -2rem; right: 6rem; top: 52%; height: 2.2rem; background: #c0392b; border-radius: 1rem; transform: rotate(-1.2deg); }
+#metas .hasta { font-size: 16.5rem; color: #6c655a; }
+
 /* overlays. Sizes in rem: the root font-size is one design unit (see fit), so nested font sizes do not compound */
 .sheet { left: 0; top: 0; width: 100%; height: 100%; display: grid; place-items: center; background: rgba(20, 10, 4, .55); }
 /* the pause: an aluminum plate like the left panel, with its screws, a Dymo title and Dymo keys */
@@ -86,6 +109,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
 .tag-stars .ink { transform-origin: 15px 16px; transform-box: view-box; }
 .tag-lines { margin: 0 0 12rem; font: 400 14rem/1.5 Elite; }
 .tag-lines .say { margin-bottom: 2rem; }
+.tag-lines .por { margin: -2rem 0 2rem; font: 600 19rem/1.1 Caveat, cursive; color: #b8322a; }
 .tag-lines .ln { display: flex; gap: .4em; }
 .tag-lines .ln span:nth-child(2) { flex: 1; border-bottom: .1em dotted #8a7650; transform: translateY(-.35em); }
 .tag-btns { display: flex; gap: 10rem; flex-wrap: wrap; align-items: center; }
@@ -121,6 +145,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   <canvas id="cv"></canvas>
   <div id="board" role="application" aria-label="Placa de 10 por 8 componentes"></div>
   <div id="light"></div>
+  <div id="metas" hidden></div>
   <div id="nota" hidden></div>
   <button id="pause" type="button" aria-label="Pausa"></button>
   <svg id="volver" style="left:765em;top:360em;width:132em;height:34em" viewBox="0 0 132 34" role="button" tabindex="0" aria-label="Volver">
@@ -738,16 +763,18 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   needle.style.transformOrigin = '113.25px 312px'; needle.style.transformBox = 'view-box'; needle.style.transition = 'transform .7s cubic-bezier(.2,.7,.3,1)';
   const REC_DEG = 34;
   let zenPrev = { puntos: 0, tiempo: 0 };
+  // in the order levels the meter shows only points, against the full scale of the level (S-28); the stars, only in the points levels
+  const METAS = () => !ZEN && def.starsBy === 'score';
   function needleDeg(sc) {
     if (ZEN) { const r = zenPrev.puntos; return r > 0 ? Math.min(48, -48 + (REC_DEG + 48) * sc / r) : -48 + 96 * Math.min(1, sc / 50000); }
-    let [a, b, c] = def.stars;
-    if (a <= 0) a = b / 2;   // levels with an order: the first star is for completing it
+    if (!METAS()) return -48 + 96 * Math.min(1, sc / (def.escala || 1));
+    const [a, b, c] = def.stars;
     if (sc <= a) return -48 + 28 * sc / a;
     if (sc <= b) return -20 + 34 * (sc - a) / (b - a);
     if (sc <= c) return 14 + 30 * (sc - b) / (c - b);
     return Math.min(48, 44 + 4 * (sc - c) / c);
   }
-  const starOn = (i, sc) => i === 0 ? (def.stars[0] > 0 ? sc >= def.stars[0] : E.goalsDone(g)) : sc >= def.stars[i];
+  const starOn = (i, sc) => sc >= def.stars[i];
 
   // the order card: one row per goal, with its picture, typed counts and a pen check when done
   const NOMBRES = [['resistencia', 'resistencias'], ['capacitor electrolítico', 'capacitores electrolíticos'], ['LED', 'LEDs'], ['bobina', 'bobinas'],
@@ -774,6 +801,43 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     });
     if (ZEN) og.insertAdjacentHTML('beforeend', `<text x="742" y="176" font-family="Caveat" font-weight="600" font-size="20" fill="#c8402c" transform="rotate(-3 742 176)">optativo · +${def.order.bonus}</text>`);
   }
+  // the order note of S-28 (levels; the zen keeps the painted card)
+  const estrellitas = n => `<svg class="st" viewBox="0 0 44 15" aria-hidden="true">${[0, 1, 2].slice(0, n).map(i => `<path d="${starPath(7 + i * 14.5, 8, 7.2, 3.1)}" fill="#c8402c"/>`).join('')}</svg>`;
+  const TIC = '<svg class="tic" viewBox="0 0 22 18" aria-hidden="true"><path d="M2,9 l6,7 l12,-14" stroke="#c8402c" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const segTxt = v => v < 60 ? `${v} s` : `${Math.floor(v / 60)}:${String(v % 60).padStart(2, '0')}`;
+  let notaEls = null;
+  function buildMetas() {
+    const el = $('metas');
+    if (ZEN) { el.hidden = true; notaEls = null; return; }
+    const puntos = METAS(), tiempo = def.starsBy === 'time';
+    let h = `<h3>${puntos ? 'Metas' : 'Pedido'}</h3>`;
+    if (puntos) {
+      h += [0, 1, 2].map(i => `<div class="l" data-e="${i}">${estrellitas(i + 1)}<span>${fmt(def.stars[i])}</span>${TIC}</div>`).join('');
+      h += `<div class="l hasta">se juega hasta la tercera</div>`;
+    } else {
+      h += g.goals.map((o, i) => {
+        const src = o.type === 'collect' ? `pieza${o.color}` : o.type === 'pads' ? (padOrig.some(v => v === 2) ? 'pad2' : 'pad1')
+          : o.type === 'burnt' ? (g.p.some(p => p && p.k === K.BURNT && p.hp >= 2) ? 'quemado2' : 'quemado1') : o.type === 'tubes' ? 'valvula' : null;
+        const ic = src ? `<img src="piezas/${src}.png" alt="">` : `<svg viewBox="0 0 22 22" style="width:22rem;height:22rem"><g transform="translate(11 11)">${[-45, 45].map(a => `<rect x="-10" y="-3" width="20" height="6" fill="#d9891e" opacity=".75" transform="rotate(${a})"/>`).join('')}</g></svg>`;
+        return `<div class="l" data-g="${i}">${ic}<span class="pz"></span>${TIC}</div>`;
+      }).join('');
+      h += [2, 1, 0].map(i => `<div class="l" data-e="${i}">${estrellitas(i + 1)}<span>en ${tiempo ? segTxt(def.stars[i]) : def.stars[i] + ' movidas'}</span></div>`).join('');
+    }
+    el.innerHTML = h;
+    el.classList.toggle('apretada', !puntos && g.goals.length > 2);
+    el.hidden = false;
+    notaEls = { goals: [...el.querySelectorAll('[data-g]')], stars: [...el.querySelectorAll('[data-e]')] };
+  }
+  // the stars of an order level that can no longer be reached are crossed out: with moves, once the moves used reach the
+  // threshold without completing it; against the clock, once the time played passes it
+  function tachar() {
+    if (!notaEls || METAS()) return;
+    const usado = def.starsBy === 'time' ? def.time - timeLeft : g.movesUsed, listo = E.goalsDone(g);
+    for (const e of notaEls.stars) {
+      const t = def.stars[+e.dataset.e], fuera = def.starsBy === 'time' ? usado > t || (timeUp && !listo) : !listo && usado >= t;
+      if (fuera && !e.classList.contains('x')) e.classList.add('x');
+    }
+  }
   let movesShown = 0;
   let shown = null;   // the last score the animation has reached: the engine adds up a whole move at once, the board shows it as it happens
   function hud(snap) {
@@ -784,8 +848,13 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     else showMoves(movesShown);
     $('score').textContent = fmt(score);
     needle.style.transform = `rotate(${needleDeg(score)}deg)`;
-    if (!ZEN) starEls.forEach((p, i) => p.setAttribute('fill', starOn(i, score) ? '#d8962a' : 'none'));
-    g.goals.forEach((o, i) => {
+    if (METAS()) starEls.forEach((p, i) => p.setAttribute('fill', starOn(i, score) ? '#d8962a' : 'none'));
+    if (notaEls) {
+      if (METAS()) notaEls.stars.forEach(e => e.classList.toggle('ok', score >= def.stars[+e.dataset.e]));
+      else notaEls.goals.forEach((e, i) => { const o = g.goals[i], n = Math.min(have[i], o.need); e.children[1].textContent = `${n} / ${o.need}`; e.classList.toggle('ok', n >= o.need); });
+      tachar();
+    }
+    if (ZEN) g.goals.forEach((o, i) => {
       const n = Math.min(have[i], o.need), ok = n >= o.need, el = orderEls[i];
       el.tx.textContent = o.type === 'score' ? fmt(o.need) : `${n} / ${o.need}`;
       el.tx.setAttribute('fill', ok ? '#7a7166' : '#2c2620');
@@ -850,6 +919,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
   // ============================================================ the match
   let playing = false, busy = false, paused = false, ended = false, started = false;
   let timeLeft = 0, timeUp = false, idle = 0, warned = 99, elapsed = 0, savedAt = 0, recShown = false;
+  let usadas = null, segundos = null;   // when the order was completed: moves used and time played (S-28)
   let CAL = {};
   function levelDef(n) {
     // the made-by-hand ones with their calibration; from 31 on, generated from their number (codigo/levels.js)
@@ -881,14 +951,16 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     buildDisplay(ZEN || g.mode === 'time'); shownStr = '';
     const label = ZEN ? 'ZEN' : `NIVEL ${N} · ${NOMBRE_MODO.toUpperCase()}`, lw = Math.round(22 + label.length * 9.4);
     $('dymo').innerHTML = `<g transform="rotate(-1.5 113.25 27)"><path d="M${113.25 - lw / 2},16 h${lw} l-3,11 l3,11 h-${lw} l3,-11 z" fill="#1c1c1c"/><text x="113.25" y="32" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="14" letter-spacing="2.2" fill="#f4f1ea">${label}</text></g>`;
-    starEls.forEach(p => p.setAttribute('visibility', ZEN ? 'hidden' : 'visible'));
+    starEls.forEach(p => p.setAttribute('visibility', METAS() ? 'visible' : 'hidden'));
+    usadas = null; segundos = null;
     $('recMark').innerHTML = '';
     if (ZEN && zenPrev.puntos > 0) {
       const ra = (-90 + REC_DEG) * Math.PI / 180, rx = 113.25 + 60 * Math.cos(ra), ry = 312 + 60 * Math.sin(ra), rx2 = 113.25 + 44 * Math.cos(ra), ry2 = 312 + 44 * Math.sin(ra);
       $('recMark').innerHTML = `<line x1="${rx}" y1="${ry}" x2="${rx2}" y2="${ry2}" stroke="#c8402c" stroke-width="2.4" stroke-linecap="round"/><text x="${rx + 4}" y="${ry - 6}" font-family="Caveat" font-weight="600" font-size="15" fill="#c8402c" transform="rotate(-8 ${rx} ${ry})">récord</text>`;
     }
     needle.style.transition = 'none'; needle.style.transform = 'rotate(-48deg)'; void needle.getBoundingClientRect(); needle.style.transition = 'transform .7s cubic-bezier(.2,.7,.3,1)';
-    buildCard(); hud(); showNota();
+    if (ZEN) buildCard(); else $('orders').innerHTML = '';
+    buildMetas(); hud(); showNota();
     $('menu').hidden = true; $('end').hidden = true;
     App.sonido.duck(false);
     App.sonido.musica(ZEN ? 'zen' : g.mode === 'time' ? 'timed' : 'game');
@@ -926,6 +998,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     if (ZEN) { afterZen(); busy = false; idle = 0; return; }
     if (g.mode === 'time') { g.timeLeft = timeLeft; E.evaluateEnd(g, timeUp); }
     else E.evaluateEnd(g);
+    if (g.won && usadas === null) { usadas = g.movesUsed; segundos = def.time ? def.time - timeLeft : 0; }
     if (g.over || timeUp) await finish();
     else { busy = false; idle = 0; }
   }
@@ -974,13 +1047,20 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     }
     hud();
     await wait(400);
-    const stars = g.won ? Math.max(1, [0, 1, 2].filter(i => i === 0 || g.score >= def.stars[i]).length) : 0;
+    // the stars (S-28): in an order level, from how many moves (or how much time) it took, without the bonus; in a points
+    // level, from the goals, bonus included
+    const r = { won: g.won, usadas: usadas === null ? g.movesUsed : usadas, segundos: segundos === null ? def.time - timeLeft : segundos, puntos: g.score };
+    const stars = window.estrellasDe(def, r);
     Est.record(N, stars, g.score);
     await untilResumed();
     const title = `Nivel ${N} · ${NOMBRE_MODO}`, extra = g.score - before;
-    const lines = g.won && bonusLabel && extra > 0 ? [['Jugada', before], [bonusLabel, '+' + fmt(extra)], ['Total', g.score]] : [['Puntos', g.score]];
+    const conBonus = METAS() && g.won && extra > 0 ? window.estrellasDe(def, Object.assign({}, r, { puntos: before })) : stars;
+    const marca = n => METAS() && conBonus < stars ? ` (${'★'.repeat(n)})` : '';
+    const lines = g.won && bonusLabel && extra > 0 ? [['Jugada' + marca(conBonus), before], [bonusLabel, '+' + fmt(extra)], ['Total' + marca(stars), g.score]] : [['Puntos', g.score]];
+    const por = !g.won ? '' : !METAS() ? `pedido completo en ${def.starsBy === 'time' ? (Math.ceil(r.segundos) < 60 ? Math.ceil(r.segundos) + ' segundos' : segTxt(Math.ceil(r.segundos))) : r.usadas + (r.usadas === 1 ? ' movida' : ' movidas')}`
+      : conBonus < stars ? `la ${['', 'primera', 'segunda', 'tercera'][stars]}, con el bonus` : '';
     if (g.won) {
-      showTag({ title, stars, stamp: 'APROBADA', lines, say: '',
+      showTag({ title, stars, stamp: 'APROBADA', lines, por,
         keys: [['SIGUIENTE ▶', 'next', true], ['OTRA VEZ', 'restart'], ['◀ MAPA', 'map']] });
     } else {
       showTag({ title, stars: 0, stamp: 'RECHAZADA', blue: true, say: faltan(), lines, keys: [['OTRA VEZ ▶', 'restart', true], ['◀ MAPA', 'map']] });
@@ -1022,7 +1102,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     $('endTitle').textContent = d.title;
     $('endStars').hidden = d.stars === undefined;
     $('endStars').innerHTML = [0, 1, 2].map(() => `<svg viewBox="0 0 30 30"><path d="${starPath(15, 16, 13)}" fill="none" stroke="#8a7b63" stroke-width="1.3" stroke-dasharray="2.5 2"/><path class="ink" d="${starPath(15, 16, 13)}" fill="#b8321f" stroke="#b8321f" stroke-width="1.3"/></svg>`).join('');
-    $('endLines').innerHTML = (d.say ? `<div class="say">${d.say}</div>` : '') + d.lines.map(([kk, v]) => `<div class="ln"><span>${kk}</span><span></span><span>${typeof v === 'number' ? fmt(v) : v}</span></div>`).join('');
+    $('endLines').innerHTML = (d.por ? `<div class="por">${d.por}</div>` : '') + (d.say ? `<div class="say">${d.say}</div>` : '') + d.lines.map(([kk, v]) => `<div class="ln"><span>${kk}</span><span></span><span>${typeof v === 'number' ? fmt(v) : v}</span></div>`).join('');
     $('endBtns').innerHTML = d.keys.map(([t, a, r]) => dymoKey(t, a, r)).join('');
     const st = $('endStamp'); st.textContent = d.stamp || ''; st.className = 'stamp' + (d.blue ? ' blue' : '') + ((d.stamp || '').length > 10 ? ' small' : '');
   }
@@ -1047,6 +1127,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
       if (sec <= 10 && sec < warned && sec > 0) { warned = sec; fx('warn'); }
       if (timeLeft <= 0) { timeLeft = 0; timeUp = true; if (!busy) finish(); }
       showClock(Math.ceil(timeLeft));
+      tachar();
     }
     if (!busy) {
       idle += dt;
@@ -1146,6 +1227,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
       if (ZEN) { endZen(); return; }
       if (gano) g.goals.forEach(o => { o.have = Math.max(o.have, o.need); }); else { g.moves = 0; timeLeft = 0; timeUp = true; }
       if (gano && g.scoreOnly) { g.score = Math.max(g.score, def.goals[0].n); g.goals[0].have = g.score; }
+      if (gano && usadas === null) { usadas = g.movesUsed; segundos = def.time ? def.time - timeLeft : 0; }
       g.over = true; g.won = !!gano; finish();
     },
   };

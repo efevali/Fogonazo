@@ -66,6 +66,8 @@ function createGame(level, seed) {
     g.goals.push(o);
   }
   g.scoreOnly = g.goals.length === 1 && g.goals[0].type === 'score';
+  // los de puntos (S-28): tres metas a la vista; se juega hasta la tercera o hasta quedarse sin movidas o tiempo
+  g.metas = g.scoreOnly && level.stars && level.starsBy === 'score' ? level.stars.slice() : null;
   g.hasCollect = g.goals.some(o => o.type === 'collect');
   if (level.tubes) g.tubes = {
     total: level.tubes.n, maxOn: level.tubes.max || TUBES.max, spawned: 0, collected: 0,
@@ -642,14 +644,15 @@ function isStable(g) {
 }
 
 // En los niveles con pedido de piezas, una fracción de las piezas nuevas toma un color
-// que el pedido todavía necesita, para que el juego no las retacee. La ayuda es proporcional
-// a cuántos tipos faltan sobre el total, así pesa parecido en pedidos de uno o de varios tipos.
+// que el pedido todavía necesita, para que el juego no las retacee. En Difícil, la ayuda es proporcional
+// a cuántos tipos faltan sobre el total; en Normal y Fácil (level.ayuda, de MODES en levels.js) hay un piso
+// que no depende de cuántos tipos se piden, así un pedido de un solo tipo también se nota (S-28).
 const COLLECT_BIAS = 0.14;
 function spawnColor(g) {
   if (g.hasCollect) {
     const need = [];
     for (const o of g.goals) if (o.type === 'collect' && o.have < o.need) need.push(o.color);
-    const bias = g.level.bias !== undefined ? g.level.bias : COLLECT_BIAS * need.length / g.colors;
+    const bias = g.level.bias !== undefined ? g.level.bias : Math.max(COLLECT_BIAS * need.length / g.colors, g.level.ayuda || 0);
     if (need.length && g.rng() < bias) return need[(g.rng() * need.length) | 0];
   }
   return (g.rng() * g.colors) | 0;
@@ -771,7 +774,12 @@ function goalsDone(g) { return g.goals.every(o => o.have >= o.need); }
 
 function evaluateEnd(g, timeUp) {
   if (g.over || g.mode === 'zen') return;   // el modo zen no termina: lo termina quien juega
-  if (goalsDone(g)) { g.over = true; g.won = true; return; }   // también los de puntaje: se termina al llegar a la meta
+  if (g.metas) {   // los de puntos: hasta la tercera meta; sin movidas o tiempo, se gana con la primera
+    const out = (g.mode === 'moves' && g.moves <= 0) || (g.mode === 'time' && timeUp);
+    if (g.score >= g.metas[2] || out) { g.over = true; g.won = g.score >= g.metas[0]; }
+    return;
+  }
+  if (goalsDone(g)) { g.over = true; g.won = true; return; }   // los de pedido terminan al completarlo
   if (g.mode === 'moves' && g.moves <= 0) { g.over = true; g.won = goalsDone(g); return; }
   if (g.mode === 'time' && timeUp) { g.over = true; g.won = goalsDone(g); }
 }

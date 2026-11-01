@@ -3,15 +3,9 @@
 // node herramientas/bots.js
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const E = require('../codigo/engine.js');
-const { LEVELS } = require('../codigo/levels.js');
+const { LEVELS, levelAt } = require('../codigo/levels.js');
 const CAL = require('../codigo/calibrated.json');
-function def(n) {
-  const b = LEVELS[n - 1], c = CAL[n]; const d = Object.assign({}, b);
-  d.goals = b.goals.map(o => Object.assign({}, o));
-  if (c.moves) d.moves = c.moves; if (c.time) d.time = c.time;
-  if (b.tune === 'score') d.goals[0].n = c.scoreTarget;
-  return d;
-}
+const def = n => levelAt(n, CAL);   // Difícil, como se juega
 function play(L, seed, skill) {
   const g = E.createGame(L, seed); const rnd = E.rngFrom(seed * 7 + 1); let time = 0;
   while (!g.over) {

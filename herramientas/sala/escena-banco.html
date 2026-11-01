@@ -329,7 +329,8 @@ function variantA() {
   add(`<clipPath id="mclip"><rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="3"/></clipPath><g clip-path="url(#mclip)">`);
   if (!ZEN) add(`<path d="M${pcx + R * Math.cos(ang(14))},${pcy + R * Math.sin(ang(14))} A${R},${R} 0 0 1 ${pcx + R * Math.cos(ang(48))},${pcy + R * Math.sin(ang(48))}" stroke="#c8402c" stroke-width="5" fill="none" opacity=".75"/>`);
   add(`<g stroke="#3a3128" stroke-width="1.3">${ticks}</g>`);
-  if (!ZEN) for (const [d, on] of [[-20, true], [14, true], [44, false]]) { const a = ang(d), r = R - 26; add(`<path d="${star(pcx + r * Math.cos(a), pcy + r * Math.sin(a), 7.5)}" fill="${on && !BG ? '#d8962a' : 'none'}" stroke="#3a3128" stroke-width="1.2"/>`); }
+  // in the match backgrounds (bg=1) the stars are not painted: the match draws them only in the points levels (S-28)
+  if (!ZEN && !BG) for (const [d, on] of [[-20, true], [14, true], [44, false]]) { const a = ang(d), r = R - 26; add(`<path d="${star(pcx + r * Math.cos(a), pcy + r * Math.sin(a), 7.5)}" fill="${on && !BG ? '#d8962a' : 'none'}" stroke="#3a3128" stroke-width="1.2"/>`); }
   const na = ang(26);
   if (!BG) add(`<line x1="${pcx}" y1="${pcy}" x2="${(pcx + (R + 2) * Math.cos(na)).toFixed(1)}" y2="${(pcy + (R + 2) * Math.sin(na)).toFixed(1)}" stroke="#1b1612" stroke-width="2" stroke-linecap="round"/>`);
   add(`</g><rect x="${mx}" y="${my}" width="${mw}" height="${mh * .45}" rx="3" fill="#fff" opacity=".18"/>`);

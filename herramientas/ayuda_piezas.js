@@ -1,33 +1,22 @@
-// Mide la tasa de victoria de los niveles de pedido de piezas con y sin la ayuda de piezas del pedido.
+// La ayuda de piezas del pedido en cada modo (S-28): en cuántas movidas completa el bot los niveles que piden piezas
+// con la ayuda de Difícil, de Normal y de Fácil, sin límite de movimientos. Mediana y percentil 80 de 200 partidas.
 // node herramientas/ayuda_piezas.js 3,4,6
 const E = require('../codigo/engine.js');
-const { LEVELS, resumen } = require('../codigo/levels.js');
-const fs = require('fs');
-const CAL = JSON.parse(fs.readFileSync(__dirname + '/../codigo/calibrated.json', 'utf8'));
-const skill = { best: 0.62, second: 0.2 };
-function play(L, seed) {
-  const g = E.createGame(L, seed); const rnd = E.rngFrom(seed * 2654435761 >>> 0); let time = 0;
-  while (!g.over) {
-    const m = E.botChoose(g, rnd, skill); if (!m) break;
-    const r = E.trySwap(g, m.a, m.b);
-    time += 1.7 + rnd() * 1.4; for (const s of r.steps) time += E.stepDuration(s) / 1000;
-    if (g.mode === 'time') { g.timeLeft = L.time - time; E.evaluateEnd(g, time >= L.time); } else E.evaluateEnd(g);
-  }
-  if (g.won) E.bonus(g);
-  return { won: g.won, score: g.score };
-}
-const q = (a, p) => { a = a.slice().sort((x, y) => x - y); return a.length ? a[Math.min(a.length - 1, Math.max(0, Math.round(p * (a.length - 1))))] : 0; };
-const r100 = v => Math.max(100, Math.round(v / 100) * 100);
-const ids = process.argv[2].split(',').map(Number), n = 400, out = {};
+const { LEVELS, MODES, resumen, levelAt } = require('../codigo/levels.js');
+const CAL = require('../codigo/calibrated.json');
+const skill = { best: 0.62, second: 0.2 }, n = 200;
+const q = (a, p) => { a = a.slice().sort((x, y) => x - y); return a[Math.round(p * (a.length - 1))]; };
+const ids = process.argv[2] ? process.argv[2].split(',').map(Number) : LEVELS.map((_, i) => i + 1).filter(i => LEVELS[i - 1].goals.some(o => o.type === 'collect'));
 for (const id of ids) {
-  const base = Object.assign({}, LEVELS[id - 1]); base.goals = base.goals.map(o => Object.assign({}, o));
-  if (CAL[id].moves) base.moves = CAL[id].moves; if (CAL[id].time) base.time = CAL[id].time;
-  const res = {};
-  for (const [tag, L] of [['antes', Object.assign({}, base, { bias: 0 })], ['ahora', base]]) {
-    const wins = []; let w = 0;
-    for (let s = 0; s < n; s++) { const r = play(L, 70000 + s); if (r.won) { w++; wins.push(r.score); } }
-    res[tag] = { win: w / n, s2: r100(q(wins, 0.5)), s3: Math.max(r100(q(wins, 0.5)) + 100, r100(q(wins, 0.86))) };
-  }
-  out[id] = res;
-  console.log(`L${String(id).padStart(2)} ${resumen(LEVELS[id - 1]).padEnd(22)} ${(base.moves ? base.moves + ' mov' : base.time + ' s').padEnd(7)} antes ${(res.antes.win * 100).toFixed(0).padStart(3)}%  →  ahora ${(res.ahora.win * 100).toFixed(0).padStart(3)}%   ★ 0/${res.ahora.s2}/${res.ahora.s3}`);
+  const fila = MODES.slice().reverse().map(M => {
+    const d = levelAt(id, CAL); d.moves = 150; d.time = 0; d.ayuda = M.ayuda;
+    const u = [];
+    for (let s = 0; s < n; s++) {
+      const g = E.createGame(d, 7000 + s), rnd = E.rngFrom(s * 977 + 3);
+      while (!g.over) { const m = E.botChoose(g, rnd, skill); if (!m) break; E.trySwap(g, m.a, m.b); E.evaluateEnd(g); }
+      u.push(g.won ? g.movesUsed : 999);
+    }
+    return `${M.name} ${String(q(u, 0.5)).padStart(3)} (p80 ${String(q(u, 0.8)).padStart(3)})`;
+  });
+  console.log(`L${String(id).padStart(2)} ${resumen(LEVELS[id - 1]).padEnd(18)} ${fila.join(' · ')}`);
 }

@@ -2,8 +2,8 @@
    GEN de codigo/levels.js sobre una muestra, y después se mide cómo quedaron.
    node herramientas/generados.js datos [desde] [hasta] [partidas]  → juega la muestra y guarda dist/generados-datos.json
    node herramientas/generados.js ajustar                           → con esos datos, propone los valores de GEN
-   node herramientas/generados.js medir [desde] [hasta] [partidas]   → la tasa de victoria de cada nivel en los tres modos, con la fórmula
-   node herramientas/generados.js estrellas                         → con esa medición, propone los puntos de las estrellas
+   node herramientas/generados.js medir [desde] [hasta] [partidas]   → la tasa de victoria y las estrellas de cada nivel en los tres modos, con la fórmula
+   node herramientas/generados.js estrellas                         → con esa medición, propone las estrellas de cada modo (S-28)
    node herramientas/generados.js ver [desde] [hasta]                → qué pide cada nivel, sin jugar
    Ejemplo: node herramientas/generados.js datos 31 90 100 */
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
@@ -28,7 +28,7 @@ function play(L, seed) {
     if (g.won && doneAt === null) { doneAt = g.movesUsed; doneTime = time; doneScore = g.score; }
   }
   if (g.won) E.bonus(g);
-  return { won: g.won, moves: doneAt, time: doneTime, scoreAt: doneScore, score: g.score };
+  return { won: g.won, moves: doneAt, time: doneTime, scoreAt: doneScore, score: g.score, usadas: doneAt, segundos: doneTime, puntos: g.score };
 }
 const q = (arr, p) => { const a = arr.slice().sort((x, y) => x - y); if (!a.length) return NaN; const pos = Math.min(a.length - 1, Math.max(0, p * (a.length - 1))), lo = Math.floor(pos), hi = Math.ceil(pos); return a[lo] + (a[hi] - a[lo]) * (pos - lo); };
 
@@ -49,14 +49,30 @@ function datos(n, partidas) {
   }
   return out;
 }
+// cómo queda un generado en cada modo, con la fórmula: tasa de victoria, estrellas (S-28) y lo que hace falta para
+// ajustar las estrellas: de quienes ganan, en qué fracción del límite completaron el pedido (en los cuantiles del reparto
+// del modo), y los puntos finales contra la primera meta o contra las jugadas
 function medir(n, partidas) {
-  const d = levelAt(n), M = LV.MODES;
-  const res = { n, resumen: resumen(d), target: d.target, colors: d.colors, tune: d.tune, valvulas: d.tubes ? d.tubes.n : 0, jug: d.time ? d.time / GEN.segundosPorJugada : d.moves, knob: d.tune === 'score' ? d.goals[0].n : d.time ? d.time + ' s' : d.moves + ' mov', modos: [] };
+  const d0 = levelAt(n), M = LV.MODES;
+  const res = { n, resumen: resumen(d0), target: d0.target, colors: d0.colors, tune: d0.tune, valvulas: d0.tubes ? d0.tubes.n : 0, knob: d0.tune === 'score' ? d0.goals[0].n : d0.time ? d0.time + ' s' : d0.moves + ' mov', modos: [] };
   for (const m of M) {
-    const dm = LV.applyMode(Object.assign({}, d, { goals: d.goals.map(o => Object.assign({}, o)), stars: d.stars.slice() }), m);
-    let w = 0, s2 = 0; const ganadores = [];
-    for (let s = 0; s < partidas; s++) { const r = play(dm, 50000 + s); if (r.won) { w++; ganadores.push(r.score); if (r.score >= dm.stars[1]) s2++; } }
-    res.modos.push({ id: m.id, win: w / partidas, dos: s2 / partidas, mediana: q(ganadores, 0.5), p86: q(ganadores, 0.86) });
+    const dm = LV.applyMode(levelAt(n), m), lim = dm.time || dm.moves, h = [0, 0, 0, 0];
+    const u = [], fin = [], libre = [];
+    for (let s = 0; s < partidas; s++) {
+      const r = play(dm, 50000 + s); h[LV.estrellasDe(dm, r)]++;
+      if (r.won) { u.push(dm.time ? r.segundos : r.usadas); fin.push(r.puntos); }
+    }
+    const o = { id: m.id, win: (partidas - h[0]) / partidas, dos: (h[2] + h[3]) / partidas, tres: h[3] / partidas, jug: dm.time ? lim / GEN.segundosPorJugada : lim };
+    if (dm.starsBy === 'score') {
+      // los puntos de jugar todo, con el bonus de los especiales que quedaron, de quienes pasan la primera meta
+      const L = Object.assign({}, dm, { stars: [dm.stars[0], 1e12, 1e12] });
+      for (let s = 0; s < partidas; s++) { const r = play(L, 60000 + s); if (r.won) libre.push(r.puntos); }
+      o.k = m.reparto.map(f => q(libre, 1 - f) / dm.stars[0]);
+    } else {
+      o.r = m.reparto.map(f => q(u, f) / lim);
+      o.escala = q(fin, 0.9) / o.jug;
+    }
+    res.modos.push(o);
   }
   return res;
 }
@@ -122,25 +138,32 @@ if (cmd === 'ver') {
     console.log('razonPuntos:', JSON.stringify(rp));
   }
 } else if (cmd === 'estrellas') {
-  // con la última medición: la mediana de los puntos de quien gana en Difícil, por jugada y por colores; y la meta de
-  // los de puntaje contra lo que se ganó
-  const R = JSON.parse(fs.readFileSync(MEDICION, 'utf8'));
-  for (const cc of [5, 6, 7]) { const v = R.filter(r => r.tune !== 'score' && r.colors === cc).map(r => r.modos[2].mediana / r.jug); if (v.length) console.log(`estrellaPorJugada con ${cc} colores:`, q(v, 0.5) | 0, `(${v.length})`); }
-  const pe = R.filter(r => r.tune !== 'score' && r.modos[2].mediana > 0);
-  if (pe.length) console.log('terceraEstrella (los de pedido):', q(pe.map(r => r.modos[2].p86 / r.modos[2].mediana), 0.5).toFixed(2));
-  const sc = R.filter(r => r.tune === 'score');
-  if (sc.length) {
-    console.log('puntaje, desvío mediano de la tasa en Difícil:', (q(sc.map(r => r.modos[2].win - r.target), 0.5) * 100).toFixed(0), 'puntos');
-    const ok = sc.filter(r => r.modos[2].mediana > 0);
-    console.log('estrellasPuntaje (× la meta):', JSON.stringify([q(ok.map(r => r.modos[2].mediana / r.knob), 0.5), q(ok.map(r => r.modos[2].p86 / r.knob), 0.5)].map(v => +v.toFixed(2))));
-  }
+  // con la última medición, las estrellas de S-28 en cada modo: en los de pedido, la fracción del límite para dos y tres
+  // estrellas como a + b × tasa buscada (mínimos cuadrados); en los de puntos, la segunda y la tercera meta como múltiplos
+  // de la primera; y el fondo de escala del vúmetro por jugada, según los colores
+  const R = JSON.parse(fs.readFileSync(MEDICION, 'utf8')), r3d = v => +v.toFixed(3);
+  const recta = pts => { const n = pts.length, mx = pts.reduce((a, p) => a + p[0], 0) / n, my = pts.reduce((a, p) => a + p[1], 0) / n;
+    const b = pts.reduce((a, p) => a + (p[0] - mx) * (p[1] - my), 0) / pts.reduce((a, p) => a + (p[0] - mx) ** 2, 0); return [r3d(my - b * mx), r3d(b)]; };
+  const umbrales = {}, metas = {};
+  LV.MODES.forEach((m, k) => {
+    const pe = R.filter(r => r.tune !== 'score' && r.modos[k].r && r.modos[k].r.every(Number.isFinite));
+    umbrales[m.id] = [0, 1].map(j => recta(pe.map(r => [r.target, r.modos[k].r[j]])));
+    const sc = R.filter(r => r.tune === 'score' && r.modos[k].k && r.modos[k].k.every(Number.isFinite));
+    if (sc.length) metas[m.id] = [0, 1].map(j => +q(sc.map(r => r.modos[k].k[j]), 0.5).toFixed(2));
+  });
+  const escala = {};
+  for (const cc of [5, 6, 7]) { const v = R.filter(r => r.tune !== 'score' && r.colors === cc).flatMap(r => r.modos.map(m => m.escala)).filter(Number.isFinite); if (v.length) escala[cc] = Math.round(q(v, 0.5) / 10) * 10; }
+  console.log('umbrales:', JSON.stringify(umbrales));
+  console.log('metas:', JSON.stringify(metas));
+  console.log('escalaPorJugada:', JSON.stringify(escala));
 } else if (cmd === 'medir') {
   const t0 = Date.now();
   enHilos('medir', () => process.stdout.write('.'), res => {
     console.log('');
-    for (const r of res) console.log(`N${r.n} ${r.resumen.padEnd(28)} ${String(r.knob).padEnd(8)} meta ${String(Math.round(r.target * 100)).padStart(3)}%  ` + r.modos.map(m => `${m.id} ${String(Math.round(m.win * 100)).padStart(3)}% (★★ ${String(Math.round(m.dos * 100)).padStart(3)}%)`).join('  '));
-    const dif = res.map(r => r.modos[2].win - r.target);
-    console.log(`Difícil: desvío mediano ${(q(dif.map(Math.abs), 0.5) * 100).toFixed(0)} puntos, sesgo ${(q(dif, 0.5) * 100).toFixed(0)}; ` + LV.MODES.map((m, k) => `${m.name} gana ${(res.reduce((s, r) => s + r.modos[k].win, 0) / res.length * 100).toFixed(0)} %, ★★ ${(res.reduce((s, r) => s + r.modos[k].dos, 0) / res.length * 100).toFixed(0)} %`).join(' · ') + ` · ${((Date.now() - t0) / 1000) | 0} s`);
+    const pc = v => String(Math.round(v * 100)).padStart(3) + '%';
+    for (const r of res) console.log(`N${r.n} ${r.resumen.padEnd(28)} ${String(r.knob).padEnd(8)} meta ${pc(r.target)}  ` + r.modos.map(m => `${m.id} ${pc(m.win)} ≥2 ${pc(m.dos)} 3 ${pc(m.tres)}`).join('  '));
+    const dif = res.map(r => r.modos[2].win - r.target), prom = (k, f) => pc(res.reduce((s, r) => s + r.modos[k][f], 0) / res.length);
+    console.log(`Difícil: desvío mediano ${(q(dif.map(Math.abs), 0.5) * 100).toFixed(0)} puntos, sesgo ${(q(dif, 0.5) * 100).toFixed(0)}; ` + LV.MODES.map((m, k) => `${m.name} gana ${prom(k, 'win')}, ≥2★ ${prom(k, 'dos')}, 3★ ${prom(k, 'tres')}`).join(' · ') + ` · ${((Date.now() - t0) / 1000) | 0} s`);
     fs.writeFileSync(MEDICION, JSON.stringify(res));
   });
 }

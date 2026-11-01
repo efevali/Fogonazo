@@ -5,11 +5,17 @@ window.Estado = (() => {
   const KEY = 'coleccion.fogonazo';
   const MODES = ['Fácil', 'Normal', 'Difícil'];   // the same order as the engine's modes (codigo/levels.js)
   const ULTIMO = 30;                                // the last level made by hand; from 31 on they are generated, without end
-  const blank = () => ({ modo: 1, vista: 0, niveles: [{}, {}, {}], puntos: [{}, {}, {}], zen: { puntos: 0, tiempo: 0 } });
+  // v: the star system. With S-28 (stars with the thresholds in sight, 0.12.0) the levels' progress starts from zero in
+  // every difficulty; the chosen difficulty, the knob and the zen records stay
+  const V = 2;
+  const blank = () => ({ v: V, modo: 1, vista: 0, niveles: [{}, {}, {}], puntos: [{}, {}, {}], zen: { puntos: 0, tiempo: 0 } });
   let st = blank();
   try {
     const raw = JSON.parse(localStorage.getItem(KEY));
-    if (raw && raw.niveles) st = Object.assign(blank(), raw);   // the mockup's saves had only modo and niveles
+    if (raw && raw.niveles) {   // the mockup's saves had only modo and niveles
+      st = Object.assign(blank(), raw);
+      if (raw.v !== V) { st.v = V; st.niveles = [{}, {}, {}]; st.puntos = [{}, {}, {}]; }
+    }
   } catch (e) {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
 

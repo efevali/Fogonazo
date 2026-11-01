@@ -3,7 +3,8 @@
 // vacíos, los tapados por quemados o cinta.
 // node herramientas/probar.js
 const E = require('../codigo/engine.js');
-const { LEVELS, ZEN, generated, levelAt } = require('../codigo/levels.js');
+const { LEVELS, ZEN, MODES, applyMode, generated, levelAt } = require('../codigo/levels.js');
+const CAL = require('../codigo/calibrated.json');
 
 let emptySeen = 0;
 function checkBoard(g, where) {
@@ -25,13 +26,24 @@ let t0 = Date.now(), games = 0, moves = 0, shuffles = 0;
 for (let n = LEVELS.length + 1; n <= 1000; n++) {
   const d = levelAt(n);
   if (d.time ? d.time < 30 || d.time > 180 : d.moves < 10 || d.moves > 60) throw new Error(`N${n}: ${d.time || d.moves} fuera de rango`);
-  if (!(d.stars[1] > 0 && d.stars[2] > d.stars[1])) throw new Error(`N${n}: estrellas ${d.stars}`);
+  for (const M of MODES) {   // las estrellas de S-28, en orden: en pedido, límite > dos > tres > 0; en puntos, tres metas que suben
+    const s = applyMode(levelAt(n), M).stars;
+    const ok = d.starsBy === 'score' ? s[0] > 0 && s[1] > s[0] && s[2] > s[1] : s[0] > s[1] && s[1] > s[2] && s[2] > 0;
+    if (!ok) throw new Error(`N${n} ${M.id}: estrellas ${s}`);
+  }
   if (generated(n).layout && generated(n).layout.join('') !== levelAt(n).layout.join('')) throw new Error(`N${n}: no es siempre el mismo`);
 }
-const TODOS = [...LEVELS, ...Array.from({ length: 60 }, (_, i) => generated(LEVELS.length + 1 + i))];
+// los hechos a mano, también sus estrellas en cada modo
+for (let n = 1; n <= LEVELS.length; n++) for (const M of MODES) {
+  const d = applyMode(levelAt(n, CAL), M), s = d.stars;
+  const ok = d.starsBy === 'score' ? s[0] > 0 && s[1] > s[0] && s[2] > s[1] : s[0] > s[1] && s[1] > s[2] && s[2] > 0;
+  if (!ok) throw new Error(`L${n} ${M.id}: estrellas ${s}`);
+}
+// las partidas, con las reglas de verdad (los de puntos, hasta la tercera meta) y los modos alternados, por la ayuda de piezas
+const TODOS = Array.from({ length: LEVELS.length + 60 }, (_, i) => i + 1);
 for (let li = 0; li < TODOS.length; li++) {
-  const L = Object.assign({}, TODOS[li]);
-  if (!L.time) L.moves = 60;
+  const L = applyMode(levelAt(TODOS[li], CAL), MODES[li % 3]);
+  if (!L.time && L.starsBy !== 'score') L.moves = 60;
   for (let s = 1; s <= (li < LEVELS.length ? 6 : 2); s++) {
     const g = E.createGame(L, s * 7919 + li);
     checkBoard(g, 'init L' + (li + 1));
