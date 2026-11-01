@@ -734,7 +734,8 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     p.setAttribute('stroke', '#3a3128'); p.setAttribute('stroke-width', '1.2'); $('starFill').appendChild(p); return p;
   });
   const needle = $('needle');
-  needle.style.transformOrigin = '113.25px 312px'; needle.style.transformBox = 'view-box'; needle.style.transition = 'transform .7s cubic-bezier(.3,1.4,.5,1)';
+  // no bounce: the needle never goes past the score and comes back, as if points were taken away
+  needle.style.transformOrigin = '113.25px 312px'; needle.style.transformBox = 'view-box'; needle.style.transition = 'transform .7s cubic-bezier(.2,.7,.3,1)';
   const REC_DEG = 34;
   let zenPrev = { puntos: 0, tiempo: 0 };
   function needleDeg(sc) {
@@ -886,7 +887,7 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
       const ra = (-90 + REC_DEG) * Math.PI / 180, rx = 113.25 + 60 * Math.cos(ra), ry = 312 + 60 * Math.sin(ra), rx2 = 113.25 + 44 * Math.cos(ra), ry2 = 312 + 44 * Math.sin(ra);
       $('recMark').innerHTML = `<line x1="${rx}" y1="${ry}" x2="${rx2}" y2="${ry2}" stroke="#c8402c" stroke-width="2.4" stroke-linecap="round"/><text x="${rx + 4}" y="${ry - 6}" font-family="Caveat" font-weight="600" font-size="15" fill="#c8402c" transform="rotate(-8 ${rx} ${ry})">récord</text>`;
     }
-    needle.style.transition = 'none'; needle.style.transform = 'rotate(-48deg)'; void needle.getBoundingClientRect(); needle.style.transition = 'transform .7s cubic-bezier(.3,1.4,.5,1)';
+    needle.style.transition = 'none'; needle.style.transform = 'rotate(-48deg)'; void needle.getBoundingClientRect(); needle.style.transition = 'transform .7s cubic-bezier(.2,.7,.3,1)';
     buildCard(); hud(); showNota();
     $('menu').hidden = true; $('end').hidden = true;
     App.sonido.duck(false);
