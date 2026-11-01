@@ -6,12 +6,14 @@
    'k' cinta kapton · 'q' kapton sobre pad. Un diseño con menos filas se completa con filas libres arriba.
    tip: lo que el nivel presenta por primera vez (la nota de cuaderno junto a la placa).
    target = tasa de victoria buscada para el bot de calibración.
-   tune: qué se calibra ('moves' | 'time' | 'score'). */
+   tune: qué se calibra ('moves' | 'time' | 'score').
+   metas: en los de puntos, la segunda y la tercera meta como múltiplos de la primera, fijadas a mano en lugar de salir del
+   bot. Para el 1 y el 2: el bot usa los especiales desde la primera jugada y el juego recién los está presentando. */
 (function (root) {
 const LEVELS = [
   // ---------------- 1 a 5 · lo básico
-  { colors: 5, moves: 18, goals: [{ type: 'score', n: 0 }], tune: 'score', target: 0.97, tip: 'swap' },
-  { colors: 5, moves: 20, goals: [{ type: 'score', n: 0 }], tune: 'score', target: 0.95, tip: 'line' },
+  { colors: 5, moves: 18, goals: [{ type: 'score', n: 0 }], tune: 'score', target: 0.97, tip: 'swap', metas: [2, 2.9] },
+  { colors: 5, moves: 20, goals: [{ type: 'score', n: 0 }], tune: 'score', target: 0.95, tip: 'line', metas: [2, 2.9] },
   { colors: 5, moves: 20, goals: [{ type: 'collect', color: 0, n: 40 }, { type: 'collect', color: 1, n: 40 }], tune: 'moves', target: 0.92, tip: 'antenna' },
   { colors: 5, moves: 20, goals: [{ type: 'collect', color: 2, n: 50 }], tune: 'moves', target: 0.87, tip: 'bomb' },
   { colors: 5, time: 60, goals: [{ type: 'score', n: 0 }], tune: 'score', target: 0.82, tip: 'battery' },

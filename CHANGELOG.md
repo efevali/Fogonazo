@@ -2,6 +2,10 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.12.2 — 1/11/2026
+
+- Fogonazo: **metas más alcanzables en los niveles 1 y 2.** La segunda y la tercera pedían tres y cuatro veces la primera; ahora, dos y casi tres, como en el 5 y el 8. En Fácil, el 1 pide 7.600, 15.000 y 22.000.
+
 ## 0.12.1 — 1/11/2026
 
 - Fogonazo: **la nota «Metas» lleva solo los tres puntajes.** Se quitó «se juega hasta la tercera»: se aprende jugando.
