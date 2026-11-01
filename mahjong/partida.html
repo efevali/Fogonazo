@@ -37,8 +37,8 @@ button:focus { outline: none; }
   text-shadow: 0 1px 0 rgba(255,255,255,.55), 0 -1px 0 rgba(60,40,20,.25); }
 .palito:active { background: rgba(255,240,200,.25); }
 
-/* the tiles */
-#tablero { left: 186rem; top: 8rem; width: 652rem; height: 396rem; }
+/* the tiles: they end at x = 800, a safety strip before the painted teapot (S-27) */
+#tablero { left: 186rem; top: 8rem; width: 614rem; height: 396rem; }
 #capa { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 .ficha { position: absolute; width: 36em; height: 48em; font-size: inherit; }
 .ficha svg.f { position: absolute; left: 0; top: 0; width: 42em; height: 56em; overflow: visible; pointer-events: none; }
@@ -186,9 +186,9 @@ button:focus { outline: none; }
   P.forEach(t => { const x = t.x * W / 2 - t.z * SX, y = t.y * H / 2 - t.z * SY; minX = Math.min(minX, x); minY = Math.min(minY, y); maxX = Math.max(maxX, x + W + 8); maxY = Math.max(maxY, y + H + 9); });
   const bw = maxX - minX, bh = maxY - minY, zmax = Math.max(...P.map(t => t.z));
   const capa = $('capa');
-  const sc = Math.min(652 / bw, 396 / bh);
+  const sc = Math.min(614 / bw, 396 / bh);
   capa.style.width = bw + 'em'; capa.style.height = bh + 'em';
-  capa.style.transform = `translate(${(652 - bw * sc) / 2}em, ${(396 - bh * sc) / 2}em) scale(${sc})`;
+  capa.style.transform = `translate(${(614 - bw * sc) / 2}em, ${(396 - bh * sc) / 2}em) scale(${sc})`;
   const posX = i => P[i].x * W / 2 - P[i].z * SX - minX, posY = i => P[i].y * H / 2 - P[i].z * SY - minY;
 
   // ============================================================ the match

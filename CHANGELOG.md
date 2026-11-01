@@ -2,6 +2,10 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.11.1 — 1/11/2026
+
+- Mahjong: **las fichas ya no se meten en la tetera** (S-27). En el puente y la tortuga de 96 llegaban hasta la tetera pintada a la derecha; ahora la zona de las fichas termina antes y queda un margen. Esos dos tableros se ven apenas más chicos y los demás se corren un poco a la izquierda.
+
 ## 0.11.0 — 1/11/2026
 
 - Fogonazo: **cada dificultad tiene su propio camino** (S-26). Pasar un nivel en un modo ya no lo abre en los otros: cada modo tiene su próximo nivel, su mapa y sus estrellas. Los avances que ya existían siguen, en cada modo, desde el primer nivel que no se pasó en él.
