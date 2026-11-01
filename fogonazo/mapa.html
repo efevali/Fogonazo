@@ -96,17 +96,45 @@ svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; }
   let off = Math.max(minX, Math.min(maxX, 420 - curX));
   const apply = () => track.setAttribute('transform', `translate(${off} 0)`);
   apply();
-  let drag = null, moved = false;
-  stage.addEventListener('pointerdown', e => { drag = { x: e.clientX, off }; moved = false; });
+  // with inertia: on release the paper keeps the finger's speed and slows down with friction, as any list on the phone
+  let drag = null, moved = false, glide = 0, stopped = false;
+  const clampOff = v => Math.max(minX, Math.min(maxX, v));
+  stage.addEventListener('pointerdown', e => {
+    stopped = !!glide;   // a touch while it glides only stops it: it does not open a level
+    if (glide) { cancelAnimationFrame(glide); glide = 0; }
+    drag = { x: e.clientX, off, pts: [[e.timeStamp, off]] }; moved = false;
+  });
   addEventListener('pointermove', e => {
     if (!drag) return;
     const d = (e.clientX - drag.x) / s;
     if (Math.abs(d) > 6) moved = true;
-    off = Math.max(minX, Math.min(maxX, drag.off + d)); apply();
+    off = clampOff(drag.off + d); apply();
+    drag.pts.push([e.timeStamp, off]);
+    while (drag.pts.length > 2 && e.timeStamp - drag.pts[0][0] > 100) drag.pts.shift();
   });
-  addEventListener('pointerup', () => { drag = null; });
+  const release = e => {
+    if (!drag) return;
+    const pts = drag.pts; drag = null;
+    if (!moved || e.type === 'pointercancel') return;
+    const [t0, o0] = pts[0], [t1, o1] = pts[pts.length - 1];
+    if (t1 <= t0 || e.timeStamp - t1 > 80) return;   // the finger stopped before lifting: no throw
+    let v = (o1 - o0) / (t1 - t0);   // over the last ~100 ms, in paper units per millisecond
+    v = Math.max(-4, Math.min(4, v));
+    if (Math.abs(v) < 0.05) return;
+    let last = performance.now();
+    const step = now => {
+      const ms = Math.min(40, now - last); last = now;
+      off = clampOff(off + v * ms); apply();
+      v *= Math.pow(0.996, ms);   // friction: about half the speed every 170 ms
+      if (Math.abs(v) < 0.02 || off === minX || off === maxX) { glide = 0; return; }
+      glide = requestAnimationFrame(step);
+    };
+    glide = requestAnimationFrame(step);
+  };
+  addEventListener('pointerup', release);
+  addEventListener('pointercancel', release);
   stage.addEventListener('click', e => {
-    if (moved) return;
+    if (moved || stopped) { stopped = false; return; }
     const b = e.target.closest('#back'); if (b) { App.sonido.fx('click'); App.volver(); return; }
     const l = e.target.closest('.lvl'); if (!l) return;
     const n = +l.dataset.n;
