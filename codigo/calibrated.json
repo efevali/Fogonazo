@@ -4,41 +4,49 @@
   "name": "puntaje",
   "tune": "score",
   "target": 0.97,
-  "scoreTarget": 9500,
-  "medianScore": 21520,
-  "moves": 18,
   "modos": {
    "facil": {
+    "limite": 8000,
+    "medianScore": 20950,
     "estrellas": [
-     7600,
-     15000,
-     22000
-    ],
-    "gana": 1,
-    "dos": 0.9833333333333333,
-    "tres": 0.8833333333333333
-   },
-   "normal": {
-    "estrellas": [
-     8600,
-     17000,
-     25000
-    ],
-    "gana": 0.9966666666666667,
-    "dos": 0.9166666666666666,
-    "tres": 0.6733333333333333
-   },
-   "dificil": {
-    "estrellas": [
-     9500,
-     19000,
-     27500
+     8000,
+     16000,
+     23000
     ],
     "gana": 0.99,
-    "dos": 0.84,
-    "tres": 0.49
+    "dos": 0.9166666666666666,
+    "tres": 0.68,
+    "tasa": 0.991
+   },
+   "normal": {
+    "limite": 8500,
+    "medianScore": 20950,
+    "estrellas": [
+     8500,
+     17000,
+     24500
+    ],
+    "gana": 0.99,
+    "dos": 0.89,
+    "tres": 0.6166666666666667,
+    "tasa": 0.982
+   },
+   "dificil": {
+    "limite": 9000,
+    "medianScore": 20950,
+    "estrellas": [
+     9000,
+     18000,
+     26000
+    ],
+    "gana": 0.99,
+    "dos": 0.8666666666666667,
+    "tres": 0.5466666666666666,
+    "tasa": 0.97
    }
   },
+  "scoreTarget": 9000,
+  "moves": 18,
   "winRate": 0.99
  },
  "2": {
@@ -46,75 +54,91 @@
   "name": "puntaje",
   "tune": "score",
   "target": 0.95,
-  "scoreTarget": 11500,
-  "medianScore": 24290,
-  "moves": 20,
   "modos": {
    "facil": {
+    "limite": 8500,
+    "medianScore": 23460,
     "estrellas": [
-     9200,
-     18500,
-     26500
-    ],
-    "gana": 1,
-    "dos": 0.9766666666666667,
-    "tres": 0.8466666666666667
-   },
-   "normal": {
-    "estrellas": [
-     10400,
-     21000,
-     30000
+     8500,
+     17000,
+     24500
     ],
     "gana": 0.9966666666666667,
-    "dos": 0.8666666666666667,
-    "tres": 0.59
+    "dos": 0.9166666666666666,
+    "tres": 0.68,
+    "tasa": 0.985
+   },
+   "normal": {
+    "limite": 10000,
+    "medianScore": 23460,
+    "estrellas": [
+     10000,
+     20000,
+     29000
+    ],
+    "gana": 0.9933333333333333,
+    "dos": 0.8333333333333334,
+    "tres": 0.5366666666666666,
+    "tasa": 0.97
    },
    "dificil": {
+    "limite": 11000,
+    "medianScore": 23460,
     "estrellas": [
-     11500,
-     23000,
-     33500
+     11000,
+     22000,
+     32000
     ],
-    "gana": 0.9766666666666667,
-    "dos": 0.7433333333333333,
-    "tres": 0.36666666666666664
+    "gana": 0.9833333333333333,
+    "dos": 0.7766666666666666,
+    "tres": 0.42333333333333334,
+    "tasa": 0.95
    }
   },
-  "winRate": 0.9766666666666667
+  "scoreTarget": 11000,
+  "moves": 20,
+  "winRate": 0.9833333333333333
  },
  "3": {
   "id": 3,
   "name": "piezas",
   "tune": "moves",
   "target": 0.92,
-  "moves": 15,
-  "neverRate": 0,
-  "medianDone": 10,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 15,
+    "medianDone": 9,
     "estrellas": [
-     20,
+     15,
      11,
-     8
+     7
     ],
     "escala": 24500,
-    "gana": 1,
+    "gana": 0.9666666666666667,
     "dos": 0.76,
-    "tres": 0.45666666666666667
+    "tres": 0.3566666666666667,
+    "tasa": 0.976
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 15,
+    "medianDone": 9,
     "estrellas": [
-     17,
+     15,
      10,
      7
     ],
-    "escala": 23500,
-    "gana": 0.9833333333333333,
+    "escala": 25000,
+    "gana": 0.9333333333333333,
     "dos": 0.6033333333333334,
-    "tres": 0.25666666666666665
+    "tres": 0.25666666666666665,
+    "tasa": 0.952
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 15,
+    "medianDone": 10,
     "estrellas": [
      15,
      9,
@@ -123,9 +147,11 @@
     "escala": 25000,
     "gana": 0.9,
     "dos": 0.4266666666666667,
-    "tres": 0.11
+    "tres": 0.11,
+    "tasa": 0.92
    }
   },
+  "moves": 15,
   "winRate": 0.9
  },
  "4": {
@@ -133,33 +159,41 @@
   "name": "piezas",
   "tune": "moves",
   "target": 0.87,
-  "moves": 17,
-  "neverRate": 0,
-  "medianDone": 12,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 17,
+    "medianDone": 8,
     "estrellas": [
-     22,
+     17,
      11,
      7
     ],
     "escala": 24000,
-    "gana": 1,
+    "gana": 0.99,
     "dos": 0.81,
-    "tres": 0.45666666666666667
+    "tres": 0.45666666666666667,
+    "tasa": 0.961
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 17,
+    "medianDone": 10,
     "estrellas": [
-     19,
-     11,
+     17,
+     10,
      7
     ],
-    "escala": 24000,
-    "gana": 0.9933333333333333,
-    "dos": 0.7066666666666667,
-    "tres": 0.30666666666666664
+    "escala": 23500,
+    "gana": 0.9666666666666667,
+    "dos": 0.6,
+    "tres": 0.30666666666666664,
+    "tasa": 0.922
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 17,
+    "medianDone": 12,
     "estrellas": [
      17,
      11,
@@ -168,9 +202,11 @@
     "escala": 28000,
     "gana": 0.9166666666666666,
     "dos": 0.45,
-    "tres": 0.12
+    "tres": 0.12,
+    "tasa": 0.87
    }
   },
+  "moves": 17,
   "winRate": 0.9166666666666666
  },
  "5": {
@@ -178,120 +214,146 @@
   "name": "⏱ puntaje",
   "tune": "score",
   "target": 0.82,
-  "scoreTarget": 12900,
-  "medianScore": 19140,
-  "time": 60,
   "modos": {
    "facil": {
+    "limite": 9700,
+    "medianScore": 18630,
     "estrellas": [
-     10300,
-     20500,
-     29500
+     9700,
+     17500,
+     25500
     ],
-    "gana": 0.9966666666666667,
-    "dos": 0.8566666666666667,
-    "tres": 0.53
+    "gana": 0.98,
+    "dos": 0.79,
+    "tres": 0.41,
+    "tasa": 0.946
    },
    "normal": {
+    "limite": 10700,
+    "medianScore": 18630,
     "estrellas": [
-     11600,
-     22500,
-     30000
+     10700,
+     20000,
+     29000
     ],
-    "gana": 0.96,
-    "dos": 0.6766666666666666,
-    "tres": 0.30333333333333334
+    "gana": 0.95,
+    "dos": 0.68,
+    "tres": 0.23333333333333334,
+    "tasa": 0.892
    },
    "dificil": {
+    "limite": 12300,
+    "medianScore": 18630,
     "estrellas": [
-     12900,
-     24500,
+     12300,
+     24000,
      32500
     ],
-    "gana": 0.8466666666666667,
-    "dos": 0.45,
-    "tres": 0.15333333333333332
+    "gana": 0.8766666666666667,
+    "dos": 0.47333333333333333,
+    "tres": 0.15333333333333332,
+    "tasa": 0.82
    }
   },
-  "winRate": 0.8466666666666667
+  "scoreTarget": 12300,
+  "time": 60,
+  "winRate": 0.8766666666666667
  },
  "6": {
   "id": 6,
   "name": "piezas",
   "tune": "moves",
   "target": 0.9,
-  "moves": 24,
-  "neverRate": 0,
-  "medianDone": 17,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 25,
+    "medianDone": 11,
     "estrellas": [
-     31,
+     25,
      14,
      10
     ],
-    "escala": 11900,
-    "gana": 1,
+    "escala": 11800,
+    "gana": 0.9966666666666667,
     "dos": 0.77,
-    "tres": 0.43
+    "tres": 0.43,
+    "tasa": 0.97
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 25,
+    "medianDone": 14,
     "estrellas": [
-     27,
+     25,
      15,
      10
     ],
-    "escala": 12000,
-    "gana": 0.9933333333333333,
+    "escala": 12700,
+    "gana": 0.9866666666666667,
     "dos": 0.6433333333333333,
-    "tres": 0.20666666666666667
+    "tres": 0.20666666666666667,
+    "tasa": 0.94
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 25,
+    "medianDone": 17,
     "estrellas": [
-     24,
+     25,
      16,
      11
     ],
-    "escala": 14000,
-    "gana": 0.89,
+    "escala": 13700,
+    "gana": 0.9233333333333333,
     "dos": 0.45,
-    "tres": 0.08
+    "tres": 0.08,
+    "tasa": 0.9
    }
   },
-  "winRate": 0.89
+  "moves": 25,
+  "winRate": 0.9233333333333333
  },
  "7": {
   "id": 7,
   "name": "piezas",
   "tune": "moves",
   "target": 0.83,
-  "moves": 20,
-  "neverRate": 0,
-  "medianDone": 16,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 20,
+    "medianDone": 13,
     "estrellas": [
-     26,
-     16,
-     12
-    ],
-    "escala": 12800,
-    "gana": 1,
-    "dos": 0.7433333333333333,
-    "tres": 0.39666666666666667
-   },
-   "normal": {
-    "estrellas": [
-     22,
-     16,
+     20,
+     15,
      11
     ],
-    "escala": 12600,
-    "gana": 0.96,
-    "dos": 0.6733333333333333,
-    "tres": 0.24333333333333335
+    "escala": 12500,
+    "gana": 0.9233333333333333,
+    "dos": 0.6766666666666666,
+    "tres": 0.32,
+    "tasa": 0.949
+   },
+   "normal": {
+    "neverRate": 0,
+    "limite": 20,
+    "medianDone": 15,
+    "estrellas": [
+     20,
+     15,
+     11
+    ],
+    "escala": 12500,
+    "gana": 0.8833333333333333,
+    "dos": 0.5933333333333334,
+    "tres": 0.24333333333333335,
+    "tasa": 0.898
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 20,
+    "medianDone": 16,
     "estrellas": [
      20,
      15,
@@ -300,9 +362,11 @@
     "escala": 13800,
     "gana": 0.81,
     "dos": 0.45666666666666667,
-    "tres": 0.09
+    "tres": 0.09,
+    "tasa": 0.83
    }
   },
+  "moves": 20,
   "winRate": 0.81
  },
  "8": {
@@ -310,120 +374,146 @@
   "name": "puntaje",
   "tune": "score",
   "target": 0.76,
-  "scoreTarget": 7200,
-  "medianScore": 9760,
-  "moves": 22,
   "modos": {
    "facil": {
+    "limite": 5700,
+    "medianScore": 9600,
     "estrellas": [
-     5800,
-     11500,
-     16200
+     5700,
+     9400,
+     13000
     ],
-    "gana": 0.9833333333333333,
-    "dos": 0.8166666666666667,
-    "tres": 0.38333333333333336
+    "gana": 0.92,
+    "dos": 0.7533333333333333,
+    "tres": 0.38333333333333336,
+    "tasa": 0.928
    },
    "normal": {
+    "limite": 6400,
+    "medianScore": 9600,
     "estrellas": [
-     6500,
-     11700,
-     16400
+     6400,
+     10800,
+     15100
     ],
-    "gana": 0.93,
-    "dos": 0.6633333333333333,
-    "tres": 0.24666666666666667
+    "gana": 0.8733333333333333,
+    "dos": 0.6166666666666667,
+    "tres": 0.23,
+    "tasa": 0.856
    },
    "dificil": {
+    "limite": 7400,
+    "medianScore": 9600,
     "estrellas": [
-     7200,
-     12600,
-     16900
+     7400,
+     12700,
+     17000
     ],
-    "gana": 0.82,
-    "dos": 0.43666666666666665,
-    "tres": 0.13
+    "gana": 0.7966666666666666,
+    "dos": 0.4066666666666667,
+    "tres": 0.12666666666666668,
+    "tasa": 0.76
    }
   },
-  "winRate": 0.82
+  "scoreTarget": 7400,
+  "moves": 22,
+  "winRate": 0.7966666666666666
  },
  "9": {
   "id": 9,
   "name": "⏱ piezas",
   "tune": "time",
   "target": 0.82,
-  "time": 70,
-  "neverRate": 0,
-  "medianDone": 55.2675128983995,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 71,
+    "medianDone": 37.66931492390855,
     "estrellas": [
-     91,
+     71,
      50,
      35
     ],
-    "escala": 11000,
+    "escala": 10700,
     "gana": 1,
     "dos": 0.8266666666666667,
-    "tres": 0.4066666666666667
+    "tres": 0.4066666666666667,
+    "tasa": 0.946
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 71,
+    "medianDone": 45.863374133349396,
     "estrellas": [
-     78,
+     71,
      50,
      35
     ],
-    "escala": 11500,
-    "gana": 0.9966666666666667,
+    "escala": 11800,
+    "gana": 0.9833333333333333,
     "dos": 0.68,
-    "tres": 0.24
+    "tres": 0.24,
+    "tasa": 0.892
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 71,
+    "medianDone": 55.2675128983995,
     "estrellas": [
-     70,
+     71,
      50,
      35
     ],
     "escala": 12500,
-    "gana": 0.84,
+    "gana": 0.86,
     "dos": 0.3433333333333333,
-    "tres": 0.1
+    "tres": 0.1,
+    "tasa": 0.82
    }
   },
-  "winRate": 0.84
+  "time": 71,
+  "winRate": 0.86
  },
  "10": {
   "id": 10,
   "name": "piezas",
   "tune": "moves",
   "target": 0.74,
-  "moves": 20,
-  "neverRate": 0,
-  "medianDone": 17,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 21,
+    "medianDone": 15,
     "estrellas": [
-     26,
-     18,
-     14
+     21,
+     17,
+     13
     ],
-    "escala": 13600,
-    "gana": 0.9966666666666667,
-    "dos": 0.7266666666666667,
-    "tres": 0.41333333333333333
+    "escala": 13200,
+    "gana": 0.8866666666666667,
+    "dos": 0.6333333333333333,
+    "tres": 0.32666666666666666,
+    "tasa": 0.922
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 20,
+    "medianDone": 16,
     "estrellas": [
-     22,
+     20,
      16,
      12
     ],
-    "escala": 13400,
-    "gana": 0.8766666666666667,
+    "escala": 13600,
+    "gana": 0.79,
     "dos": 0.5133333333333333,
-    "tres": 0.23333333333333334
+    "tres": 0.23333333333333334,
+    "tasa": 0.844
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 20,
+    "medianDone": 17,
     "estrellas": [
      20,
      15,
@@ -432,9 +522,11 @@
     "escala": 14100,
     "gana": 0.7333333333333333,
     "dos": 0.36333333333333334,
-    "tres": 0.09333333333333334
+    "tres": 0.09333333333333334,
+    "tasa": 0.74
    }
   },
+  "moves": 20,
   "winRate": 0.7333333333333333
  },
  "11": {
@@ -442,33 +534,41 @@
   "name": "pads",
   "tune": "moves",
   "target": 0.88,
-  "moves": 14,
-  "neverRate": 0,
-  "medianDone": 9,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 17,
+    "medianDone": 9,
     "estrellas": [
-     18,
+     17,
      11,
      7
     ],
-    "escala": 23500,
-    "gana": 0.98,
+    "escala": 24000,
+    "gana": 0.97,
     "dos": 0.7533333333333333,
-    "tres": 0.3933333333333333
+    "tres": 0.3933333333333333,
+    "tasa": 0.964
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 15,
+    "medianDone": 9,
     "estrellas": [
-     16,
+     15,
      9,
      6
     ],
     "escala": 24500,
-    "gana": 0.9633333333333334,
+    "gana": 0.95,
     "dos": 0.5966666666666667,
-    "tres": 0.3
+    "tres": 0.3,
+    "tasa": 0.928
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 14,
+    "medianDone": 9,
     "estrellas": [
      14,
      7,
@@ -477,9 +577,11 @@
     "escala": 25000,
     "gana": 0.92,
     "dos": 0.3933333333333333,
-    "tres": 0.20333333333333334
+    "tres": 0.20333333333333334,
+    "tasa": 0.88
    }
   },
+  "moves": 14,
   "winRate": 0.92
  },
  "12": {
@@ -487,33 +589,41 @@
   "name": "pads",
   "tune": "moves",
   "target": 0.8,
-  "moves": 22,
-  "neverRate": 0,
-  "medianDone": 16,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 28,
+    "medianDone": 16,
     "estrellas": [
-     29,
+     28,
      20,
      14
     ],
-    "escala": 14600,
-    "gana": 0.9666666666666667,
+    "escala": 14700,
+    "gana": 0.9566666666666667,
     "dos": 0.76,
-    "tres": 0.37333333333333335
+    "tres": 0.37333333333333335,
+    "tasa": 0.94
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 24,
+    "medianDone": 16,
     "estrellas": [
-     25,
+     24,
      17,
      12
     ],
-    "escala": 15200,
-    "gana": 0.9333333333333333,
+    "escala": 14800,
+    "gana": 0.9033333333333333,
     "dos": 0.5733333333333334,
-    "tres": 0.19
+    "tres": 0.19,
+    "tasa": 0.88
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 22,
+    "medianDone": 16,
     "estrellas": [
      22,
      15,
@@ -522,9 +632,11 @@
     "escala": 14200,
     "gana": 0.8566666666666667,
     "dos": 0.44666666666666666,
-    "tres": 0.13666666666666666
+    "tres": 0.13666666666666666,
+    "tasa": 0.8
    }
   },
+  "moves": 22,
   "winRate": 0.8566666666666667
  },
  "13": {
@@ -532,11 +644,11 @@
   "name": "pads",
   "tune": "moves",
   "target": 0.72,
-  "moves": 25,
-  "neverRate": 0,
-  "medianDone": 22,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 33,
+    "medianDone": 22,
     "estrellas": [
      33,
      26,
@@ -545,9 +657,13 @@
     "escala": 20500,
     "gana": 0.93,
     "dos": 0.73,
-    "tres": 0.2866666666666667
+    "tres": 0.2866666666666667,
+    "tasa": 0.916
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 28,
+    "medianDone": 22,
     "estrellas": [
      28,
      21,
@@ -556,9 +672,13 @@
     "escala": 19700,
     "gana": 0.7966666666666666,
     "dos": 0.41,
-    "tres": 0.13333333333333333
+    "tres": 0.13333333333333333,
+    "tasa": 0.832
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 25,
+    "medianDone": 22,
     "estrellas": [
      25,
      19,
@@ -567,9 +687,11 @@
     "escala": 20500,
     "gana": 0.6866666666666666,
     "dos": 0.2866666666666667,
-    "tres": 0.09
+    "tres": 0.09,
+    "tasa": 0.72
    }
   },
+  "moves": 25,
   "winRate": 0.6866666666666666
  },
  "14": {
@@ -577,22 +699,26 @@
   "name": "⏱ pads",
   "tune": "time",
   "target": 0.65,
-  "time": 50,
-  "neverRate": 0,
-  "medianDone": 41.312880292885936,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 64,
+    "medianDone": 40.86551318591367,
     "estrellas": [
-     65,
+     64,
      55,
      40
     ],
-    "escala": 12500,
-    "gana": 0.9433333333333334,
+    "escala": 12400,
+    "gana": 0.9366666666666666,
     "dos": 0.7933333333333333,
-    "tres": 0.4766666666666667
+    "tres": 0.4766666666666667,
+    "tasa": 0.895
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 56,
+    "medianDone": 40.86551318591367,
     "estrellas": [
      56,
      45,
@@ -601,32 +727,38 @@
     "escala": 12500,
     "gana": 0.8733333333333333,
     "dos": 0.5966666666666667,
-    "tres": 0.19666666666666666
+    "tres": 0.19666666666666666,
+    "tasa": 0.79
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 47,
+    "medianDone": 40.86551318591367,
     "estrellas": [
-     50,
-     40,
+     47,
+     35,
      25
     ],
-    "escala": 11500,
-    "gana": 0.7766666666666666,
-    "dos": 0.4766666666666667,
-    "tres": 0.09333333333333334
+    "escala": 11300,
+    "gana": 0.7266666666666667,
+    "dos": 0.30333333333333334,
+    "tres": 0.09333333333333334,
+    "tasa": 0.65
    }
   },
-  "winRate": 0.7766666666666666
+  "time": 47,
+  "winRate": 0.7266666666666667
  },
  "15": {
   "id": 15,
   "name": "pads",
   "tune": "moves",
   "target": 0.55,
-  "moves": 23,
-  "neverRate": 0,
-  "medianDone": 23,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 30,
+    "medianDone": 23,
     "estrellas": [
      30,
      25,
@@ -635,9 +767,13 @@
     "escala": 17400,
     "gana": 0.8666666666666667,
     "dos": 0.6766666666666666,
-    "tres": 0.31333333333333335
+    "tres": 0.31333333333333335,
+    "tasa": 0.865
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 26,
+    "medianDone": 23,
     "estrellas": [
      26,
      20,
@@ -646,9 +782,13 @@
     "escala": 18300,
     "gana": 0.72,
     "dos": 0.36,
-    "tres": 0.17333333333333334
+    "tres": 0.17333333333333334,
+    "tasa": 0.73
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 23,
+    "medianDone": 23,
     "estrellas": [
      23,
      18,
@@ -657,9 +797,11 @@
     "escala": 17800,
     "gana": 0.5666666666666667,
     "dos": 0.26666666666666666,
-    "tres": 0.07666666666666666
+    "tres": 0.07666666666666666,
+    "tasa": 0.55
    }
   },
+  "moves": 23,
   "winRate": 0.5666666666666667
  },
  "16": {
@@ -667,11 +809,11 @@
   "name": "quemados",
   "tune": "moves",
   "target": 0.82,
-  "moves": 11,
-  "neverRate": 0,
-  "medianDone": 8,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 14,
+    "medianDone": 8,
     "estrellas": [
      14,
      11,
@@ -680,20 +822,28 @@
     "escala": 22500,
     "gana": 0.9433333333333334,
     "dos": 0.8666666666666667,
-    "tres": 0.44
+    "tres": 0.44,
+    "tasa": 0.946
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 13,
+    "medianDone": 8,
     "estrellas": [
-     12,
+     13,
      8,
-     5
+     6
     ],
-    "escala": 22000,
-    "gana": 0.9033333333333333,
+    "escala": 22500,
+    "gana": 0.91,
     "dos": 0.57,
-    "tres": 0.14666666666666667
+    "tres": 0.27666666666666667,
+    "tasa": 0.892
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 11,
+    "medianDone": 8,
     "estrellas": [
      11,
      7,
@@ -702,9 +852,11 @@
     "escala": 23000,
     "gana": 0.8666666666666667,
     "dos": 0.44,
-    "tres": 0.14666666666666667
+    "tres": 0.14666666666666667,
+    "tasa": 0.82
    }
   },
+  "moves": 11,
   "winRate": 0.8666666666666667
  },
  "17": {
@@ -712,11 +864,11 @@
   "name": "cinta",
   "tune": "moves",
   "target": 0.74,
-  "moves": 25,
-  "neverRate": 0,
-  "medianDone": 20,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 33,
+    "medianDone": 20,
     "estrellas": [
      33,
      24,
@@ -725,20 +877,28 @@
     "escala": 15200,
     "gana": 0.9133333333333333,
     "dos": 0.6766666666666666,
-    "tres": 0.36333333333333334
+    "tres": 0.36333333333333334,
+    "tasa": 0.922
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 29,
+    "medianDone": 20,
     "estrellas": [
-     28,
+     29,
      20,
      13
     ],
-    "escala": 14800,
-    "gana": 0.8066666666666666,
+    "escala": 14400,
+    "gana": 0.8366666666666667,
     "dos": 0.5033333333333333,
-    "tres": 0.14666666666666667
+    "tres": 0.14666666666666667,
+    "tasa": 0.844
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 25,
+    "medianDone": 20,
     "estrellas": [
      25,
      17,
@@ -747,9 +907,11 @@
     "escala": 14000,
     "gana": 0.72,
     "dos": 0.36333333333333334,
-    "tres": 0.08333333333333333
+    "tres": 0.08333333333333333,
+    "tasa": 0.74
    }
   },
+  "moves": 25,
   "winRate": 0.72
  },
  "18": {
@@ -757,33 +919,41 @@
   "name": "quemados",
   "tune": "moves",
   "target": 0.66,
-  "moves": 17,
-  "neverRate": 0,
-  "medianDone": 15,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 24,
+    "medianDone": 15,
     "estrellas": [
-     22,
-     18,
+     24,
+     19,
      13
     ],
-    "escala": 11300,
-    "gana": 0.85,
-    "dos": 0.69,
-    "tres": 0.30333333333333334
+    "escala": 10800,
+    "gana": 0.9133333333333333,
+    "dos": 0.74,
+    "tres": 0.30333333333333334,
+    "tasa": 0.898
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 20,
+    "medianDone": 15,
     "estrellas": [
-     19,
+     20,
      15,
      11
     ],
-    "escala": 10400,
-    "gana": 0.74,
+    "escala": 10700,
+    "gana": 0.7766666666666666,
     "dos": 0.4866666666666667,
-    "tres": 0.17333333333333334
+    "tres": 0.17333333333333334,
+    "tasa": 0.796
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 17,
+    "medianDone": 15,
     "estrellas": [
      17,
      13,
@@ -792,9 +962,11 @@
     "escala": 10000,
     "gana": 0.6133333333333333,
     "dos": 0.30333333333333334,
-    "tres": 0.06666666666666667
+    "tres": 0.06666666666666667,
+    "tasa": 0.66
    }
   },
+  "moves": 17,
   "winRate": 0.6133333333333333
  },
  "19": {
@@ -802,78 +974,96 @@
   "name": "⏱ quemados",
   "tune": "time",
   "target": 0.58,
-  "time": 45,
-  "neverRate": 0,
-  "medianDone": 40.282734030520544,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 65,
+    "medianDone": 40.47975801308081,
     "estrellas": [
-     59,
+     65,
      50,
      35
     ],
-    "escala": 11400,
-    "gana": 0.81,
+    "escala": 11900,
+    "gana": 0.85,
     "dos": 0.6633333333333333,
-    "tres": 0.42333333333333334
+    "tres": 0.42333333333333334,
+    "tasa": 0.874
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 52,
+    "medianDone": 40.47975801308081,
     "estrellas": [
-     50,
+     52,
      40,
      25
     ],
     "escala": 11000,
-    "gana": 0.7266666666666667,
+    "gana": 0.74,
     "dos": 0.5,
-    "tres": 0.13333333333333333
+    "tres": 0.13333333333333333,
+    "tasa": 0.748
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 43,
+    "medianDone": 40.47975801308081,
     "estrellas": [
-     45,
+     43,
      35,
-     25
+     20
     ],
-    "escala": 11000,
-    "gana": 0.64,
+    "escala": 10800,
+    "gana": 0.6266666666666667,
     "dos": 0.42333333333333334,
-    "tres": 0.13333333333333333
+    "tres": 0.06333333333333334,
+    "tasa": 0.58
    }
   },
-  "winRate": 0.64
+  "time": 43,
+  "winRate": 0.6266666666666667
  },
  "20": {
   "id": 20,
   "name": "quemados + pads",
   "tune": "moves",
   "target": 0.5,
-  "moves": 13,
-  "neverRate": 0,
-  "medianDone": 14,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 20,
+    "medianDone": 14,
     "estrellas": [
-     17,
-     14,
+     20,
+     16,
      11
     ],
-    "escala": 12400,
-    "gana": 0.7533333333333333,
-    "dos": 0.59,
-    "tres": 0.3233333333333333
+    "escala": 13300,
+    "gana": 0.8733333333333333,
+    "dos": 0.6866666666666666,
+    "tres": 0.3233333333333333,
+    "tasa": 0.85
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 16,
+    "medianDone": 14,
     "estrellas": [
-     15,
+     16,
      12,
      9
     ],
-    "escala": 13000,
-    "gana": 0.64,
+    "escala": 12600,
+    "gana": 0.6866666666666666,
     "dos": 0.39,
-    "tres": 0.18666666666666668
+    "tres": 0.18666666666666668,
+    "tasa": 0.7
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 13,
+    "medianDone": 14,
     "estrellas": [
      13,
      10,
@@ -882,9 +1072,11 @@
     "escala": 11700,
     "gana": 0.47,
     "dos": 0.27,
-    "tres": 0.06
+    "tres": 0.06,
+    "tasa": 0.5
    }
   },
+  "moves": 13,
   "winRate": 0.47
  },
  "21": {
@@ -892,22 +1084,26 @@
   "name": "válvulas",
   "tune": "moves",
   "target": 0.76,
-  "moves": 14,
-  "neverRate": 0,
-  "medianDone": 11,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 17,
+    "medianDone": 12,
     "estrellas": [
-     18,
+     17,
      14,
      10
     ],
-    "escala": 29500,
-    "gana": 0.9133333333333333,
+    "escala": 27500,
+    "gana": 0.8866666666666667,
     "dos": 0.7433333333333333,
-    "tres": 0.38333333333333336
+    "tres": 0.38333333333333336,
+    "tasa": 0.928
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 16,
+    "medianDone": 12,
     "estrellas": [
      16,
      12,
@@ -916,9 +1112,13 @@
     "escala": 27500,
     "gana": 0.8466666666666667,
     "dos": 0.6366666666666667,
-    "tres": 0.27
+    "tres": 0.27,
+    "tasa": 0.856
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 14,
+    "medianDone": 12,
     "estrellas": [
      14,
      10,
@@ -927,9 +1127,11 @@
     "escala": 26500,
     "gana": 0.7433333333333333,
     "dos": 0.38333333333333336,
-    "tres": 0.15666666666666668
+    "tres": 0.15666666666666668,
+    "tasa": 0.76
    }
   },
+  "moves": 14,
   "winRate": 0.7433333333333333
  },
  "22": {
@@ -937,11 +1139,11 @@
   "name": "válvulas",
   "tune": "moves",
   "target": 0.66,
-  "moves": 24,
-  "neverRate": 0,
-  "medianDone": 22,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 31,
+    "medianDone": 22,
     "estrellas": [
      31,
      24,
@@ -950,9 +1152,13 @@
     "escala": 29000,
     "gana": 0.9466666666666667,
     "dos": 0.71,
-    "tres": 0.2966666666666667
+    "tres": 0.2966666666666667,
+    "tasa": 0.898
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 27,
+    "medianDone": 22,
     "estrellas": [
      27,
      20,
@@ -961,32 +1167,38 @@
     "escala": 28000,
     "gana": 0.8466666666666667,
     "dos": 0.4633333333333333,
-    "tres": 0.22
+    "tres": 0.22,
+    "tasa": 0.796
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 23,
+    "medianDone": 22,
     "estrellas": [
-     24,
+     23,
      18,
      15
     ],
     "escala": 28500,
-    "gana": 0.71,
+    "gana": 0.6533333333333333,
     "dos": 0.2966666666666667,
-    "tres": 0.11
+    "tres": 0.11,
+    "tasa": 0.66
    }
   },
-  "winRate": 0.71
+  "moves": 23,
+  "winRate": 0.6533333333333333
  },
  "23": {
   "id": 23,
   "name": "válvulas + piezas",
   "tune": "moves",
   "target": 0.58,
-  "moves": 17,
-  "neverRate": 0,
-  "medianDone": 17,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 22,
+    "medianDone": 16,
     "estrellas": [
      22,
      18,
@@ -995,9 +1207,13 @@
     "escala": 33500,
     "gana": 0.8866666666666667,
     "dos": 0.71,
-    "tres": 0.37666666666666665
+    "tres": 0.37666666666666665,
+    "tasa": 0.874
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 19,
+    "medianDone": 17,
     "estrellas": [
      19,
      16,
@@ -1006,74 +1222,88 @@
     "escala": 35000,
     "gana": 0.73,
     "dos": 0.5066666666666667,
-    "tres": 0.21666666666666667
+    "tres": 0.21666666666666667,
+    "tasa": 0.748
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 18,
+    "medianDone": 17,
     "estrellas": [
-     17,
+     18,
      14,
-     11
+     12
     ],
-    "escala": 37500,
-    "gana": 0.6066666666666667,
+    "escala": 36000,
+    "gana": 0.6933333333333334,
     "dos": 0.3466666666666667,
-    "tres": 0.06666666666666667
+    "tres": 0.13,
+    "tasa": 0.58
    }
   },
-  "winRate": 0.6066666666666667
+  "moves": 18,
+  "winRate": 0.6933333333333334
  },
  "24": {
   "id": 24,
   "name": "⏱ puntaje",
   "tune": "score",
   "target": 0.52,
-  "scoreTarget": 9700,
-  "medianScore": 9910,
-  "time": 75,
   "modos": {
    "facil": {
+    "limite": 6800,
+    "medianScore": 9880,
     "estrellas": [
-     7800,
-     12400,
-     16000
+     6800,
+     9600,
+     12800
     ],
-    "gana": 0.9466666666666667,
-    "dos": 0.7366666666666667,
-    "tres": 0.38333333333333336
+    "gana": 0.8766666666666667,
+    "dos": 0.75,
+    "tres": 0.37,
+    "tasa": 0.856
    },
    "normal": {
+    "limite": 8100,
+    "medianScore": 9880,
     "estrellas": [
-     8700,
-     12600,
-     16400
+     8100,
+     11500,
+     15000
     ],
-    "gana": 0.8066666666666666,
-    "dos": 0.5266666666666666,
-    "tres": 0.19666666666666666
+    "gana": 0.7533333333333333,
+    "dos": 0.5466666666666666,
+    "tres": 0.19333333333333333,
+    "tasa": 0.712
    },
    "dificil": {
+    "limite": 9600,
+    "medianScore": 9880,
     "estrellas": [
-     9700,
+     9600,
      13700,
-     17000
+     16900
     ],
-    "gana": 0.5266666666666666,
+    "gana": 0.5366666666666666,
     "dos": 0.25,
-    "tres": 0.10333333333333333
+    "tres": 0.10333333333333333,
+    "tasa": 0.52
    }
   },
-  "winRate": 0.5266666666666666
+  "scoreTarget": 9600,
+  "time": 75,
+  "winRate": 0.5366666666666666
  },
  "25": {
   "id": 25,
   "name": "válvulas + pads",
   "tune": "moves",
   "target": 0.46,
-  "moves": 19,
-  "neverRate": 0,
-  "medianDone": 20,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 25,
+    "medianDone": 20,
     "estrellas": [
      25,
      21,
@@ -1082,20 +1312,28 @@
     "escala": 40000,
     "gana": 0.8466666666666667,
     "dos": 0.61,
-    "tres": 0.25333333333333335
+    "tres": 0.25333333333333335,
+    "tasa": 0.838
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 23,
+    "medianDone": 20,
     "estrellas": [
-     21,
-     18,
+     23,
+     19,
      16
     ],
-    "escala": 39500,
-    "gana": 0.61,
-    "dos": 0.35333333333333333,
-    "tres": 0.16333333333333333
+    "escala": 38500,
+    "gana": 0.7366666666666667,
+    "dos": 0.4666666666666667,
+    "tres": 0.16333333333333333,
+    "tasa": 0.676
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 19,
+    "medianDone": 20,
     "estrellas": [
      19,
      17,
@@ -1104,9 +1342,11 @@
     "escala": 38500,
     "gana": 0.4666666666666667,
     "dos": 0.25333333333333335,
-    "tres": 0.05
+    "tres": 0.05,
+    "tasa": 0.46
    }
   },
+  "moves": 19,
   "winRate": 0.4666666666666667
  },
  "26": {
@@ -1114,78 +1354,96 @@
   "name": "piezas",
   "tune": "moves",
   "target": 0.6,
-  "moves": 26,
-  "neverRate": 0,
-  "medianDone": 25,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 27,
+    "medianDone": 19,
     "estrellas": [
-     34,
-     23,
+     27,
+     22,
      18
     ],
-    "escala": 9300,
-    "gana": 0.9933333333333333,
-    "dos": 0.8066666666666666,
-    "tres": 0.4666666666666667
+    "escala": 8900,
+    "gana": 0.9066666666666666,
+    "dos": 0.76,
+    "tres": 0.4666666666666667,
+    "tasa": 0.88
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 27,
+    "medianDone": 21,
     "estrellas": [
-     29,
+     27,
      22,
      17
     ],
-    "escala": 9700,
-    "gana": 0.9033333333333333,
+    "escala": 9800,
+    "gana": 0.82,
     "dos": 0.55,
-    "tres": 0.20666666666666667
+    "tres": 0.20666666666666667,
+    "tasa": 0.76
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 27,
+    "medianDone": 25,
     "estrellas": [
-     26,
-     21,
+     27,
+     22,
      16
     ],
-    "escala": 10500,
-    "gana": 0.57,
-    "dos": 0.24666666666666667,
-    "tres": 0.06666666666666667
+    "escala": 10700,
+    "gana": 0.6233333333333333,
+    "dos": 0.3333333333333333,
+    "tres": 0.06666666666666667,
+    "tasa": 0.6
    }
   },
-  "winRate": 0.57
+  "moves": 27,
+  "winRate": 0.6233333333333333
  },
  "27": {
   "id": 27,
   "name": "pads",
   "tune": "moves",
   "target": 0.52,
-  "moves": 26,
-  "neverRate": 0,
-  "medianDone": 26,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 35,
+    "medianDone": 26,
     "estrellas": [
-     34,
+     35,
      30,
      23
     ],
-    "escala": 21000,
-    "gana": 0.86,
+    "escala": 20500,
+    "gana": 0.89,
     "dos": 0.7433333333333333,
-    "tres": 0.37333333333333335
+    "tres": 0.37333333333333335,
+    "tasa": 0.856
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 30,
+    "medianDone": 26,
     "estrellas": [
-     29,
+     30,
      25,
      20
     ],
     "escala": 21000,
-    "gana": 0.71,
+    "gana": 0.7433333333333333,
     "dos": 0.46,
-    "tres": 0.18333333333333332
+    "tres": 0.18333333333333332,
+    "tasa": 0.712
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 26,
+    "medianDone": 26,
     "estrellas": [
      26,
      21,
@@ -1194,9 +1452,11 @@
     "escala": 20500,
     "gana": 0.5433333333333333,
     "dos": 0.25,
-    "tres": 0.06333333333333334
+    "tres": 0.06333333333333334,
+    "tasa": 0.52
    }
   },
+  "moves": 26,
   "winRate": 0.5433333333333333
  },
  "28": {
@@ -1204,31 +1464,36 @@
   "name": "⏱ puntaje",
   "tune": "score",
   "target": 0.45,
-  "scoreTarget": 6900,
-  "medianScore": 6720,
-  "time": 90,
   "modos": {
    "facil": {
+    "limite": 5100,
+    "medianScore": 6690,
     "estrellas": [
-     5500,
-     8000,
-     10000
+     5100,
+     6700,
+     8100
     ],
-    "gana": 0.96,
-    "dos": 0.76,
-    "tres": 0.43
+    "gana": 0.82,
+    "dos": 0.6633333333333333,
+    "tres": 0.4,
+    "tasa": 0.835
    },
    "normal": {
+    "limite": 5800,
+    "medianScore": 6690,
     "estrellas": [
-     6200,
-     8300,
-     10100
+     5800,
+     7600,
+     9600
     ],
-    "gana": 0.7233333333333334,
-    "dos": 0.5033333333333333,
-    "tres": 0.23
+    "gana": 0.67,
+    "dos": 0.4766666666666667,
+    "tres": 0.21666666666666667,
+    "tasa": 0.67
    },
    "dificil": {
+    "limite": 6900,
+    "medianScore": 6690,
     "estrellas": [
      6900,
      9200,
@@ -1236,9 +1501,12 @@
     ],
     "gana": 0.43333333333333335,
     "dos": 0.24333333333333335,
-    "tres": 0.07
+    "tres": 0.07,
+    "tasa": 0.45
    }
   },
+  "scoreTarget": 6900,
+  "time": 90,
   "winRate": 0.43333333333333335
  },
  "29": {
@@ -1246,67 +1514,81 @@
   "name": "quemados + cinta + válvulas",
   "tune": "moves",
   "target": 0.4,
-  "moves": 12,
-  "neverRate": 0,
-  "medianDone": 14,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 18,
+    "medianDone": 14,
     "estrellas": [
-     16,
-     14,
-     11
+     18,
+     15,
+     12
     ],
     "escala": 31500,
-    "gana": 0.7366666666666667,
-    "dos": 0.58,
-    "tres": 0.25333333333333335
+    "gana": 0.8533333333333334,
+    "dos": 0.6666666666666666,
+    "tres": 0.37666666666666665,
+    "tasa": 0.82
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 15,
+    "medianDone": 14,
     "estrellas": [
+     15,
      13,
-     11,
      9
     ],
-    "escala": 30500,
-    "gana": 0.4766666666666667,
-    "dos": 0.25333333333333335,
-    "tres": 0.12
+    "escala": 31500,
+    "gana": 0.6666666666666666,
+    "dos": 0.4766666666666667,
+    "tres": 0.12,
+    "tasa": 0.64
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 13,
+    "medianDone": 14,
     "estrellas": [
-     12,
+     13,
      10,
      8
     ],
     "escala": 30500,
-    "gana": 0.37666666666666665,
+    "gana": 0.4766666666666667,
     "dos": 0.19,
-    "tres": 0.05333333333333334
+    "tres": 0.05333333333333334,
+    "tasa": 0.4
    }
   },
-  "winRate": 0.37666666666666665
+  "moves": 13,
+  "winRate": 0.4766666666666667
  },
  "30": {
   "id": 30,
   "name": "pads + quemados + válvulas",
   "tune": "moves",
   "target": 0.34,
-  "moves": 13,
-  "neverRate": 0,
-  "medianDone": 15,
   "modos": {
    "facil": {
+    "neverRate": 0,
+    "limite": 20,
+    "medianDone": 15,
     "estrellas": [
+     20,
      17,
-     16,
-     12
+     13
     ],
     "escala": 34500,
-    "gana": 0.7366666666666667,
-    "dos": 0.67,
-    "tres": 0.31666666666666665
+    "gana": 0.85,
+    "dos": 0.7366666666666667,
+    "tres": 0.41,
+    "tasa": 0.802
    },
    "normal": {
+    "neverRate": 0,
+    "limite": 15,
+    "medianDone": 15,
     "estrellas": [
      15,
      13,
@@ -1315,9 +1597,13 @@
     "escala": 35500,
     "gana": 0.5666666666666667,
     "dos": 0.41,
-    "tres": 0.13
+    "tres": 0.13,
+    "tasa": 0.604
    },
    "dificil": {
+    "neverRate": 0,
+    "limite": 13,
+    "medianDone": 15,
     "estrellas": [
      13,
      11,
@@ -1326,9 +1612,11 @@
     "escala": 35500,
     "gana": 0.41,
     "dos": 0.20666666666666667,
-    "tres": 0.08333333333333333
+    "tres": 0.08333333333333333,
+    "tasa": 0.34
    }
   },
+  "moves": 13,
   "winRate": 0.41
  }
 }

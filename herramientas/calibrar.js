@@ -1,13 +1,14 @@
 /* Calibración de dificultad con un bot imperfecto.
-   Primero, el límite de Difícil: los movimientos, el tiempo o la primera meta de puntos de cada nivel, para que el bot
-   gane con la tasa que pide levels.js (target). Después, en cada modo (S-28), las estrellas: en los niveles de pedido,
+   Primero, en cada modo, el límite: los movimientos, el tiempo o la primera meta de puntos de cada nivel, para que el bot
+   gane con la tasa que busca el modo (target de levels.js en Difícil; en Normal y Fácil, tasaDe con el recorte de MODES).
+   Después, en cada modo (S-28), las estrellas: en los niveles de pedido,
    la cantidad máxima de movidas (o de segundos) para dos y para tres; en los de puntos, la segunda y la tercera meta (o las de `metas`, si el nivel las fija a mano). Se
    eligen para que, de las partidas que el bot gana en ese modo, lleguen a dos estrellas o más y a tres las fracciones de
    `reparto` (MODES, en levels.js). También el fondo de escala del vúmetro de los de pedido. Al final, una verificación
    con las reglas de verdad.
    node herramientas/calibrar.js [partidas] [mejor] [niveles] [--estrellas] → escribe codigo/calibrated.json
    Ejemplos: node herramientas/calibrar.js 400 0.62 16,17,18
-             node herramientas/calibrar.js 300 0.62 todos --estrellas   (deja el límite de Difícil y rehace las estrellas) */
+             node herramientas/calibrar.js 300 0.62 todos --estrellas   (deja el límite de cada modo y rehace las estrellas) */
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const fs = require('fs');
 const E = require('../codigo/engine.js');
@@ -60,21 +61,21 @@ function defIn(id, cal, M) {
   return LV.applyMode(LV.levelAt(id, { [id]: cal }), M);
 }
 
-// el límite de Difícil (lo de siempre)
-function limite(li, n, skill, out) {
-  const base = LEVELS[li];
+// el límite de un modo: en pedido, los movimientos o el tiempo (de a 1 segundo) para que el bot gane con la tasa que busca
+// el modo (tasaDe), con su ayuda de piezas; en puntos, la primera meta, con las mismas movidas o el mismo tiempo
+function limite(li, M, n, skill) {
+  const base = LEVELS[li], t = LV.tasaDe(base.target, M), out = {};
   if (base.tune === 'score') {
     // con una meta inalcanzable, los puntos de jugar hasta el final (sin bonus): la meta deja ganar a la tasa buscada
-    const L = Object.assign({}, base, { goals: [{ type: 'score', n: 1e9 }] });
+    const L = Object.assign({}, base, { goals: [{ type: 'score', n: 1e9 }], ayuda: M.ayuda });
     const scores = [];
     for (let s = 0; s < n; s++) scores.push(play(L, 1000 + s, skill).pre);
     const step = paso(quantile(scores, 0.5));
-    out.scoreTarget = Math.floor(quantile(scores, 1 - base.target) / step) * step;
+    out.limite = Math.max(step, Math.floor(quantile(scores, 1 - t) / step) * step);
     out.medianScore = quantile(scores, 0.5);
-    if (base.time) out.time = base.time; else out.moves = base.moves;
-    return;
+    return out;
   }
-  const L1 = Object.assign({}, base);
+  const L1 = Object.assign({}, base, { ayuda: M.ayuda });
   if (base.tune === 'moves') L1.moves = 150; else L1.time = 900;
   const done = [];
   for (let s = 0; s < n; s++) {
@@ -83,16 +84,16 @@ function limite(li, n, skill, out) {
   }
   const finite = done.filter(Number.isFinite);
   out.neverRate = 1 - finite.length / done.length;
-  const step = base.tune === 'moves' ? 1 : 5;
-  let knob = step, bestErr = 9;
-  for (let m = step; m <= (base.tune === 'moves' ? 150 : 900); m += step) {
+  let knob = 1, bestErr = 9;
+  for (let m = 1; m <= (base.tune === 'moves' ? 150 : 900); m++) {
     const cdf = done.filter(v => v <= m).length / done.length;
-    const err = Math.abs(cdf - base.target);
+    const err = Math.abs(cdf - t);
     if (err < bestErr) { bestErr = err; knob = m; }
-    if (cdf > base.target + 0.1) break;
+    if (cdf > t + 0.1) break;
   }
-  if (base.tune === 'moves') out.moves = knob; else out.time = knob;
+  out.limite = knob;
   out.medianDone = quantile(finite, 0.5);
+  return out;
 }
 
 // las estrellas de un modo
@@ -124,12 +125,22 @@ function verificar(id, cal, M, n, skill) {
 
 function calibrar(li, n, skill, soloEstrellas, prev) {
   const base = LEVELS[li], id = li + 1;
-  const out = { id, name: resumen(base), tune: base.tune, target: base.target };
-  if (soloEstrellas && prev) { for (const k of ['scoreTarget', 'medianScore', 'moves', 'time', 'neverRate', 'medianDone']) if (prev[k] !== undefined) out[k] = prev[k]; }
-  else limite(li, n, skill, out);
-  out.modos = {};
-  for (const M of MODES) out.modos[M.id] = estrellas(id, out, M, n, skill);
-  for (const M of MODES) Object.assign(out.modos[M.id], verificar(id, out, M, n, skill));
+  const out = { id, name: resumen(base), tune: base.tune, target: base.target, modos: {} };
+  for (const M of MODES) {
+    const viejo = soloEstrellas && prev && prev.modos && prev.modos[M.id];
+    out.modos[M.id] = viejo && viejo.limite ? { limite: viejo.limite } : limite(li, M, n, skill);
+  }
+  // un modo más fácil nunca da menos movimientos (o tiempo) ni pide una meta más alta que uno más difícil: con la ayuda de
+  // piezas, los de pedido de piezas saldrían con menos movimientos en Fácil que en Difícil, y eso no se entiende
+  const [F, No, D] = ['facil', 'normal', 'dificil'].map(k => out.modos[k]);
+  if (base.tune === 'score') { No.limite = Math.min(No.limite, D.limite); F.limite = Math.min(F.limite, No.limite); }
+  else { No.limite = Math.max(No.limite, D.limite); F.limite = Math.max(F.limite, No.limite); }
+  // los valores de Difícil, también arriba: el límite de base del nivel
+  const dl = out.modos.dificil.limite;
+  if (base.tune === 'score') { out.scoreTarget = dl; if (base.time) out.time = base.time; else out.moves = base.moves; }
+  else if (base.tune === 'moves') out.moves = dl; else out.time = dl;
+  for (const M of MODES) Object.assign(out.modos[M.id], estrellas(id, out, M, n, skill));
+  for (const M of MODES) Object.assign(out.modos[M.id], verificar(id, out, M, n, skill), { tasa: LV.tasaDe(base.target, M) });
   out.winRate = out.modos.dificil.gana;
   return out;
 }
@@ -155,7 +166,7 @@ if (isMainThread) {
       const knob = r.tune === 'score' ? `obj ${r.scoreTarget}` : r.tune === 'moves' ? `${r.moves} mov` : `${r.time} s`;
       console.log(`L${String(r.id).padStart(2)} ${r.name.padEnd(16)} ${knob.padEnd(10)} meta ${pc(r.target)} · ` + MODES.map(M => {
         const m = r.modos[M.id];
-        return `${M.name} ★ ${m.estrellas.join('/')} gana ${pc(m.gana)} ≥2 ${pc(m.dos)} 3 ${pc(m.tres)}`;
+        return `${M.name} ★ ${m.estrellas.join('/')} gana ${pc(m.gana)} (busca ${pc(m.tasa)}) ≥2 ${pc(m.dos)} 3 ${pc(m.tres)}`;
       }).join(' · '));
     });
     wk.on('exit', () => {

@@ -36,7 +36,7 @@ const q = (arr, p) => { const a = arr.slice().sort((x, y) => x - y); if (!a.leng
 function datos(n, partidas) {
   const L = generated(n), out = { n, tune: L.tune, target: L.target, colors: L.colors, f: features(L), resumen: resumen(L) };
   if (L.tune === 'score') {
-    const d = levelAt(n); d.goals[0].n = 1e9;   // inalcanzable: los puntos de jugar hasta el final, sin bonus
+    const d = levelAt(n); d.goals[0].n = 1e9; d.stars = [1e9, 1e12, 1e12];   // inalcanzable: los puntos de jugar hasta el final, sin bonus
     out.jug = L.time ? null : L.moves; out.time = L.time || null;
     out.scores = []; for (let s = 0; s < partidas; s++) out.scores.push(play(d, 1000 + s).score);
     return out;
@@ -46,6 +46,15 @@ function datos(n, partidas) {
   for (let s = 0; s < partidas; s++) {
     const r = play(d, 1000 + s);
     out.done.push(r.won ? r.moves : null); out.times.push(r.won ? r.time : null); out.scoreAt.push(r.won ? r.scoreAt : null);
+  }
+  // con pedido de piezas, también con la ayuda de Normal y Fácil, para ajustar GEN.ayudaPiezas
+  if (L.goals.some(o => o.type === 'collect')) {
+    out.doneModo = {};
+    for (const M of LV.MODES.filter(m => m.ayuda)) {
+      const dm = Object.assign({}, d, { ayuda: M.ayuda }), v = [];
+      for (let s = 0; s < partidas; s++) { const r = play(dm, 1000 + s); v.push(r.won ? r.moves : null); }
+      out.doneModo[M.id] = v;
+    }
   }
   return out;
 }
@@ -125,8 +134,18 @@ if (cmd === 'ver') {
   const err = jug.map((d, i) => Math.abs(pred(d) - y[i]) / y[i]);
   console.log(`error mediano ${(q(err, 0.5) * 100).toFixed(0)} %, el peor ${(Math.max(...err) * 100).toFixed(0)} %`);
   // razón: cuántas veces la mediana hace falta para cada tasa
-  const razon = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9].map(t => [t, +q(jug.map(d => { const f = d.done.map(v => v === null ? 1e9 : v); return q(f, t) / q(f, 0.5); }), 0.5).toFixed(3)]);
+  const razon = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.98].map(t => [t, +q(jug.map(d => { const f = d.done.map(v => v === null ? 1e9 : v); return q(f, t) / q(f, 0.5); }), 0.5).toFixed(3)]);
   console.log('razon:', JSON.stringify(razon));
+  // la ayuda de piezas de cada modo: el factor sobre costo.piezas que mejor explica las medianas con esa ayuda
+  const ayuda = { dificil: 1 };
+  for (const M of LV.MODES.filter(m => m.ayuda)) {
+    const conj = jug.filter(d => d.doneModo);
+    const err = a => conj.reduce((acc, d) => { const v = d.doneModo[M.id].filter(x => x !== null); return acc + Math.log(medianMoves({ colors: d.colors }, G, d.f, a) / q(v, 0.5)) ** 2; }, 0);
+    let best = 1, be = err(1);
+    for (let a = 0.4; a <= 1.0001; a += 0.01) { const e = err(a); if (e < be) { be = e; best = a; } }
+    ayuda[M.id] = +best.toFixed(2);
+  }
+  console.log('ayudaPiezas:', JSON.stringify(ayuda));
   const spj = q(jug.flatMap(d => d.done.map((v, i) => v ? d.times[i] / v : null).filter(Boolean)), 0.5);
   console.log('segundosPorJugada:', spj.toFixed(2));
   const ppm = q(jug.flatMap(d => d.done.map((v, i) => v ? d.scoreAt[i] / v : null).filter(Boolean)), 0.5);
@@ -134,7 +153,7 @@ if (cmd === 'ver') {
   const sc = D.filter(d => d.scores);
   if (sc.length) {
     for (const cc of [5, 6, 7]) { const v = sc.filter(d => d.colors === cc).map(d => q(d.scores, 0.5) / (d.jug || d.time / spj)); if (v.length) console.log(`puntosPorJugada con ${cc} colores:`, q(v, 0.5) | 0, `(${v.length} niveles)`); }
-    const rp = [0.3, 0.5, 0.7, 0.9].map(t => [t, +q(sc.map(d => q(d.scores, 1 - t) / q(d.scores, 0.5)), 0.5).toFixed(3)]);
+    const rp = [0.3, 0.5, 0.7, 0.9, 0.95, 0.98].map(t => [t, +q(sc.map(d => q(d.scores, 1 - t) / q(d.scores, 0.5)), 0.5).toFixed(3)]);
     console.log('razonPuntos:', JSON.stringify(rp));
   }
 } else if (cmd === 'estrellas') {

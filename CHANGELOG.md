@@ -2,6 +2,11 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.13.0 — 1/11/2026
+
+- Fogonazo: **cada dificultad sigue su propia curva.** Normal y Fácil ya no multiplican los movimientos de Difícil: cada nivel se calibró en cada modo para que conserve las oleadas, sea de piezas, de puntos, de obstáculos o de válvulas. En Fácil, los niveles de piezas y de puntos que estaban regalados piden un poco más, y los de obstáculos y válvulas, menos. Un modo más fácil nunca da menos movimientos que uno más difícil.
+- **Estrellas recalibradas** en los 30 niveles y en los generados, en los tres modos. Las ya ganadas se conservan.
+
 ## 0.12.2 — 1/11/2026
 
 - Fogonazo: **metas más alcanzables en los niveles 1 y 2.** La segunda y la tercera pedían tres y cuatro veces la primera; ahora, dos y casi tres, como en el 5 y el 8. En Fácil, el 1 pide 7.600, 15.000 y 22.000.
