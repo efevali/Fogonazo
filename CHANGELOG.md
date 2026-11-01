@@ -2,6 +2,12 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.11.0 — 1/11/2026
+
+- Fogonazo: **cada dificultad tiene su propio camino** (S-26). Pasar un nivel en un modo ya no lo abre en los otros: cada modo tiene su próximo nivel, su mapa y sus estrellas. Los avances que ya existían siguen, en cada modo, desde el primer nivel que no se pasó en él.
+- **Récords de la dificultad elegida:** con la perilla de abajo se elige cuál se ve, con el nivel más alto superado y las estrellas ganadas, más grandes.
+- **El sticker del mapa** dice la dificultad y las estrellas conseguidas en ella, en dos renglones.
+
 ## 0.10.6 — 31/10/2026
 
 - Mahjong: **el cartel de avisos sale centrado sobre el tablero.** Quedaba arriba a la izquierda y cortado por el borde de la pantalla («No quedan pares libres…», «No hay jugadas para deshacer», «Este reparto no tiene salida»).

@@ -264,14 +264,12 @@ svg#scene { position: fixed; inset: 0; width: 100vw; height: 100vh; display: blo
       s += T(x, S.y + 266, 'RÉCORD  ' + (z.puntos ? `${fmt(z.puntos)} · ${fmtTime(z.tiempo)}` : '—'), 28);
       s += T(x, S.y + 318, 'TOCÁ PARA JUGAR ▶', 24, 'letter-spacing="1.5" opacity=".85"');
     } else {
-      s += T(x, S.y + 42, 'RÉCORDS', 24, 'letter-spacing="3" opacity=".85"');
-      M.MODES.forEach((m, i) => {
-        const cx = S.x + 90 + i * 156, on = i === M.modo;
-        s += T(cx, S.y + 84, m.toUpperCase(), 22, `text-anchor="middle" opacity="${on ? 1 : .75}"`);
-        s += T(cx, S.y + 134, String(M.maxLevel(i) || '—'), 46, 'text-anchor="middle"');
-        s += T(cx, S.y + 158, 'NIVEL', 18, 'text-anchor="middle" opacity=".8"');
-        s += `<path d="${star(cx - 18, S.y + 184, 10)}"/>` + T(cx - 3, S.y + 193, String(M.total(i)), 26);
-      });
+      s += T(x, S.y + 42, `RÉCORDS · ${mn}`, 24, 'letter-spacing="3" opacity=".85"');
+      const half = S.x + S.w / 2 + 10, lv = M.maxLevel();
+      s += T(x, S.y + 84, 'NIVEL MÁS ALTO', 20, 'opacity=".85"') + T(x, S.y + 106, 'SUPERADO', 20, 'opacity=".85"');
+      s += T(x, S.y + 180, lv ? String(lv) : '—', 64);
+      s += T(half, S.y + 84, 'ESTRELLAS', 20, 'opacity=".85"') + T(half, S.y + 106, 'GANADAS', 20, 'opacity=".85"');
+      s += `<path d="${star(half + 18, S.y + 158, 17)}"/>` + T(half + 46, S.y + 180, String(M.total()), 64);
       s += `<line x1="${S.x + 22}" y1="${S.y + 212}" x2="${S.x + S.w - 22}" y2="${S.y + 212}" stroke="#9dffbf" stroke-opacity=".5"/>`;
       const z = M.zen;
       s += T(x, S.y + 252, 'ZEN', 22, 'opacity=".85"') + T(x + 80, S.y + 252, z.puntos ? `${fmt(z.puntos)} PUNTOS · ${fmtTime(z.tiempo)}` : '—', 26);
