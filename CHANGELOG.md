@@ -2,6 +2,15 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.10.0 — 31/10/2026
+
+Fogonazo: un solo final para todos los niveles.
+
+- **Todos los niveles terminan al cumplir el pedido**, también los de puntaje, que ahora terminan al llegar a la meta en vez de jugarse hasta el final.
+- **El bonus, con especiales variados:** cada movimiento que sobra (o cada 5 segundos) se convierte en un especial al azar, no solo en un rayo: rayos y bombas, antenas de vez en cuando y rara vez una batería. Después explotan los especiales que quedaron en la placa, y los puntos suben con cada explosión.
+- **Al perder no explota nada**, tampoco en los de puntaje, que antes podían salvarse a último momento con los especiales de la placa.
+- **Estrellas recalibradas con el bot.** En los niveles de pedido casi no cambian; en los de puntaje, la meta y las estrellas bajan, porque ya no se juega hasta el final. En los generados, la fórmula se reajustó.
+
 ## 0.9.1 — 31/10/2026
 
 - Fogonazo: **el bonus final se cuenta mientras pasa.** Al completar el pedido, los puntos y la aguja del vúmetro ya no saltan al total con el primer rayo para quedarse quietos después: suben con cada rayo, cada especial y cada combo que explota. Los movimientos (o el reloj) bajan como antes.

@@ -771,7 +771,7 @@ function goalsDone(g) { return g.goals.every(o => o.have >= o.need); }
 
 function evaluateEnd(g, timeUp) {
   if (g.over || g.mode === 'zen') return;   // el modo zen no termina: lo termina quien juega
-  if (!g.scoreOnly && goalsDone(g)) { g.over = true; g.won = true; return; }
+  if (goalsDone(g)) { g.over = true; g.won = true; return; }   // también los de puntaje: se termina al llegar a la meta
   if (g.mode === 'moves' && g.moves <= 0) { g.over = true; g.won = goalsDone(g); return; }
   if (g.mode === 'time' && timeUp) { g.over = true; g.won = goalsDone(g); }
 }
@@ -789,18 +789,29 @@ function zenOrder(g) {
   return R.bonus;
 }
 
-// Final: los movimientos (o segundos) sobrantes se convierten en rayos.
+// Final, solo al ganar: los movimientos (o cada 5 segundos) sobrantes se convierten en especiales al azar, que explotan.
+// Rayos y bombas como base, antenas de vez en cuando y, rara vez, una batería (como mucho una por final).
+const BONUS_MIX = [[K.LH, 0.25], [K.LV, 0.25], [K.BOMB, 0.3], [K.ANT, 0.15], [K.BAT, 0.05]];
+function bonusKind(g, batUsed) {
+  let r = g.rng();
+  for (const [k, w] of BONUS_MIX) { if (r < w) return k === K.BAT && batUsed ? K.BOMB : k; r -= w; }
+  return K.LH;
+}
 function bonus(g) {
   const steps = [];
   let n = g.mode === 'moves' ? g.moves : Math.ceil(Math.max(0, g.timeLeft) / 5);
-  if (g.scoreOnly) n = 0;
   n = Math.min(n, 20);
   if (n > 0) {
     const cands = [];
     for (let i = 0; i < N; i++) { const p = g.p[i]; if (p && p.k === K.N && !p.lock) cands.push(i); }
     for (let k = cands.length - 1; k > 0; k--) { const j = (g.rng() * (k + 1)) | 0; [cands[k], cands[j]] = [cands[j], cands[k]]; }
     const pick = cands.slice(0, n);
-    const tr = pick.map(i => { const p = g.p[i]; p.k = g.rng() < 0.5 ? K.LH : K.LV; return { id: p.id, i, k: p.k }; });
+    let bat = false;
+    const tr = pick.map(i => {
+      const p = g.p[i]; p.k = bonusKind(g, bat);
+      if (p.k === K.BAT) { bat = true; p.c = -1; }
+      return { id: p.id, i, k: p.k };
+    });
     if (tr.length) {
       steps.push({ t: 'transform', list: tr, bonus: true });
       const w = newWave();
@@ -808,7 +819,7 @@ function bonus(g) {
       resolveAll(g, steps, w, null);
     }
   }
-  for (let r = 0; r < 4; r++) {
+  for (let r = 0; r < 4; r++) {   // después, los especiales que quedaron en la placa
     const sp = [];
     for (let i = 0; i < N; i++) { const p = g.p[i]; if (p && isSpecialK(p.k)) sp.push(i); }
     if (!sp.length) break;

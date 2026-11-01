@@ -36,7 +36,7 @@ const q = (arr, p) => { const a = arr.slice().sort((x, y) => x - y); if (!a.leng
 function datos(n, partidas) {
   const L = generated(n), out = { n, tune: L.tune, target: L.target, colors: L.colors, f: features(L), resumen: resumen(L) };
   if (L.tune === 'score') {
-    const d = levelAt(n); d.goals[0].n = 0;
+    const d = levelAt(n); d.goals[0].n = 1e9;   // inalcanzable: los puntos de jugar hasta el final, sin bonus
     out.jug = L.time ? null : L.moves; out.time = L.time || null;
     out.scores = []; for (let s = 0; s < partidas; s++) out.scores.push(play(d, 1000 + s).score);
     return out;
@@ -56,7 +56,7 @@ function medir(n, partidas) {
     const dm = LV.applyMode(Object.assign({}, d, { goals: d.goals.map(o => Object.assign({}, o)), stars: d.stars.slice() }), m);
     let w = 0, s2 = 0; const ganadores = [];
     for (let s = 0; s < partidas; s++) { const r = play(dm, 50000 + s); if (r.won) { w++; ganadores.push(r.score); if (r.score >= dm.stars[1]) s2++; } }
-    res.modos.push({ id: m.id, win: w / partidas, dos: s2 / partidas, mediana: q(ganadores, 0.5) });
+    res.modos.push({ id: m.id, win: w / partidas, dos: s2 / partidas, mediana: q(ganadores, 0.5), p86: q(ganadores, 0.86) });
   }
   return res;
 }
@@ -126,7 +126,14 @@ if (cmd === 'ver') {
   // los de puntaje contra lo que se ganó
   const R = JSON.parse(fs.readFileSync(MEDICION, 'utf8'));
   for (const cc of [5, 6, 7]) { const v = R.filter(r => r.tune !== 'score' && r.colors === cc).map(r => r.modos[2].mediana / r.jug); if (v.length) console.log(`estrellaPorJugada con ${cc} colores:`, q(v, 0.5) | 0, `(${v.length})`); }
-  const sc = R.filter(r => r.tune === 'score'); if (sc.length) console.log('puntaje, desvío mediano de la tasa en Difícil:', (q(sc.map(r => r.modos[2].win - r.target), 0.5) * 100).toFixed(0), 'puntos');
+  const pe = R.filter(r => r.tune !== 'score' && r.modos[2].mediana > 0);
+  if (pe.length) console.log('terceraEstrella (los de pedido):', q(pe.map(r => r.modos[2].p86 / r.modos[2].mediana), 0.5).toFixed(2));
+  const sc = R.filter(r => r.tune === 'score');
+  if (sc.length) {
+    console.log('puntaje, desvío mediano de la tasa en Difícil:', (q(sc.map(r => r.modos[2].win - r.target), 0.5) * 100).toFixed(0), 'puntos');
+    const ok = sc.filter(r => r.modos[2].mediana > 0);
+    console.log('estrellasPuntaje (× la meta):', JSON.stringify([q(ok.map(r => r.modos[2].mediana / r.knob), 0.5), q(ok.map(r => r.modos[2].p86 / r.knob), 0.5)].map(v => +v.toFixed(2))));
+  }
 } else if (cmd === 'medir') {
   const t0 = Date.now();
   enHilos('medir', () => process.stdout.write('.'), res => {

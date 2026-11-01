@@ -53,7 +53,7 @@ Una sola secuencia numerada, sin capítulos, nombres ni textos por nivel, como e
 - **La curva** sigue en oleadas, en bloques de cinco como del 1 al 30: cada bloque arranca amable y cierra con un nivel exigente. Baja de a poco hasta una meseta cercana a la dificultad de los niveles 26 a 30, para que nunca se vuelva imposible: en Difícil, la tasa de victoria buscada va de 62 % a 38 % dentro del bloque, y **uno de cada dos bloques es un respiro**, 8 puntos más fácil, para que se note en una sesión de 5 a 10 niveles. Del 31 al 50, una rampa suma unos puntos más.
 - **Contrarreloj:** uno de cada cinco, también en los generados: el cuarto de cada bloque.
 - **Qué pide cada nivel:** en cada bloque, tres pedidos simples distintos (piezas, pads, quemados, cinta o válvulas; a veces puntaje), el contrarreloj y el cierre, con dos pedidos o, desde el nivel 46, a veces tres. La placa, simétrica de izquierda a derecha, con las reglas de los hechos a mano: pads lejos del borde de abajo y de las esquinas, quemados siempre con pasos entre sí y huecos solo en las esquinas o en el centro. Seis componentes, siete en algunos de los difíciles y cinco con válvulas.
-- **Calibración con una fórmula, sin calibrar nivel por nivel:** los movimientos, el tiempo, la meta de puntos y las estrellas de cada generado salen de `GEN`, en `codigo/levels.js`, ajustada con el bot sobre una muestra (`herramientas/generados.js`). El teléfono no simula nada. Medidos del 31 al 90, el bot gana en promedio el 58 % en Difícil, el 71 % en Normal y el 85 % en Fácil; cada nivel se aparta de lo buscado unos 7 puntos (mediana), algunos bastante más, y ninguno es imposible. Producto prefirió esto a calibrar uno por uno (31/10).
+- **Calibración con una fórmula, sin calibrar nivel por nivel:** los movimientos, el tiempo, la meta de puntos y las estrellas de cada generado salen de `GEN`, en `codigo/levels.js`, ajustada con el bot sobre una muestra (`herramientas/generados.js`). El teléfono no simula nada. Medidos del 31 al 90, el bot gana en promedio el 59 % en Difícil, el 72 % en Normal y el 85 % en Fácil (remedido con el final único, 0.10.0); cada nivel se aparta de lo buscado unos 9 puntos (mediana), algunos bastante más, y ninguno es imposible. Producto prefirió esto a calibrar uno por uno (31/10).
 - **Agregar un nivel a mano** más adelante es insertarlo en la lista; los generados se corren detrás.
 - **Novedades:** cada componente, especial u obstáculo aparece por primera vez en un nivel puntual. Esa primera vez, junto a la placa hay una nota de cuaderno que explica el movimiento de la forma más simple. Lo que presenta cada nivel está en `tip`, en `codigo/levels.js`.
 
@@ -97,7 +97,7 @@ En orden de aparición: resistencia, capacitor electrolítico, LED, bobina toroi
 
 ### Cómo se juega
 
-Se desliza una pieza hacia su vecina, o se toca una y después la otra. Si quedan tres o más iguales en línea, o cuatro en un cuadrado de 2 × 2, se eliminan y caen piezas nuevas. Hay que cumplir el pedido del nivel antes de quedarse sin movimientos o sin tiempo. Los niveles de puntaje se juegan hasta el final; los de pedido terminan al cumplirlo.
+Se desliza una pieza hacia su vecina, o se toca una y después la otra. Si quedan tres o más iguales en línea, o cuatro en un cuadrado de 2 × 2, se eliminan y caen piezas nuevas. Hay que cumplir el pedido del nivel antes de quedarse sin movimientos o sin tiempo. Todos los niveles terminan al cumplirlo, también los de puntaje, que terminan al llegar a la meta (desde la 0.10.0; antes se jugaban hasta el final).
 
 ### Especiales
 
@@ -124,7 +124,7 @@ Las piezas bajan de a un casillero y las nuevas entran solo por arriba. Un lugar
 
 ### Bonus
 
-Al cumplir el pedido, cada movimiento que sobra (o cada 5 segundos) se convierte en un rayo de bonus. En los niveles de puntaje, al terminar explotan los especiales que quedaron en la placa.
+Solo al ganar, igual en todos los niveles: al cumplir el pedido, cada movimiento que sobra (o cada 5 segundos), hasta 20, se convierte en un especial al azar sobre una pieza común: rayos y bombas como base, antenas de vez en cuando y rara vez una batería, como mucho una por final (`BONUS_MIX`, en `codigo/engine.js`). Explotan, y después explotan los especiales que quedaron en la placa. Los puntos y el vúmetro suben con cada explosión. Al perder no hay bonus ni explosiones.
 
 ### Ayuda de piezas del pedido
 

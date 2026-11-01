@@ -960,19 +960,12 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     await wait(250);
     const before = g.score, timed = g.mode === 'time';
     let bonusLabel = '';
-    if (g.scoreOnly) {
-      // at the end, the specials left on the board go off and add up
-      const steps = E.bonus(g);
-      if (steps.length) { bigText(timed ? 'Tiempo: explotan los especiales' : 'Explotan los especiales'); await play(steps); await wait(300); bonusLabel = 'Bonus (especiales)'; }
-      g.won = E.goalsDone(g);
-      if (g.won) { fx('goal'); bigText(timed ? '¡Tiempo!' : '¡Listo!'); await wait(1000); }
-      else { bigText(timed ? 'Se acabó el tiempo' : 'Sin movimientos'); await wait(1300); }
-    } else if (g.won) {
+    if (g.won) {
       fx('goal'); bigText('¡Circuito completo!'); await wait(1000);
       const left = timed ? Math.ceil(timeLeft) : g.moves;
-      // the moves (or seconds) left become lightning that goes off
+      // the moves (or seconds) left become specials that go off, and then the ones left on the board
       const steps = E.bonus(g);
-      if (steps.length) { bonusLabel = timed ? `Bonus (${left} s)` : `Bonus (${left} ${left === 1 ? 'movimiento' : 'movimientos'})`; await play(steps); }
+      if (steps.length) { bonusLabel = left > 0 ? (timed ? `Bonus (${left} s)` : `Bonus (${left} ${left === 1 ? 'movimiento' : 'movimientos'})`) : 'Bonus (especiales)'; await play(steps); }
     } else {
       bigText(timed ? 'Se acabó el tiempo' : 'Sin movimientos');
       await wait(1300);

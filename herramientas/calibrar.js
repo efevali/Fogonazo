@@ -39,16 +39,21 @@ function calibrate(li, n, skill) {
   const base = LEVELS[li];
   const out = { id: li + 1, name: resumen(base), tune: base.tune, target: base.target };
   if (base.tune === 'score') {
-    const L = Object.assign({}, base);
+    // pass 1: con una meta inalcanzable, los puntos de jugar hasta el final (sin bonus): la meta deja ganar a la tasa buscada
+    const L = Object.assign({}, base, { goals: [{ type: 'score', n: 1e9 }] });
     const scores = [];
     for (let s = 0; s < n; s++) scores.push(play(L, 1000 + s, skill).score);
     const step = scores.length && quantile(scores, 0.5) > 20000 ? 500 : 100;
     const t = Math.floor(quantile(scores, 1 - base.target) / step) * step;
-    const s2 = roundTo(quantile(scores, 1 - base.target * 0.45), step);
-    const s3 = roundTo(quantile(scores, 1 - base.target * 0.12), step);
+    // pass 2: con esa meta, como se juega (termina al llegar y cobra lo que sobra): las estrellas, como en los de pedido
+    const L2 = Object.assign({}, base, { goals: [{ type: 'score', n: t }] });
+    const wins = [];
+    for (let s = 0; s < n; s++) { const r = play(L2, 50000 + s, skill); if (r.won) wins.push(r.score); }
+    const st2 = quantile(wins, 0.5) > 20000 ? 500 : 100;
+    const s2 = Math.max(t + st2, roundTo(quantile(wins, 0.5), st2));
     out.scoreTarget = t;
-    out.stars = [t, Math.max(s2, t + step), Math.max(s3, t + 2 * step)];
-    out.winRate = scores.filter(x => x >= t).length / scores.length;
+    out.stars = [t, s2, Math.max(s2 + st2, roundTo(quantile(wins, 0.86), st2))];
+    out.winRate = wins.length / n;
     out.medianScore = quantile(scores, 0.5);
     if (base.time) out.time = base.time; else out.moves = base.moves;
     return out;

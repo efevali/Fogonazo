@@ -112,6 +112,7 @@ Por qué la colección es como es: cada decisión vigente con su fecha y su moti
 - **Quemados y cinta frenan lo que cae** (3/10). Antes, las piezas pasaban por detrás de las piezas inmovilizadas.
 - **Válvulas sin bajada libre** (3/10): bajan solo cuando desaparecen las piezas de abajo. *Descartados:* que nunca se muevan a mano, y tener que combinar de costado para que esquiven un obstáculo.
 - **Válvulas por jugada** (8/10, #25). Salían de a una y siempre por la misma columna. *Descartado:* que aparezcan transformando una pieza en cualquier lugar.
+- **Un solo final para todos los niveles** (31/10, 0.10.0). Los de puntaje se jugaban hasta el final y los de pedido terminaban al cumplir; dos reglas que había que explicar. Ahora todos terminan al cumplir el pedido (la meta, en los de puntaje) y lo que sobra se cobra en especiales al azar, no solo rayos: rayos y bombas, antenas a veces y rara vez una batería. Al perder no explota nada, tampoco en los de puntaje, que antes podían salvarse con los especiales de la placa. Las estrellas se recalibraron con el bot. *Descartados:* seguir jugando con el pedido cumplido en todos los niveles (sin riesgo, las jugadas de sobra se vuelven trámite) y elegir entre cobrar y seguir (una decisión de más en mitad de la partida); sin baterías en el bonus (Producto las quiere, aunque raras).
 
 ### Modo zen
 

@@ -30,7 +30,7 @@ function play(L, seed) {   // devuelve las estrellas (0 a 3), como Game.finish
     if (g.mode === 'time') { g.timeLeft = L.time - time; E.evaluateEnd(g, time >= L.time); } else E.evaluateEnd(g);
   }
   let won = g.won;
-  if (g.scoreOnly) { E.bonus(g); won = E.goalsDone(g); } else if (won) E.bonus(g);
+  if (won) E.bonus(g);
   if (!won) return 0;
   return g.score >= L.stars[2] ? 3 : g.score >= L.stars[1] ? 2 : 1;
 }

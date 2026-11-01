@@ -20,7 +20,7 @@ function play(L, seed) {
     time += 1.7 + rnd() * 1.4; for (const s of r.steps) time += E.stepDuration(s) / 1000;
     if (g.mode === 'time') { g.timeLeft = L.time - time; E.evaluateEnd(g, time >= L.time); } else E.evaluateEnd(g);
   }
-  if (g.scoreOnly) { E.bonus(g); return E.goalsDone(g); }
+  if (g.won) E.bonus(g);
   return g.won;
 }
 if (isMainThread) {

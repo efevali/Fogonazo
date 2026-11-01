@@ -87,9 +87,11 @@ const GEN = {
   razon: [[0.3, 0.85], [0.4, 0.93], [0.5, 1], [0.6, 1.07], [0.7, 1.19], [0.8, 1.28], [0.9, 1.44]],
   segundosPorJugada: 3.5,
   // puntos: por jugada (meta de los niveles de puntaje) y estrellas como múltiplos de la mediana de los ganadores
-  puntosPorJugada: { 5: 680, 6: 450, 7: 290 }, razonPuntos: [[0.3, 1.18], [0.5, 1], [0.7, 0.83], [0.9, 0.69]],
+  puntosPorJugada: { 5: 630, 6: 420, 7: 270 }, razonPuntos: [[0.3, 1.23], [0.5, 1], [0.7, 0.84], [0.9, 0.67]],
   // estrellas de los niveles con pedido: la segunda, la mediana de los puntos de quien gana; la tercera, × 1,35
   estrellaPorJugada: { 5: 1100, 6: 550, 7: 280 }, estrellaPorValvula: 0, terceraEstrella: 1.35,
+  // estrellas de los de puntaje, como múltiplos de la meta: la mediana de los puntos de quien gana y el 86 %
+  estrellasPuntaje: [1.43, 1.67],
 };
 const r01 = seed => () => { seed = (seed + 0x6D2B79F5) >>> 0; let t = seed; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 const interp = (tab, x) => { if (x <= tab[0][0]) return tab[0][1]; for (let i = 1; i < tab.length; i++) if (x <= tab[i][0]) { const [a, b] = tab[i - 1], [c, d] = tab[i]; return b + (d - b) * (x - a) / (c - a); } return tab[tab.length - 1][1]; };
@@ -228,7 +230,9 @@ function calOf(L) {
   if (L.tune === 'score') {
     const jug = L.time ? L.time / GEN.segundosPorJugada : L.moves;
     const meta = r100(GEN.puntosPorJugada[L.colors] * jug * interp(GEN.razonPuntos, L.target));
-    out.scoreTarget = meta; out.stars = [meta, r100(meta * 1.35), r100(meta * 1.7)];
+    out.scoreTarget = meta;
+    const s2 = Math.max(meta + 100, r100(meta * GEN.estrellasPuntaje[0]));
+    out.stars = [meta, s2, Math.max(s2 + 100, r100(meta * GEN.estrellasPuntaje[1]))];
     if (L.time) out.time = L.time; else out.moves = L.moves;
     return out;
   }

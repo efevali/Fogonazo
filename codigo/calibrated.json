@@ -4,14 +4,14 @@
   "name": "puntaje",
   "tune": "score",
   "target": 0.97,
-  "scoreTarget": 11500,
+  "scoreTarget": 9500,
   "stars": [
-   11500,
-   28000,
-   40000
+   9500,
+   17200,
+   23400
   ],
-  "winRate": 0.97,
-  "medianScore": 26470,
+  "winRate": 0.9375,
+  "medianScore": 21520,
   "moves": 18
  },
  "2": {
@@ -19,14 +19,14 @@
   "name": "puntaje",
   "tune": "score",
   "target": 0.95,
-  "scoreTarget": 15000,
+  "scoreTarget": 11500,
   "stars": [
-   15000,
-   30500,
-   44000
+   11500,
+   18600,
+   24800
   ],
-  "winRate": 0.95,
-  "medianScore": 28720,
+  "winRate": 0.9175,
+  "medianScore": 24290,
   "moves": 20
  },
  "3": {
@@ -37,8 +37,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   17100,
-   23600
+   17200,
+   23100
   ],
   "winRate": 0.9175,
   "moves": 15,
@@ -52,8 +52,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   17400,
-   24400
+   18400,
+   26200
   ],
   "winRate": 0.8875,
   "moves": 17,
@@ -64,14 +64,14 @@
   "name": "⏱ puntaje",
   "tune": "score",
   "target": 0.82,
-  "scoreTarget": 16500,
+  "scoreTarget": 12900,
   "stars": [
-   16500,
-   26000,
-   35500
+   12900,
+   19600,
+   26000
   ],
-  "winRate": 0.825,
-  "medianScore": 23650,
+  "winRate": 0.78,
+  "medianScore": 19140,
   "time": 60
  },
  "6": {
@@ -82,8 +82,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   10100,
-   13100
+   10300,
+   13200
   ],
   "winRate": 0.9,
   "moves": 24,
@@ -97,8 +97,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   9700,
-   12700
+   9800,
+   13300
   ],
   "winRate": 0.845,
   "moves": 20,
@@ -109,14 +109,14 @@
   "name": "puntaje",
   "tune": "score",
   "target": 0.76,
-  "scoreTarget": 8900,
+  "scoreTarget": 7200,
   "stars": [
-   8900,
-   13500,
-   18500
+   7200,
+   10600,
+   13300
   ],
-  "winRate": 0.765,
-  "medianScore": 11580,
+  "winRate": 0.7825,
+  "medianScore": 9760,
   "moves": 22
  },
  "9": {
@@ -127,7 +127,7 @@
   "neverRate": 0,
   "stars": [
    0,
-   9100,
+   9000,
    12100
   ],
   "winRate": 0.8525,
@@ -142,8 +142,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   10300,
-   13600
+   10600,
+   13300
   ],
   "winRate": 0.72,
   "moves": 20,
@@ -157,8 +157,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   14800,
-   21300
+   15300,
+   22700
   ],
   "winRate": 0.9025,
   "moves": 14,
@@ -172,7 +172,7 @@
   "neverRate": 0,
   "stars": [
    0,
-   10600,
+   10800,
    13900
   ],
   "winRate": 0.81,
@@ -187,8 +187,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   15200,
-   19100
+   15100,
+   19400
   ],
   "winRate": 0.695,
   "moves": 25,
@@ -202,8 +202,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   7900,
-   10800
+   7700,
+   11100
   ],
   "winRate": 0.725,
   "time": 50,
@@ -218,7 +218,7 @@
   "stars": [
    0,
    13200,
-   16900
+   17300
   ],
   "winRate": 0.5925,
   "moves": 23,
@@ -232,8 +232,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   13900,
-   20600
+   13400,
+   20900
   ],
   "winRate": 0.775,
   "moves": 11,
@@ -247,8 +247,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   10100,
-   13800
+   10600,
+   13700
   ],
   "winRate": 0.7325,
   "moves": 25,
@@ -262,8 +262,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   7100,
-   9600
+   7300,
+   9700
   ],
   "winRate": 0.65,
   "moves": 17,
@@ -277,8 +277,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   6900,
-   10300
+   7200,
+   10500
   ],
   "winRate": 0.685,
   "time": 45,
@@ -293,7 +293,7 @@
   "stars": [
    0,
    7900,
-   11600
+   11200
   ],
   "winRate": 0.5125,
   "moves": 13,
@@ -308,7 +308,7 @@
   "stars": [
    0,
    16900,
-   24700
+   25200
   ],
   "winRate": 0.75,
   "moves": 14,
@@ -323,7 +323,7 @@
   "stars": [
    0,
    19500,
-   26400
+   26500
   ],
   "winRate": 0.735,
   "moves": 24,
@@ -337,8 +337,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   22500,
-   31500
+   23000,
+   33500
   ],
   "winRate": 0.5875,
   "moves": 17,
@@ -349,14 +349,14 @@
   "name": "⏱ puntaje",
   "tune": "score",
   "target": 0.52,
-  "scoreTarget": 11400,
+  "scoreTarget": 9700,
   "stars": [
-   11400,
-   15100,
-   19200
+   9700,
+   12600,
+   15100
   ],
-  "winRate": 0.5225,
-  "medianScore": 11660,
+  "winRate": 0.515,
+  "medianScore": 9910,
   "time": 75
  },
  "25": {
@@ -367,7 +367,7 @@
   "neverRate": 0,
   "stars": [
    0,
-   26500,
+   27000,
    36000
   ],
   "winRate": 0.5125,
@@ -382,7 +382,7 @@
   "neverRate": 0,
   "stars": [
    0,
-   7400,
+   7600,
    9600
   ],
   "winRate": 0.5625,
@@ -398,7 +398,7 @@
   "stars": [
    0,
    14900,
-   19300
+   19400
   ],
   "winRate": 0.4725,
   "moves": 26,
@@ -409,14 +409,14 @@
   "name": "⏱ puntaje",
   "tune": "score",
   "target": 0.45,
-  "scoreTarget": 7900,
+  "scoreTarget": 6900,
   "stars": [
-   7900,
-   9600,
-   12300
+   6900,
+   8900,
+   10400
   ],
-  "winRate": 0.4725,
-  "medianScore": 7770,
+  "winRate": 0.4075,
+  "medianScore": 6720,
   "time": 90
  },
  "29": {
@@ -427,8 +427,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   19200,
-   28500
+   20000,
+   27500
   ],
   "winRate": 0.36,
   "moves": 12,
@@ -442,8 +442,8 @@
   "neverRate": 0,
   "stars": [
    0,
-   24000,
-   33000
+   23500,
+   32500
   ],
   "winRate": 0.355,
   "moves": 13,
