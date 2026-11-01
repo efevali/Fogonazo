@@ -2,6 +2,10 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.10.5 — 31/10/2026
+
+- Sala: **el botón «Buscar» / «Actualizar» de los ajustes es una tecla de aluminio con relieve.** Antes, oscuro sobre el módulo negro, casi no se veía.
+
 ## 0.10.4 — 31/10/2026
 
 - Sala: **«Buscar» en los ajustes.** Junto a la versión, el botón busca si hay una nueva; si la encuentra, pasa a «Actualizar», con la lámpara encendida, y si no, la luz dice «Es la última». Al abrir los ajustes también busca solo, sin avisar.

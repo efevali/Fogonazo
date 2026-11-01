@@ -141,6 +141,16 @@ body { margin: 0; background: var(--night); color: var(--chip-fg); overflow: hid
 .btn.dark:disabled { background: #3a3633; color: #8d867d; cursor: default; }
 .btn.dark:disabled .lamp, .btn.dark.busca .lamp { background: #4a4540; box-shadow: none; }
 #updBtn { min-width: 136px; justify-content: center; }   /* the same size as «Buscar» and as «Actualizar» */
+/* a brushed aluminium key with relief, so it stands out on the black module: light on top, an edge that catches the light
+   and a shadow under it; pressed, it sinks */
+.btn.dark.metal { color: #2a2622;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .09) 0 1px, rgba(0, 0, 0, .035) 1px 2px), linear-gradient(180deg, #e6e2d9, #b9b3a8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), inset 0 -2px 0 rgba(0, 0, 0, .22), 0 2px 0 #0c0b0a, 0 3px 6px rgba(0, 0, 0, .55); }
+.btn.dark.metal:active { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), inset 0 -1px 0 rgba(0, 0, 0, .2), 0 1px 0 #0c0b0a, 0 1px 3px rgba(0, 0, 0, .5); }
+.btn.dark.metal .lamp { box-shadow: 0 0 8px var(--amber), 0 0 0 1.5px rgba(0, 0, 0, .35); }
+.btn.dark.metal.busca .lamp { background: #6b655d; box-shadow: inset 0 1px 1px rgba(0, 0, 0, .5), 0 1px 0 rgba(255, 255, 255, .6); }
+.btn.dark.metal:disabled { color: #6f6a62; cursor: default; }
+.btn.dark.metal:disabled .lamp { background: #8d877e; box-shadow: inset 0 1px 1px rgba(0, 0, 0, .4); }
 .blank { flex: 1 1 0; min-height: 0; background: repeating-linear-gradient(90deg, #1b1816 0 3px, #161312 3px 6px); }
 .rfoot { display: flex; justify-content: flex-end; padding: 6px 26px 4px; color: #e9e1d3; }
 .rack .inst { grid-template-columns: 34px 1fr auto; }
@@ -330,7 +340,7 @@ ol.steps .n { width: 24px; height: 24px; border-radius: 50%; background: #2a2622
           <div class="sys">
             <div class="vfd" id="verTxt">VERSIÓN —</div>
             <div class="state" role="status"><span class="dot" id="verDot"></span><span id="verState"></span></div>
-            <button class="btn dark" type="button" id="updBtn"><span class="lamp"></span><span id="updTxt">Buscar</span></button>
+            <button class="btn dark metal" type="button" id="updBtn"><span class="lamp"></span><span id="updTxt">Buscar</span></button>
           </div>
         </div>
         <div class="mod" id="instRow" hidden>
