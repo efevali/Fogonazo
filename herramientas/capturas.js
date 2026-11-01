@@ -83,7 +83,9 @@ const ok = (cond, msg) => { console.log((cond ? '  ✓ ' : '  ✗ ') + msg); if 
   const versionSW = /const VERSION = '([\d.]+)'/.exec(fs.readFileSync(path.join(RAIZ, 'sw.js'), 'utf8'))[1];
   await pantalla().waitForFunction(() => /\d/.test(document.getElementById('verTxt').textContent), null, { timeout: 5000 }).catch(() => {});
   ok(await pantalla().evaluate(() => document.getElementById('verTxt').textContent) === 'VERSIÓN ' + versionSW, 'el módulo Sistema muestra la versión instalada (' + versionSW + ')');
-  ok(await pantalla().evaluate(() => document.getElementById('updBtn').disabled), 'sin versión nueva, «Actualizar» queda apagado');
+  await pantalla().waitForFunction(() => !document.getElementById('updBtn').disabled, null, { timeout: 5000 }).catch(() => {});
+  ok(await pantalla().evaluate(() => { const b = document.getElementById('updBtn'); return b.classList.contains('busca') && document.getElementById('updTxt').textContent === 'Buscar'; }),
+    'sin versión nueva, el botón dice «Buscar»');
   await tocar('#instBtn');
   ok(await abierto('#sheetSteps'), 'sin el cuadro de Chrome, «Instalar» abre los pasos'); await foto('03-sala-instalar');
   await atras(); ok(!(await abierto('#sheetSteps')) && await abierto('#sheetAudio'), '«atrás» cierra los pasos y vuelve a los ajustes');

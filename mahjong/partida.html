@@ -70,7 +70,7 @@ button:focus { outline: none; }
   text-shadow: 0 1px 2px rgba(0,0,0,.8), 0 0 6px rgba(0,0,0,.5); animation: flota .9s ease-out forwards; }
 .flota.grande { font-size: 24em; color: var(--amber); }
 @keyframes flota { from { opacity: 1; } to { opacity: 0; transform: translate(-50%, -26px); } }
-#aviso { left: 50%; top: 50%; transform: translate(-50%, -50%); background: rgba(18,12,10,.78); color: #f3e6d0; font: 600 16rem Barlow;
+#aviso { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: rgba(18,12,10,.78); color: #f3e6d0; font: 600 16rem Barlow;
   padding: 8rem 16rem; border-radius: 999rem; white-space: nowrap; pointer-events: none; }
 
 /* pause and back, as in Fogonazo */
@@ -241,7 +241,7 @@ button:focus { outline: none; }
     fx('par', G.cadena);
     marcarLibres(); hud();
     if (!G.occ.size) { limpio(); return; }
-    if (!T.pares(G.occ, G.cara, P).length) { G.ocupado = true; setTimeout(() => { aviso('No quedan pares libres: se barajan solas'); barajar(); }, 500); }
+    if (!T.pares(G.occ, G.cara, P).length) { G.ocupado = true; setTimeout(() => { aviso('No quedan pares libres: se barajan solas', 2600); setTimeout(barajar, 1000); }, 400); }
   }
   function flota(x, y, texto, grande) {
     const d = document.createElement('div');
@@ -275,7 +275,7 @@ button:focus { outline: none; }
     fx('pista');
   }
   let avisoTm;
-  function aviso(t) { const a = $('aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisoTm); avisoTm = setTimeout(() => { a.hidden = true; }, 2200); }
+  function aviso(t, ms = 2200) { const a = $('aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisoTm); avisoTm = setTimeout(() => { a.hidden = true; }, ms); }
 
   // the pad
   function hud() {

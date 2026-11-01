@@ -2,6 +2,11 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.10.6 — 31/10/2026
+
+- Mahjong: **el cartel de avisos sale centrado sobre el tablero.** Quedaba arriba a la izquierda y cortado por el borde de la pantalla («No quedan pares libres…», «No hay jugadas para deshacer», «Este reparto no tiene salida»).
+- Mahjong: **sin pares libres, primero el cartel y después el barajado** (S-25). El cartel aparece con las fichas quietas, un segundo después giran y queda 3 s en pantalla; antes salían casi a la vez y no se llegaba a leer.
+
 ## 0.10.5 — 31/10/2026
 
 - Sala: **el botón «Buscar» / «Actualizar» de los ajustes es una tecla de aluminio con relieve.** Antes, oscuro sobre el módulo negro, casi no se veía.
