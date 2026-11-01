@@ -68,7 +68,6 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
 #metas .l.ok .tic { visibility: visible; }
 #metas .l.x > * { opacity: .5; }
 #metas .l.x::after { content: ''; position: absolute; left: -2rem; right: 6rem; top: 52%; height: 2.2rem; background: #c0392b; border-radius: 1rem; transform: rotate(-1.2deg); }
-#metas .hasta { font-size: 16.5rem; color: #6c655a; }
 
 /* overlays. Sizes in rem: the root font-size is one design unit (see fit), so nested font sizes do not compound */
 .sheet { left: 0; top: 0; width: 100%; height: 100%; display: grid; place-items: center; background: rgba(20, 10, 4, .55); }
@@ -813,7 +812,6 @@ body { font-family: Barlow, "Arial Narrow", sans-serif; color: var(--ink); -webk
     let h = `<h3>${puntos ? 'Metas' : 'Pedido'}</h3>`;
     if (puntos) {
       h += [0, 1, 2].map(i => `<div class="l" data-e="${i}">${estrellitas(i + 1)}<span>${fmt(def.stars[i])}</span>${TIC}</div>`).join('');
-      h += `<div class="l hasta">se juega hasta la tercera</div>`;
     } else {
       h += g.goals.map((o, i) => {
         const src = o.type === 'collect' ? `pieza${o.color}` : o.type === 'pads' ? (padOrig.some(v => v === 2) ? 'pad2' : 'pad1')
