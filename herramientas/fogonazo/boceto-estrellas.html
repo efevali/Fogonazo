@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>S-28 · Estrellas con umbrales</title>
+<!-- Boceto S-28: las estrellas con umbrales a la vista. Montado sobre capturas de la app (dist/capturas, de herramientas/capturas.js).
+     A, nivel de pedido: la nota dice cuántas movidas tienen que sobrar para cada estrella y tacha las que ya no se alcanzan.
+     B, nivel de puntos: la nota lleva las tres metas; se juega hasta la tercera o hasta quedarse sin movidas.
+     C y D, las tarjetas de fin: en pedido las estrellas salen de lo que sobró y el bonus solo suma puntos; en puntos el bonus
+     puede alcanzar la estrella siguiente. Los números son de ejemplo, no calibrados. -->
+<style>
+@font-face { font-family: Barlow; font-weight: 600; src: url(../../comun/fuentes/barlow-semi-condensed-latin-600-normal.woff2); }
+@font-face { font-family: Barlow; font-weight: 700; src: url(../../comun/fuentes/barlow-semi-condensed-latin-700-normal.woff2); }
+@font-face { font-family: Caveat; font-weight: 600; src: url(../../comun/fuentes/caveat-latin-600-normal.woff2); }
+body { margin: 0; background: #1e140c; width: 1830px; font-family: Barlow; }
+.fila { display: flex; }
+.p { position: relative; width: 915px; height: 412px; background-size: 915px 412px; overflow: hidden; }
+.cap { height: 34px; color: #ffdca0; font: 700 15px Barlow; letter-spacing: .12em; padding: 9px 14px 0; box-sizing: border-box; width: 915px; }
+.nota { position: absolute; left: 718px; top: 50px; width: 182px; height: 190px; background-color: #f8f3e6;
+  box-shadow: 0 3px 8px rgba(0,0,0,.35); transform: rotate(1deg); padding: 10px 14px; box-sizing: border-box;
+  background-image: repeating-linear-gradient(transparent 0 25px, #cfe0ee 25px 26px); color: #2a2a2a; }
+.nota h3 { margin: 0 0 4px; font: 600 26px Caveat; color: #222; }
+.nota .l { font: 600 21px/26px Caveat; display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+.nota .s { color: #d0402a; letter-spacing: -2px; width: 46px; font-size: 18px; }
+.nota .x { text-decoration: line-through; text-decoration-color: #c0392b; text-decoration-thickness: 2px; opacity: .55; }
+.nota .pz { color: #1d3a94; }
+.tapa { position: absolute; left: 950px; }
+.card { position: absolute; left: 233px; top: 88px; width: 450px; height: 245px; background: linear-gradient(170deg, #f6eed8, #e9dcbc);
+  box-shadow: 0 10px 24px rgba(0,0,0,.5); padding: 16px 26px; box-sizing: border-box; color: #2b2a26; }
+.card .k { font: 700 11px Barlow; letter-spacing: .2em; color: #7a6a50; }
+.card h4 { margin: 6px 0 2px; font: 600 22px Barlow; }
+.card .st { color: #c8442a; font-size: 34px; letter-spacing: 4px; line-height: 1; }
+.card .st i { color: #cbbfa2; font-style: normal; }
+.card .r { display: flex; justify-content: space-between; font: 600 15px Barlow; border-bottom: 1px dotted #a99a7a; padding: 4px 0; }
+.card .r b { color: #1d3a94; }
+.card .por { font: 600 19px Caveat; color: #b8322a; margin-top: 4px; }
+.card .bot { position: absolute; bottom: 14px; left: 26px; font: 700 12px Barlow; letter-spacing: .14em; color: #fff; }
+.card .bot span { background: #c0392b; padding: 6px 12px; margin-right: 8px; } .card .bot span+span { background: #222; }
+.marca { position: absolute; font: 600 18px Caveat; color: #ffdca0; }
+</style></head><body>
+<div class="fila"><div class="cap">A · NIVEL DE PEDIDO, EN JUEGO</div><div class="cap">B · NIVEL DE PUNTOS, EN JUEGO</div></div>
+<div class="fila">
+  <div class="p" style="background-image:url(../../dist/capturas/09-fogonazo-partida.png)">
+    <div class="nota"><h3>Pedido</h3>
+      <div class="l"><span class="pz">■ 21 / 34 integrados</span></div>
+      <div class="l"><span class="s x">★★★</span><span class="x">en 16 movidas</span></div>
+      <div class="l"><span class="s">★★</span>en 20 movidas</div>
+      <div class="l"><span class="s">★</span>en 24 movidas</div>
+    </div>
+    <div class="marca" style="left:600px;top:388px">la de tres ya no llega: se tacha</div>
+  </div>
+  <div class="p" style="background-image:url(../../dist/capturas/09-fogonazo-partida.png)">
+    <div class="nota"><h3>Metas</h3>
+      <div class="l"><span class="s">★</span>8.600</div>
+      <div class="l"><span class="s">★★</span>15.500</div>
+      <div class="l"><span class="s">★★★</span>21.000</div>
+      <div class="l" style="font-size:17px;color:#555">hasta la última movida</div>
+    </div>
+    <div class="marca" style="left:540px;top:388px">el vúmetro ya marca las tres</div>
+  </div>
+</div>
+<div class="fila"><div class="cap">C · FIN DE UN PEDIDO</div><div class="cap">D · FIN DE UN NIVEL DE PUNTOS</div></div>
+<div class="fila">
+  <div class="p" style="background-image:url(../../dist/capturas/16-fogonazo-fin-gano.png)">
+    <div class="card"><div class="k">CONTROL DE CALIDAD · Nº 006</div><h4>Nivel 6 · Fácil</h4>
+      <div class="st">★★<i>★</i></div>
+      <div class="por">pedido completo en 18 movidas</div>
+      <div class="r">Jugada<b>9.140</b></div><div class="r">Bonus (6 movimientos)<b>+5.320</b></div><div class="r">Total<b>14.460</b></div>
+      <div class="bot"><span>SIGUIENTE ▶</span><span>OTRA VEZ</span><span>◀ MAPA</span></div></div>
+  </div>
+  <div class="p" style="background-image:url(../../dist/capturas/16-fogonazo-fin-gano.png)">
+    <div class="card"><div class="k">CONTROL DE CALIDAD · Nº 007</div><h4>Nivel 7 · Fácil</h4>
+      <div class="st">★★★</div>
+      <div class="por">la tercera, con el bonus</div>
+      <div class="r">Jugada (★★)<b>18.900</b></div><div class="r">Bonus (4 movimientos)<b>+3.400</b></div><div class="r">Total (★★★)<b>22.300</b></div>
+      <div class="bot"><span>SIGUIENTE ▶</span><span>OTRA VEZ</span><span>◀ MAPA</span></div></div>
+  </div>
+</div>
+</body></html>
