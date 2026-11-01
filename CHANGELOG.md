@@ -2,6 +2,11 @@
 
 Las versiones publicadas de la colección, de la más nueva a la más vieja. Sigue el formato de [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el versionado semántico del [README](README.md#versiones). Cada versión se encuentra en el historial por el título de su commit, que empieza con el número.
 
+## 0.10.4 — 31/10/2026
+
+- Sala: **«Buscar» en los ajustes.** Junto a la versión, el botón busca si hay una nueva; si la encuentra, pasa a «Actualizar», con la lámpara encendida, y si no, la luz dice «Es la última». Al abrir los ajustes también busca solo, sin avisar.
+- **Al actualizar, «Actualizando»** chico en el medio de la pantalla, en el verde del display de la versión, en vez del corte a negro. La línea finita que aparece un instante arriba es la barra de carga de Chrome: no se puede quitar.
+
 ## 0.10.3 — 31/10/2026
 
 - Fogonazo: **la aguja del vúmetro ya no rebota.** Se pasaba un poco de cada valor y volvía, y parecía que se perdían puntos; ahora llega y se queda, también en el zen.

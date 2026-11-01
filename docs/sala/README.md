@@ -12,7 +12,7 @@ La pantalla de inicio de la colección: un living de los 70 ilustrado donde algu
 - **Tres objetos activos**, que brillan apenas por turno:
   - **El banco de electrónica** lleva a Fogonazo, a la pantalla-instrumento, que vuelve con «◀ Volver».
   - **La mesa ratona con el mahjong** lleva al mahjong, al estuche abierto, que vuelve con «◀ Volver».
-  - **El equipo de audio** abre los ajustes de la colección (S-14), un rack de audio: sonido (música, efectos y lluvia, de 0 a 10, en medidores de LEDs), sistema (la versión y «Actualizar») y, en Chrome sin instalar, «Instalar».
+  - **El equipo de audio** abre los ajustes de la colección (S-14), un rack de audio: sonido (música, efectos y lluvia, de 0 a 10, en medidores de LEDs), sistema (la versión y un botón que busca la nueva y, si la hay, pasa a «Actualizar») y, en Chrome sin instalar, «Instalar».
 - **El ambiente animado** de la [guía de estilo](../estilo.md#la-sala).
 - **«Salir ▶»**, abajo a la derecha, cierra la app. Si Chrome no la deja cerrarse sola, avisa cómo salir con el gesto del teléfono.
 - **La lluvia** suena mientras se está en la sala, con el volumen de los ajustes, y se apaga al entrar a un juego.

@@ -14,7 +14,7 @@
    Las pantallas lo usan como «App» a través de comun/pantalla.js. */
 (() => {
   'use strict';
-  const velo = document.getElementById('velo');
+  const velo = document.getElementById('velo'), aviso = document.getElementById('aviso');
   let frame = null, nFrames = 0;
   const base = new URL('./', location.href).pathname;
 
@@ -69,6 +69,8 @@
     const url = frame.contentWindow.location.pathname.replace(base, '') + frame.contentWindow.location.search;
     ambiente(url);
     requestAnimationFrame(() => velo.classList.remove('on'));
+    // the sign goes away with the veil (it is inside it), and then it is hidden for good
+    if (!aviso.hidden) setTimeout(() => { aviso.hidden = true; }, 300);
   }
   function desbloquear() { Sound.ensure(); girar(); }
 
@@ -172,14 +174,25 @@
         const [actual, nueva] = await Promise.all([preguntar(reg && reg.active), preguntar(reg && reg.waiting)]);
         return { actual, nueva };
       },
-      // buscar en el servidor si hay una versión nueva; si aparece, avisa a quien escucha con alCambiar
-      buscar() { if (reg) reg.update().catch(() => {}); },
+      // buscar en el servidor si hay una versión nueva; si aparece, avisa a quien escucha con alCambiar.
+      // Devuelve si quedó una esperando (espera a que termine de bajar, si encontró una)
+      async buscar() {
+        if (!reg) return false;
+        try { await reg.update(); } catch (e) { return !!reg.waiting; }
+        const w = reg.installing;
+        if (w) await new Promise(r => { const f = () => { if (w.state !== 'installing') { w.removeEventListener('statechange', f); r(); } }; w.addEventListener('statechange', f); f(); });
+        return !!reg.waiting;
+      },
       alCambiar(f) { oyentes.add(f); return () => oyentes.delete(f); },
-      // la versión que espera pasa a ser la activa y la app se recarga en la sala
+      // la versión que espera pasa a ser la activa y la app se recarga en la sala: antes se funde a oscuro con
+      // «Actualizando», que sigue ahí hasta que la sala nueva está cargada (la recarga la hace Chrome, con su barra)
       actualizar() {
         if (!reg || !reg.waiting) return false;
+        const w = reg.waiting;
+        aviso.hidden = false; velo.classList.add('on'); Sound.duck(true);
+        try { sessionStorage.setItem('actualizando', '1'); } catch (e) {}
         navigator.serviceWorker.addEventListener('controllerchange', () => location.reload(), { once: true });
-        reg.waiting.postMessage('actualizar');
+        setTimeout(() => w.postMessage('actualizar'), 300);
         return true;
       },
     },
@@ -200,6 +213,7 @@
   // ------------------------------------------------------------ arranque
   // el avance del Fogonazo publicado y de la maqueta no se conservan: la colección arranca de cero
   try { localStorage.removeItem('chispazo.v1'); localStorage.removeItem('fogonazo.maqueta.v1'); } catch (e) {}
+  try { if (sessionStorage.getItem('actualizando')) { sessionStorage.removeItem('actualizando'); aviso.hidden = false; } } catch (e) {}
   Sound.ensure();   // instalada, Chrome deja sonar sin esperar un toque; si no, arranca con el primero
   girar();
   cargar(INICIO, true);
